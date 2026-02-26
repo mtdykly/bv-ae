@@ -1,0 +1,955 @@
+{
+  "domain": "bv3",
+  "top_module": "top",
+  "assume": {
+    "signals": {
+      "a": {
+        "bits_msb": "10010000"
+      },
+      "b": {
+        "bits_msb": "00001111"
+      },
+      "shamt": {
+        "bits_msb": "010"
+      },
+      "sel": {
+        "bits_msb": "1"
+      }
+    }
+  },
+  "signals": {
+    "a": {
+      "width": 8,
+      "signed": false,
+      "bits_msb": "10010000",
+      "known_mask_hex": "0xff",
+      "known_value_hex": "0x90",
+      "unknown_count": 0,
+      "range_unsigned": [
+        144,
+        144
+      ],
+      "range_signed": [
+        -112,
+        -112
+      ]
+    },
+    "b": {
+      "width": 8,
+      "signed": false,
+      "bits_msb": "00001111",
+      "known_mask_hex": "0xff",
+      "known_value_hex": "0xf",
+      "unknown_count": 0,
+      "range_unsigned": [
+        15,
+        15
+      ],
+      "range_signed": [
+        15,
+        15
+      ]
+    },
+    "sel": {
+      "width": 1,
+      "signed": false,
+      "bits_msb": "1",
+      "known_mask_hex": "0x1",
+      "known_value_hex": "0x1",
+      "unknown_count": 0,
+      "range_unsigned": [
+        1,
+        1
+      ],
+      "range_signed": [
+        -1,
+        -1
+      ]
+    },
+    "shamt": {
+      "width": 3,
+      "signed": false,
+      "bits_msb": "010",
+      "known_mask_hex": "0x7",
+      "known_value_hex": "0x2",
+      "unknown_count": 0,
+      "range_unsigned": [
+        2,
+        2
+      ],
+      "range_signed": [
+        2,
+        2
+      ]
+    },
+    "t_add": {
+      "width": 8,
+      "signed": false,
+      "bits_msb": "10011111",
+      "known_mask_hex": "0xff",
+      "known_value_hex": "0x9f",
+      "unknown_count": 0,
+      "range_unsigned": [
+        159,
+        159
+      ],
+      "range_signed": [
+        -97,
+        -97
+      ]
+    },
+    "t_and": {
+      "width": 8,
+      "signed": false,
+      "bits_msb": "00000000",
+      "known_mask_hex": "0xff",
+      "known_value_hex": "0x0",
+      "unknown_count": 0,
+      "range_unsigned": [
+        0,
+        0
+      ],
+      "range_signed": [
+        0,
+        0
+      ]
+    },
+    "t_ashr": {
+      "width": 8,
+      "signed": false,
+      "bits_msb": "11100100",
+      "known_mask_hex": "0xff",
+      "known_value_hex": "0xe4",
+      "unknown_count": 0,
+      "range_unsigned": [
+        228,
+        228
+      ],
+      "range_signed": [
+        -28,
+        -28
+      ]
+    },
+    "t_concat": {
+      "width": 16,
+      "signed": false,
+      "bits_msb": "1001000000001111",
+      "known_mask_hex": "0xffff",
+      "known_value_hex": "0x900f",
+      "unknown_count": 0,
+      "range_unsigned": [
+        36879,
+        36879
+      ],
+      "range_signed": [
+        -28657,
+        -28657
+      ]
+    },
+    "t_eq": {
+      "width": 1,
+      "signed": false,
+      "bits_msb": "0",
+      "known_mask_hex": "0x1",
+      "known_value_hex": "0x0",
+      "unknown_count": 0,
+      "range_unsigned": [
+        0,
+        0
+      ],
+      "range_signed": [
+        0,
+        0
+      ]
+    },
+    "t_ge": {
+      "width": 1,
+      "signed": false,
+      "bits_msb": "1",
+      "known_mask_hex": "0x1",
+      "known_value_hex": "0x1",
+      "unknown_count": 0,
+      "range_unsigned": [
+        1,
+        1
+      ],
+      "range_signed": [
+        -1,
+        -1
+      ]
+    },
+    "t_gt": {
+      "width": 1,
+      "signed": false,
+      "bits_msb": "1",
+      "known_mask_hex": "0x1",
+      "known_value_hex": "0x1",
+      "unknown_count": 0,
+      "range_unsigned": [
+        1,
+        1
+      ],
+      "range_signed": [
+        -1,
+        -1
+      ]
+    },
+    "t_le": {
+      "width": 1,
+      "signed": false,
+      "bits_msb": "0",
+      "known_mask_hex": "0x1",
+      "known_value_hex": "0x0",
+      "unknown_count": 0,
+      "range_unsigned": [
+        0,
+        0
+      ],
+      "range_signed": [
+        0,
+        0
+      ]
+    },
+    "t_lt": {
+      "width": 1,
+      "signed": false,
+      "bits_msb": "0",
+      "known_mask_hex": "0x1",
+      "known_value_hex": "0x0",
+      "unknown_count": 0,
+      "range_unsigned": [
+        0,
+        0
+      ],
+      "range_signed": [
+        0,
+        0
+      ]
+    },
+    "t_mux": {
+      "width": 8,
+      "signed": false,
+      "bits_msb": "00001111",
+      "known_mask_hex": "0xff",
+      "known_value_hex": "0xf",
+      "unknown_count": 0,
+      "range_unsigned": [
+        15,
+        15
+      ],
+      "range_signed": [
+        15,
+        15
+      ]
+    },
+    "t_not": {
+      "width": 8,
+      "signed": false,
+      "bits_msb": "01101111",
+      "known_mask_hex": "0xff",
+      "known_value_hex": "0x6f",
+      "unknown_count": 0,
+      "range_unsigned": [
+        111,
+        111
+      ],
+      "range_signed": [
+        111,
+        111
+      ]
+    },
+    "t_or": {
+      "width": 8,
+      "signed": false,
+      "bits_msb": "10011111",
+      "known_mask_hex": "0xff",
+      "known_value_hex": "0x9f",
+      "unknown_count": 0,
+      "range_unsigned": [
+        159,
+        159
+      ],
+      "range_signed": [
+        -97,
+        -97
+      ]
+    },
+    "t_shl": {
+      "width": 8,
+      "signed": false,
+      "bits_msb": "01000000",
+      "known_mask_hex": "0xff",
+      "known_value_hex": "0x40",
+      "unknown_count": 0,
+      "range_unsigned": [
+        64,
+        64
+      ],
+      "range_signed": [
+        64,
+        64
+      ]
+    },
+    "t_shr": {
+      "width": 8,
+      "signed": false,
+      "bits_msb": "00100100",
+      "known_mask_hex": "0xff",
+      "known_value_hex": "0x24",
+      "unknown_count": 0,
+      "range_unsigned": [
+        36,
+        36
+      ],
+      "range_signed": [
+        36,
+        36
+      ]
+    },
+    "t_slice": {
+      "width": 4,
+      "signed": false,
+      "bits_msb": "0100",
+      "known_mask_hex": "0xf",
+      "known_value_hex": "0x4",
+      "unknown_count": 0,
+      "range_unsigned": [
+        4,
+        4
+      ],
+      "range_signed": [
+        4,
+        4
+      ]
+    },
+    "t_sub": {
+      "width": 8,
+      "signed": false,
+      "bits_msb": "10000001",
+      "known_mask_hex": "0xff",
+      "known_value_hex": "0x81",
+      "unknown_count": 0,
+      "range_unsigned": [
+        129,
+        129
+      ],
+      "range_signed": [
+        -127,
+        -127
+      ]
+    },
+    "t_xor": {
+      "width": 8,
+      "signed": false,
+      "bits_msb": "10011111",
+      "known_mask_hex": "0xff",
+      "known_value_hex": "0x9f",
+      "unknown_count": 0,
+      "range_unsigned": [
+        159,
+        159
+      ],
+      "range_signed": [
+        -97,
+        -97
+      ]
+    },
+    "y_add": {
+      "width": 8,
+      "signed": false,
+      "bits_msb": "10011111",
+      "known_mask_hex": "0xff",
+      "known_value_hex": "0x9f",
+      "unknown_count": 0,
+      "range_unsigned": [
+        159,
+        159
+      ],
+      "range_signed": [
+        -97,
+        -97
+      ]
+    },
+    "y_and": {
+      "width": 8,
+      "signed": false,
+      "bits_msb": "00000000",
+      "known_mask_hex": "0xff",
+      "known_value_hex": "0x0",
+      "unknown_count": 0,
+      "range_unsigned": [
+        0,
+        0
+      ],
+      "range_signed": [
+        0,
+        0
+      ]
+    },
+    "y_ashr": {
+      "width": 8,
+      "signed": false,
+      "bits_msb": "11100100",
+      "known_mask_hex": "0xff",
+      "known_value_hex": "0xe4",
+      "unknown_count": 0,
+      "range_unsigned": [
+        228,
+        228
+      ],
+      "range_signed": [
+        -28,
+        -28
+      ]
+    },
+    "y_concat": {
+      "width": 16,
+      "signed": false,
+      "bits_msb": "1001000000001111",
+      "known_mask_hex": "0xffff",
+      "known_value_hex": "0x900f",
+      "unknown_count": 0,
+      "range_unsigned": [
+        36879,
+        36879
+      ],
+      "range_signed": [
+        -28657,
+        -28657
+      ]
+    },
+    "y_eq": {
+      "width": 1,
+      "signed": false,
+      "bits_msb": "0",
+      "known_mask_hex": "0x1",
+      "known_value_hex": "0x0",
+      "unknown_count": 0,
+      "range_unsigned": [
+        0,
+        0
+      ],
+      "range_signed": [
+        0,
+        0
+      ]
+    },
+    "y_ge": {
+      "width": 1,
+      "signed": false,
+      "bits_msb": "1",
+      "known_mask_hex": "0x1",
+      "known_value_hex": "0x1",
+      "unknown_count": 0,
+      "range_unsigned": [
+        1,
+        1
+      ],
+      "range_signed": [
+        -1,
+        -1
+      ]
+    },
+    "y_gt": {
+      "width": 1,
+      "signed": false,
+      "bits_msb": "1",
+      "known_mask_hex": "0x1",
+      "known_value_hex": "0x1",
+      "unknown_count": 0,
+      "range_unsigned": [
+        1,
+        1
+      ],
+      "range_signed": [
+        -1,
+        -1
+      ]
+    },
+    "y_le": {
+      "width": 1,
+      "signed": false,
+      "bits_msb": "0",
+      "known_mask_hex": "0x1",
+      "known_value_hex": "0x0",
+      "unknown_count": 0,
+      "range_unsigned": [
+        0,
+        0
+      ],
+      "range_signed": [
+        0,
+        0
+      ]
+    },
+    "y_lt": {
+      "width": 1,
+      "signed": false,
+      "bits_msb": "0",
+      "known_mask_hex": "0x1",
+      "known_value_hex": "0x0",
+      "unknown_count": 0,
+      "range_unsigned": [
+        0,
+        0
+      ],
+      "range_signed": [
+        0,
+        0
+      ]
+    },
+    "y_mux": {
+      "width": 8,
+      "signed": false,
+      "bits_msb": "00001111",
+      "known_mask_hex": "0xff",
+      "known_value_hex": "0xf",
+      "unknown_count": 0,
+      "range_unsigned": [
+        15,
+        15
+      ],
+      "range_signed": [
+        15,
+        15
+      ]
+    },
+    "y_not": {
+      "width": 8,
+      "signed": false,
+      "bits_msb": "01101111",
+      "known_mask_hex": "0xff",
+      "known_value_hex": "0x6f",
+      "unknown_count": 0,
+      "range_unsigned": [
+        111,
+        111
+      ],
+      "range_signed": [
+        111,
+        111
+      ]
+    },
+    "y_or": {
+      "width": 8,
+      "signed": false,
+      "bits_msb": "10011111",
+      "known_mask_hex": "0xff",
+      "known_value_hex": "0x9f",
+      "unknown_count": 0,
+      "range_unsigned": [
+        159,
+        159
+      ],
+      "range_signed": [
+        -97,
+        -97
+      ]
+    },
+    "y_shl": {
+      "width": 8,
+      "signed": false,
+      "bits_msb": "01000000",
+      "known_mask_hex": "0xff",
+      "known_value_hex": "0x40",
+      "unknown_count": 0,
+      "range_unsigned": [
+        64,
+        64
+      ],
+      "range_signed": [
+        64,
+        64
+      ]
+    },
+    "y_shr": {
+      "width": 8,
+      "signed": false,
+      "bits_msb": "00100100",
+      "known_mask_hex": "0xff",
+      "known_value_hex": "0x24",
+      "unknown_count": 0,
+      "range_unsigned": [
+        36,
+        36
+      ],
+      "range_signed": [
+        36,
+        36
+      ]
+    },
+    "y_slice": {
+      "width": 4,
+      "signed": false,
+      "bits_msb": "0100",
+      "known_mask_hex": "0xf",
+      "known_value_hex": "0x4",
+      "unknown_count": 0,
+      "range_unsigned": [
+        4,
+        4
+      ],
+      "range_signed": [
+        4,
+        4
+      ]
+    },
+    "y_sub": {
+      "width": 8,
+      "signed": false,
+      "bits_msb": "10000001",
+      "known_mask_hex": "0xff",
+      "known_value_hex": "0x81",
+      "unknown_count": 0,
+      "range_unsigned": [
+        129,
+        129
+      ],
+      "range_signed": [
+        -127,
+        -127
+      ]
+    },
+    "y_xor": {
+      "width": 8,
+      "signed": false,
+      "bits_msb": "10011111",
+      "known_mask_hex": "0xff",
+      "known_value_hex": "0x9f",
+      "unknown_count": 0,
+      "range_unsigned": [
+        159,
+        159
+      ],
+      "range_signed": [
+        -97,
+        -97
+      ]
+    }
+  },
+  "nodes": {
+    "n17": {
+      "op": "CONCAT",
+      "out": {
+        "width": 16,
+        "signed": false,
+        "bits_msb": "1001000000001111",
+        "known_mask_hex": "0xffff",
+        "known_value_hex": "0x900f",
+        "unknown_count": 0,
+        "range_unsigned": [
+          36879,
+          36879
+        ],
+        "range_signed": [
+          -28657,
+          -28657
+        ]
+      }
+    },
+    "n16": {
+      "op": "EXTRACT",
+      "out": {
+        "width": 4,
+        "signed": false,
+        "bits_msb": "0100",
+        "known_mask_hex": "0xf",
+        "known_value_hex": "0x4",
+        "unknown_count": 0,
+        "range_unsigned": [
+          4,
+          4
+        ],
+        "range_signed": [
+          4,
+          4
+        ]
+      }
+    },
+    "n15": {
+      "op": "XOR",
+      "out": {
+        "width": 8,
+        "signed": false,
+        "bits_msb": "10011111",
+        "known_mask_hex": "0xff",
+        "known_value_hex": "0x9f",
+        "unknown_count": 0,
+        "range_unsigned": [
+          159,
+          159
+        ],
+        "range_signed": [
+          -97,
+          -97
+        ]
+      }
+    },
+    "n14": {
+      "op": "MUX",
+      "out": {
+        "width": 8,
+        "signed": false,
+        "bits_msb": "00001111",
+        "known_mask_hex": "0xff",
+        "known_value_hex": "0xf",
+        "unknown_count": 0,
+        "range_unsigned": [
+          15,
+          15
+        ],
+        "range_signed": [
+          15,
+          15
+        ]
+      }
+    },
+    "n13": {
+      "op": "SUB",
+      "out": {
+        "width": 8,
+        "signed": false,
+        "bits_msb": "10000001",
+        "known_mask_hex": "0xff",
+        "known_value_hex": "0x81",
+        "unknown_count": 0,
+        "range_unsigned": [
+          129,
+          129
+        ],
+        "range_signed": [
+          -127,
+          -127
+        ]
+      }
+    },
+    "n12": {
+      "op": "ASHR",
+      "out": {
+        "width": 8,
+        "signed": false,
+        "bits_msb": "11100100",
+        "known_mask_hex": "0xff",
+        "known_value_hex": "0xe4",
+        "unknown_count": 0,
+        "range_unsigned": [
+          228,
+          228
+        ],
+        "range_signed": [
+          -28,
+          -28
+        ]
+      }
+    },
+    "n11": {
+      "op": "SHR",
+      "out": {
+        "width": 8,
+        "signed": false,
+        "bits_msb": "00100100",
+        "known_mask_hex": "0xff",
+        "known_value_hex": "0x24",
+        "unknown_count": 0,
+        "range_unsigned": [
+          36,
+          36
+        ],
+        "range_signed": [
+          36,
+          36
+        ]
+      }
+    },
+    "n10": {
+      "op": "SHL",
+      "out": {
+        "width": 8,
+        "signed": false,
+        "bits_msb": "01000000",
+        "known_mask_hex": "0xff",
+        "known_value_hex": "0x40",
+        "unknown_count": 0,
+        "range_unsigned": [
+          64,
+          64
+        ],
+        "range_signed": [
+          64,
+          64
+        ]
+      }
+    },
+    "n9": {
+      "op": "OR",
+      "out": {
+        "width": 8,
+        "signed": false,
+        "bits_msb": "10011111",
+        "known_mask_hex": "0xff",
+        "known_value_hex": "0x9f",
+        "unknown_count": 0,
+        "range_unsigned": [
+          159,
+          159
+        ],
+        "range_signed": [
+          -97,
+          -97
+        ]
+      }
+    },
+    "n8": {
+      "op": "NOT",
+      "out": {
+        "width": 8,
+        "signed": false,
+        "bits_msb": "01101111",
+        "known_mask_hex": "0xff",
+        "known_value_hex": "0x6f",
+        "unknown_count": 0,
+        "range_unsigned": [
+          111,
+          111
+        ],
+        "range_signed": [
+          111,
+          111
+        ]
+      }
+    },
+    "n7": {
+      "op": "LT",
+      "out": {
+        "width": 1,
+        "signed": false,
+        "bits_msb": "0",
+        "known_mask_hex": "0x1",
+        "known_value_hex": "0x0",
+        "unknown_count": 0,
+        "range_unsigned": [
+          0,
+          0
+        ],
+        "range_signed": [
+          0,
+          0
+        ]
+      }
+    },
+    "n6": {
+      "op": "LE",
+      "out": {
+        "width": 1,
+        "signed": false,
+        "bits_msb": "0",
+        "known_mask_hex": "0x1",
+        "known_value_hex": "0x0",
+        "unknown_count": 0,
+        "range_unsigned": [
+          0,
+          0
+        ],
+        "range_signed": [
+          0,
+          0
+        ]
+      }
+    },
+    "n5": {
+      "op": "GT",
+      "out": {
+        "width": 1,
+        "signed": false,
+        "bits_msb": "1",
+        "known_mask_hex": "0x1",
+        "known_value_hex": "0x1",
+        "unknown_count": 0,
+        "range_unsigned": [
+          1,
+          1
+        ],
+        "range_signed": [
+          -1,
+          -1
+        ]
+      }
+    },
+    "n4": {
+      "op": "GE",
+      "out": {
+        "width": 1,
+        "signed": false,
+        "bits_msb": "1",
+        "known_mask_hex": "0x1",
+        "known_value_hex": "0x1",
+        "unknown_count": 0,
+        "range_unsigned": [
+          1,
+          1
+        ],
+        "range_signed": [
+          -1,
+          -1
+        ]
+      }
+    },
+    "n3": {
+      "op": "EQ",
+      "out": {
+        "width": 1,
+        "signed": false,
+        "bits_msb": "0",
+        "known_mask_hex": "0x1",
+        "known_value_hex": "0x0",
+        "unknown_count": 0,
+        "range_unsigned": [
+          0,
+          0
+        ],
+        "range_signed": [
+          0,
+          0
+        ]
+      }
+    },
+    "n2": {
+      "op": "AND",
+      "out": {
+        "width": 8,
+        "signed": false,
+        "bits_msb": "00000000",
+        "known_mask_hex": "0xff",
+        "known_value_hex": "0x0",
+        "unknown_count": 0,
+        "range_unsigned": [
+          0,
+          0
+        ],
+        "range_signed": [
+          0,
+          0
+        ]
+      }
+    },
+    "n1": {
+      "op": "ADD",
+      "out": {
+        "width": 8,
+        "signed": false,
+        "bits_msb": "10011111",
+        "known_mask_hex": "0xff",
+        "known_value_hex": "0x9f",
+        "unknown_count": 0,
+        "range_unsigned": [
+          159,
+          159
+        ],
+        "range_signed": [
+          -97,
+          -97
+        ]
+      }
+    }
+  }
+}

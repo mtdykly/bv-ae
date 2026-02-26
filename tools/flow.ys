@@ -1,0 +1,14 @@
+hierarchy -auto-top
+proc
+# 为了保留 $slice / $concat 等结构，先不做 opt/clean
+opt
+clean
+flatten
+
+# opt_expr
+# opt_clean
+
+# 确保无时序单元
+# select -assert-none t:$dff t:$adff t:$dffe t:$dlatch
+
+# stat

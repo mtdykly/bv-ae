@@ -1,0 +1,8 @@
+{
+  "signals": {
+    "a": { "bits_msb": "10010000" },
+    "b": { "bits_msb": "00001111" },
+    "shamt": { "bits_msb": "010" },
+    "sel": { "bits_msb": "1" }
+  }
+}

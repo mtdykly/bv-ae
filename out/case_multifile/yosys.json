@@ -1,0 +1,1071 @@
+{
+  "creator": "Yosys 0.61+112 (git sha1 ac427a79b-dirty, x86_64-w64-mingw32-g++ 13.2.1 -O3)",
+  "modules": {
+    "top": {
+      "attributes": {
+        "top": "00000000000000000000000000000001",
+        "src": "top.v:1.1-60.10"
+      },
+      "ports": {
+        "a": {
+          "direction": "input",
+          "signed": 1,
+          "bits": [ 2, 3, 4, 5, 6, 7, 8, 9 ]
+        },
+        "b": {
+          "direction": "input",
+          "signed": 1,
+          "bits": [ 10, 11, 12, 13, 14, 15, 16, 17 ]
+        },
+        "shamt": {
+          "direction": "input",
+          "bits": [ 18, 19, 20 ]
+        },
+        "sel": {
+          "direction": "input",
+          "bits": [ 21 ]
+        },
+        "y_logic": {
+          "direction": "output",
+          "signed": 1,
+          "bits": [ 22, 23, 24, 25, 26, 27, 28, 29 ]
+        },
+        "y_arith": {
+          "direction": "output",
+          "signed": 1,
+          "bits": [ 30, 31, 32, 33, 34, 35, 36, 37 ]
+        },
+        "y_shift": {
+          "direction": "output",
+          "signed": 1,
+          "bits": [ 38, 39, 40, 41, 42, 43, 44, 45 ]
+        },
+        "y_final": {
+          "direction": "output",
+          "signed": 1,
+          "bits": [ 46, 47, 48, 49, 50, 51, 52, 53 ]
+        },
+        "y_eq": {
+          "direction": "output",
+          "bits": [ 54 ]
+        },
+        "y_lt": {
+          "direction": "output",
+          "bits": [ 55 ]
+        },
+        "y_le": {
+          "direction": "output",
+          "bits": [ 56 ]
+        },
+        "y_gt": {
+          "direction": "output",
+          "bits": [ 57 ]
+        },
+        "y_ge": {
+          "direction": "output",
+          "bits": [ 58 ]
+        },
+        "y_slice": {
+          "direction": "output",
+          "signed": 1,
+          "bits": [ 4, 5, 6, 7 ]
+        },
+        "y_concat": {
+          "direction": "output",
+          "signed": 1,
+          "bits": [ 10, 11, 12, 13, 14, 15, 16, 17, 2, 3, 4, 5, 6, 7, 8, 9 ]
+        }
+      },
+      "cells": {
+        "$flatten\\u_alu.$add$alu8.v:15$5": {
+          "hide_name": 1,
+          "type": "$add",
+          "parameters": {
+            "A_SIGNED": "00000000000000000000000000000001",
+            "A_WIDTH": "00000000000000000000000000001000",
+            "B_SIGNED": "00000000000000000000000000000001",
+            "B_WIDTH": "00000000000000000000000000001000",
+            "Y_WIDTH": "00000000000000000000000000001000"
+          },
+          "attributes": {
+            "src": "alu8.v:15.40-15.45"
+          },
+          "port_directions": {
+            "A": "input",
+            "B": "input",
+            "Y": "output"
+          },
+          "connections": {
+            "A": [ 2, 3, 4, 5, 6, 7, 8, 9 ],
+            "B": [ 10, 11, 12, 13, 14, 15, 16, 17 ],
+            "Y": [ 59, 60, 61, 62, 63, 64, 65, 66 ]
+          }
+        },
+        "$flatten\\u_alu.$and$alu8.v:11$1": {
+          "hide_name": 1,
+          "type": "$and",
+          "parameters": {
+            "A_SIGNED": "00000000000000000000000000000001",
+            "A_WIDTH": "00000000000000000000000000001000",
+            "B_SIGNED": "00000000000000000000000000000001",
+            "B_WIDTH": "00000000000000000000000000001000",
+            "Y_WIDTH": "00000000000000000000000000001000"
+          },
+          "attributes": {
+            "src": "alu8.v:11.40-11.45"
+          },
+          "port_directions": {
+            "A": "input",
+            "B": "input",
+            "Y": "output"
+          },
+          "connections": {
+            "A": [ 2, 3, 4, 5, 6, 7, 8, 9 ],
+            "B": [ 10, 11, 12, 13, 14, 15, 16, 17 ],
+            "Y": [ 67, 68, 69, 70, 71, 72, 73, 74 ]
+          }
+        },
+        "$flatten\\u_alu.$not$alu8.v:14$4": {
+          "hide_name": 1,
+          "type": "$not",
+          "parameters": {
+            "A_SIGNED": "00000000000000000000000000000001",
+            "A_WIDTH": "00000000000000000000000000001000",
+            "Y_WIDTH": "00000000000000000000000000001000"
+          },
+          "attributes": {
+            "src": "alu8.v:14.40-14.42"
+          },
+          "port_directions": {
+            "A": "input",
+            "Y": "output"
+          },
+          "connections": {
+            "A": [ 2, 3, 4, 5, 6, 7, 8, 9 ],
+            "Y": [ 75, 76, 77, 78, 79, 80, 81, 82 ]
+          }
+        },
+        "$flatten\\u_alu.$or$alu8.v:12$2": {
+          "hide_name": 1,
+          "type": "$or",
+          "parameters": {
+            "A_SIGNED": "00000000000000000000000000000001",
+            "A_WIDTH": "00000000000000000000000000001000",
+            "B_SIGNED": "00000000000000000000000000000001",
+            "B_WIDTH": "00000000000000000000000000001000",
+            "Y_WIDTH": "00000000000000000000000000001000"
+          },
+          "attributes": {
+            "src": "alu8.v:12.40-12.45"
+          },
+          "port_directions": {
+            "A": "input",
+            "B": "input",
+            "Y": "output"
+          },
+          "connections": {
+            "A": [ 2, 3, 4, 5, 6, 7, 8, 9 ],
+            "B": [ 10, 11, 12, 13, 14, 15, 16, 17 ],
+            "Y": [ 83, 84, 85, 86, 87, 88, 89, 90 ]
+          }
+        },
+        "$flatten\\u_alu.$sub$alu8.v:16$6": {
+          "hide_name": 1,
+          "type": "$sub",
+          "parameters": {
+            "A_SIGNED": "00000000000000000000000000000001",
+            "A_WIDTH": "00000000000000000000000000001000",
+            "B_SIGNED": "00000000000000000000000000000001",
+            "B_WIDTH": "00000000000000000000000000001000",
+            "Y_WIDTH": "00000000000000000000000000001000"
+          },
+          "attributes": {
+            "src": "alu8.v:16.40-16.45"
+          },
+          "port_directions": {
+            "A": "input",
+            "B": "input",
+            "Y": "output"
+          },
+          "connections": {
+            "A": [ 2, 3, 4, 5, 6, 7, 8, 9 ],
+            "B": [ 10, 11, 12, 13, 14, 15, 16, 17 ],
+            "Y": [ 91, 92, 93, 94, 95, 96, 97, 98 ]
+          }
+        },
+        "$flatten\\u_alu.$xor$alu8.v:13$3": {
+          "hide_name": 1,
+          "type": "$xor",
+          "parameters": {
+            "A_SIGNED": "00000000000000000000000000000001",
+            "A_WIDTH": "00000000000000000000000000001000",
+            "B_SIGNED": "00000000000000000000000000000001",
+            "B_WIDTH": "00000000000000000000000000001000",
+            "Y_WIDTH": "00000000000000000000000000001000"
+          },
+          "attributes": {
+            "src": "alu8.v:13.40-13.45"
+          },
+          "port_directions": {
+            "A": "input",
+            "B": "input",
+            "Y": "output"
+          },
+          "connections": {
+            "A": [ 2, 3, 4, 5, 6, 7, 8, 9 ],
+            "B": [ 10, 11, 12, 13, 14, 15, 16, 17 ],
+            "Y": [ 99, 100, 101, 102, 103, 104, 105, 106 ]
+          }
+        },
+        "$flatten\\u_cmp.$eq$cmp8.v:10$7": {
+          "hide_name": 1,
+          "type": "$eq",
+          "parameters": {
+            "A_SIGNED": "00000000000000000000000000000001",
+            "A_WIDTH": "00000000000000000000000000001000",
+            "B_SIGNED": "00000000000000000000000000000001",
+            "B_WIDTH": "00000000000000000000000000001000",
+            "Y_WIDTH": "00000000000000000000000000000001"
+          },
+          "attributes": {
+            "src": "cmp8.v:10.27-10.33"
+          },
+          "port_directions": {
+            "A": "input",
+            "B": "input",
+            "Y": "output"
+          },
+          "connections": {
+            "A": [ 2, 3, 4, 5, 6, 7, 8, 9 ],
+            "B": [ 10, 11, 12, 13, 14, 15, 16, 17 ],
+            "Y": [ 54 ]
+          }
+        },
+        "$flatten\\u_cmp.$ge$cmp8.v:14$11": {
+          "hide_name": 1,
+          "type": "$ge",
+          "parameters": {
+            "A_SIGNED": "00000000000000000000000000000001",
+            "A_WIDTH": "00000000000000000000000000001000",
+            "B_SIGNED": "00000000000000000000000000000001",
+            "B_WIDTH": "00000000000000000000000000001000",
+            "Y_WIDTH": "00000000000000000000000000000001"
+          },
+          "attributes": {
+            "src": "cmp8.v:14.27-14.51"
+          },
+          "port_directions": {
+            "A": "input",
+            "B": "input",
+            "Y": "output"
+          },
+          "connections": {
+            "A": [ 2, 3, 4, 5, 6, 7, 8, 9 ],
+            "B": [ 10, 11, 12, 13, 14, 15, 16, 17 ],
+            "Y": [ 58 ]
+          }
+        },
+        "$flatten\\u_cmp.$gt$cmp8.v:13$10": {
+          "hide_name": 1,
+          "type": "$gt",
+          "parameters": {
+            "A_SIGNED": "00000000000000000000000000000001",
+            "A_WIDTH": "00000000000000000000000000001000",
+            "B_SIGNED": "00000000000000000000000000000001",
+            "B_WIDTH": "00000000000000000000000000001000",
+            "Y_WIDTH": "00000000000000000000000000000001"
+          },
+          "attributes": {
+            "src": "cmp8.v:13.27-13.51"
+          },
+          "port_directions": {
+            "A": "input",
+            "B": "input",
+            "Y": "output"
+          },
+          "connections": {
+            "A": [ 2, 3, 4, 5, 6, 7, 8, 9 ],
+            "B": [ 10, 11, 12, 13, 14, 15, 16, 17 ],
+            "Y": [ 57 ]
+          }
+        },
+        "$flatten\\u_cmp.$le$cmp8.v:12$9": {
+          "hide_name": 1,
+          "type": "$le",
+          "parameters": {
+            "A_SIGNED": "00000000000000000000000000000001",
+            "A_WIDTH": "00000000000000000000000000001000",
+            "B_SIGNED": "00000000000000000000000000000001",
+            "B_WIDTH": "00000000000000000000000000001000",
+            "Y_WIDTH": "00000000000000000000000000000001"
+          },
+          "attributes": {
+            "src": "cmp8.v:12.27-12.51"
+          },
+          "port_directions": {
+            "A": "input",
+            "B": "input",
+            "Y": "output"
+          },
+          "connections": {
+            "A": [ 2, 3, 4, 5, 6, 7, 8, 9 ],
+            "B": [ 10, 11, 12, 13, 14, 15, 16, 17 ],
+            "Y": [ 56 ]
+          }
+        },
+        "$flatten\\u_cmp.$lt$cmp8.v:11$8": {
+          "hide_name": 1,
+          "type": "$lt",
+          "parameters": {
+            "A_SIGNED": "00000000000000000000000000000001",
+            "A_WIDTH": "00000000000000000000000000001000",
+            "B_SIGNED": "00000000000000000000000000000001",
+            "B_WIDTH": "00000000000000000000000000001000",
+            "Y_WIDTH": "00000000000000000000000000000001"
+          },
+          "attributes": {
+            "src": "cmp8.v:11.27-11.51"
+          },
+          "port_directions": {
+            "A": "input",
+            "B": "input",
+            "Y": "output"
+          },
+          "connections": {
+            "A": [ 2, 3, 4, 5, 6, 7, 8, 9 ],
+            "B": [ 10, 11, 12, 13, 14, 15, 16, 17 ],
+            "Y": [ 55 ]
+          }
+        },
+        "$flatten\\u_sh.$shl$shifter8.v:8$12": {
+          "hide_name": 1,
+          "type": "$shl",
+          "parameters": {
+            "A_SIGNED": "00000000000000000000000000000001",
+            "A_WIDTH": "00000000000000000000000000001000",
+            "B_SIGNED": "00000000000000000000000000000000",
+            "B_WIDTH": "00000000000000000000000000000011",
+            "Y_WIDTH": "00000000000000000000000000001000"
+          },
+          "attributes": {
+            "src": "shifter8.v:8.41-8.51"
+          },
+          "port_directions": {
+            "A": "input",
+            "B": "input",
+            "Y": "output"
+          },
+          "connections": {
+            "A": [ 2, 3, 4, 5, 6, 7, 8, 9 ],
+            "B": [ 18, 19, 20 ],
+            "Y": [ 107, 108, 109, 110, 111, 112, 113, 114 ]
+          }
+        },
+        "$flatten\\u_sh.$shr$shifter8.v:9$13": {
+          "hide_name": 1,
+          "type": "$shr",
+          "parameters": {
+            "A_SIGNED": "00000000000000000000000000000001",
+            "A_WIDTH": "00000000000000000000000000001000",
+            "B_SIGNED": "00000000000000000000000000000000",
+            "B_WIDTH": "00000000000000000000000000000011",
+            "Y_WIDTH": "00000000000000000000000000001000"
+          },
+          "attributes": {
+            "src": "shifter8.v:9.41-9.51"
+          },
+          "port_directions": {
+            "A": "input",
+            "B": "input",
+            "Y": "output"
+          },
+          "connections": {
+            "A": [ 2, 3, 4, 5, 6, 7, 8, 9 ],
+            "B": [ 18, 19, 20 ],
+            "Y": [ 115, 116, 117, 118, 119, 120, 121, 122 ]
+          }
+        },
+        "$flatten\\u_sh.$sshr$shifter8.v:10$14": {
+          "hide_name": 1,
+          "type": "$sshr",
+          "parameters": {
+            "A_SIGNED": "00000000000000000000000000000001",
+            "A_WIDTH": "00000000000000000000000000001000",
+            "B_SIGNED": "00000000000000000000000000000000",
+            "B_WIDTH": "00000000000000000000000000000011",
+            "Y_WIDTH": "00000000000000000000000000001000"
+          },
+          "attributes": {
+            "src": "shifter8.v:10.41-10.52"
+          },
+          "port_directions": {
+            "A": "input",
+            "B": "input",
+            "Y": "output"
+          },
+          "connections": {
+            "A": [ 2, 3, 4, 5, 6, 7, 8, 9 ],
+            "B": [ 18, 19, 20 ],
+            "Y": [ 38, 39, 40, 41, 42, 43, 44, 45 ]
+          }
+        },
+        "$sub$top.v:45$16": {
+          "hide_name": 1,
+          "type": "$sub",
+          "parameters": {
+            "A_SIGNED": "00000000000000000000000000000001",
+            "A_WIDTH": "00000000000000000000000000001000",
+            "B_SIGNED": "00000000000000000000000000000001",
+            "B_WIDTH": "00000000000000000000000000001000",
+            "Y_WIDTH": "00000000000000000000000000001000"
+          },
+          "attributes": {
+            "src": "top.v:45.21-45.34"
+          },
+          "port_directions": {
+            "A": "input",
+            "B": "input",
+            "Y": "output"
+          },
+          "connections": {
+            "A": [ 59, 60, 61, 62, 63, 64, 65, 66 ],
+            "B": [ 91, 92, 93, 94, 95, 96, 97, 98 ],
+            "Y": [ 30, 31, 32, 33, 34, 35, 36, 37 ]
+          }
+        },
+        "$ternary$top.v:52$17": {
+          "hide_name": 1,
+          "type": "$mux",
+          "parameters": {
+            "WIDTH": "00000000000000000000000000001000"
+          },
+          "attributes": {
+            "src": "top.v:52.20-52.43"
+          },
+          "port_directions": {
+            "A": "input",
+            "B": "input",
+            "S": "input",
+            "Y": "output"
+          },
+          "connections": {
+            "A": [ 30, 31, 32, 33, 34, 35, 36, 37 ],
+            "B": [ 38, 39, 40, 41, 42, 43, 44, 45 ],
+            "S": [ 21 ],
+            "Y": [ 46, 47, 48, 49, 50, 51, 52, 53 ]
+          }
+        },
+        "$xor$top.v:44$15": {
+          "hide_name": 1,
+          "type": "$xor",
+          "parameters": {
+            "A_SIGNED": "00000000000000000000000000000001",
+            "A_WIDTH": "00000000000000000000000000001000",
+            "B_SIGNED": "00000000000000000000000000000001",
+            "B_WIDTH": "00000000000000000000000000001000",
+            "Y_WIDTH": "00000000000000000000000000001000"
+          },
+          "attributes": {
+            "src": "top.v:44.21-44.33"
+          },
+          "port_directions": {
+            "A": "input",
+            "B": "input",
+            "Y": "output"
+          },
+          "connections": {
+            "A": [ 67, 68, 69, 70, 71, 72, 73, 74 ],
+            "B": [ 83, 84, 85, 86, 87, 88, 89, 90 ],
+            "Y": [ 22, 23, 24, 25, 26, 27, 28, 29 ]
+          }
+        },
+        "u_alu": {
+          "hide_name": 0,
+          "type": "$scopeinfo",
+          "parameters": {
+            "TYPE": "module"
+          },
+          "attributes": {
+            "cell_module_not_derived": "00000000000000000000000000000001",
+            "cell_src": "top.v:27.8-31.4",
+            "module": "alu8",
+            "module_src": "alu8.v:1.1-24.10"
+          },
+          "port_directions": {
+          },
+          "connections": {
+          }
+        },
+        "u_cmp": {
+          "hide_name": 0,
+          "type": "$scopeinfo",
+          "parameters": {
+            "TYPE": "module"
+          },
+          "attributes": {
+            "cell_module_not_derived": "00000000000000000000000000000001",
+            "cell_src": "top.v:38.8-41.4",
+            "module": "cmp8",
+            "module_src": "cmp8.v:1.1-21.10"
+          },
+          "port_directions": {
+          },
+          "connections": {
+          }
+        },
+        "u_sh": {
+          "hide_name": 0,
+          "type": "$scopeinfo",
+          "parameters": {
+            "TYPE": "module"
+          },
+          "attributes": {
+            "cell_module_not_derived": "00000000000000000000000000000001",
+            "cell_src": "top.v:33.12-36.4",
+            "module": "shifter8",
+            "module_src": "shifter8.v:1.1-15.10"
+          },
+          "port_directions": {
+          },
+          "connections": {
+          }
+        }
+      },
+      "netnames": {
+        "a": {
+          "hide_name": 0,
+          "bits": [ 2, 3, 4, 5, 6, 7, 8, 9 ],
+          "signed": 1,
+          "attributes": {
+            "src": "top.v:2.23-2.24"
+          }
+        },
+        "b": {
+          "hide_name": 0,
+          "bits": [ 10, 11, 12, 13, 14, 15, 16, 17 ],
+          "signed": 1,
+          "attributes": {
+            "src": "top.v:3.23-3.24"
+          }
+        },
+        "sel": {
+          "hide_name": 0,
+          "bits": [ 21 ],
+          "attributes": {
+            "src": "top.v:5.22-5.25"
+          }
+        },
+        "shamt": {
+          "hide_name": 0,
+          "bits": [ 18, 19, 20 ],
+          "attributes": {
+            "src": "top.v:4.22-4.27"
+          }
+        },
+        "u_alu.a": {
+          "hide_name": 0,
+          "bits": [ 2, 3, 4, 5, 6, 7, 8, 9 ],
+          "signed": 1,
+          "attributes": {
+            "hdlname": "u_alu a",
+            "src": "alu8.v:2.23-2.24"
+          }
+        },
+        "u_alu.b": {
+          "hide_name": 0,
+          "bits": [ 10, 11, 12, 13, 14, 15, 16, 17 ],
+          "signed": 1,
+          "attributes": {
+            "hdlname": "u_alu b",
+            "src": "alu8.v:3.23-3.24"
+          }
+        },
+        "u_alu.t_add": {
+          "hide_name": 0,
+          "bits": [ 59, 60, 61, 62, 63, 64, 65, 66 ],
+          "signed": 1,
+          "attributes": {
+            "hdlname": "u_alu t_add",
+            "keep": "00000000000000000000000000000001",
+            "src": "alu8.v:15.32-15.37"
+          }
+        },
+        "u_alu.t_and": {
+          "hide_name": 0,
+          "bits": [ 67, 68, 69, 70, 71, 72, 73, 74 ],
+          "signed": 1,
+          "attributes": {
+            "hdlname": "u_alu t_and",
+            "keep": "00000000000000000000000000000001",
+            "src": "alu8.v:11.32-11.37"
+          }
+        },
+        "u_alu.t_not": {
+          "hide_name": 0,
+          "bits": [ 75, 76, 77, 78, 79, 80, 81, 82 ],
+          "signed": 1,
+          "attributes": {
+            "hdlname": "u_alu t_not",
+            "keep": "00000000000000000000000000000001",
+            "src": "alu8.v:14.32-14.37"
+          }
+        },
+        "u_alu.t_or": {
+          "hide_name": 0,
+          "bits": [ 83, 84, 85, 86, 87, 88, 89, 90 ],
+          "signed": 1,
+          "attributes": {
+            "hdlname": "u_alu t_or",
+            "keep": "00000000000000000000000000000001",
+            "src": "alu8.v:12.32-12.36"
+          }
+        },
+        "u_alu.t_sub": {
+          "hide_name": 0,
+          "bits": [ 91, 92, 93, 94, 95, 96, 97, 98 ],
+          "signed": 1,
+          "attributes": {
+            "hdlname": "u_alu t_sub",
+            "keep": "00000000000000000000000000000001",
+            "src": "alu8.v:16.32-16.37"
+          }
+        },
+        "u_alu.t_xor": {
+          "hide_name": 0,
+          "bits": [ 99, 100, 101, 102, 103, 104, 105, 106 ],
+          "signed": 1,
+          "attributes": {
+            "hdlname": "u_alu t_xor",
+            "keep": "00000000000000000000000000000001",
+            "src": "alu8.v:13.32-13.37"
+          }
+        },
+        "u_alu.y_add": {
+          "hide_name": 0,
+          "bits": [ 59, 60, 61, 62, 63, 64, 65, 66 ],
+          "signed": 1,
+          "attributes": {
+            "hdlname": "u_alu y_add",
+            "src": "alu8.v:8.23-8.28"
+          }
+        },
+        "u_alu.y_and": {
+          "hide_name": 0,
+          "bits": [ 67, 68, 69, 70, 71, 72, 73, 74 ],
+          "signed": 1,
+          "attributes": {
+            "hdlname": "u_alu y_and",
+            "src": "alu8.v:4.23-4.28"
+          }
+        },
+        "u_alu.y_not": {
+          "hide_name": 0,
+          "bits": [ 75, 76, 77, 78, 79, 80, 81, 82 ],
+          "signed": 1,
+          "attributes": {
+            "hdlname": "u_alu y_not",
+            "src": "alu8.v:7.23-7.28"
+          }
+        },
+        "u_alu.y_or": {
+          "hide_name": 0,
+          "bits": [ 83, 84, 85, 86, 87, 88, 89, 90 ],
+          "signed": 1,
+          "attributes": {
+            "hdlname": "u_alu y_or",
+            "src": "alu8.v:5.23-5.27"
+          }
+        },
+        "u_alu.y_sub": {
+          "hide_name": 0,
+          "bits": [ 91, 92, 93, 94, 95, 96, 97, 98 ],
+          "signed": 1,
+          "attributes": {
+            "hdlname": "u_alu y_sub",
+            "src": "alu8.v:9.23-9.28"
+          }
+        },
+        "u_alu.y_xor": {
+          "hide_name": 0,
+          "bits": [ 99, 100, 101, 102, 103, 104, 105, 106 ],
+          "signed": 1,
+          "attributes": {
+            "hdlname": "u_alu y_xor",
+            "src": "alu8.v:6.23-6.28"
+          }
+        },
+        "u_cmp.a": {
+          "hide_name": 0,
+          "bits": [ 2, 3, 4, 5, 6, 7, 8, 9 ],
+          "signed": 1,
+          "attributes": {
+            "hdlname": "u_cmp a",
+            "src": "cmp8.v:2.23-2.24"
+          }
+        },
+        "u_cmp.b": {
+          "hide_name": 0,
+          "bits": [ 10, 11, 12, 13, 14, 15, 16, 17 ],
+          "signed": 1,
+          "attributes": {
+            "hdlname": "u_cmp b",
+            "src": "cmp8.v:3.23-3.24"
+          }
+        },
+        "u_cmp.t_eq": {
+          "hide_name": 0,
+          "bits": [ 54 ],
+          "attributes": {
+            "hdlname": "u_cmp t_eq",
+            "keep": "00000000000000000000000000000001",
+            "src": "cmp8.v:10.19-10.23"
+          }
+        },
+        "u_cmp.t_ge": {
+          "hide_name": 0,
+          "bits": [ 58 ],
+          "attributes": {
+            "hdlname": "u_cmp t_ge",
+            "keep": "00000000000000000000000000000001",
+            "src": "cmp8.v:14.19-14.23"
+          }
+        },
+        "u_cmp.t_gt": {
+          "hide_name": 0,
+          "bits": [ 57 ],
+          "attributes": {
+            "hdlname": "u_cmp t_gt",
+            "keep": "00000000000000000000000000000001",
+            "src": "cmp8.v:13.19-13.23"
+          }
+        },
+        "u_cmp.t_le": {
+          "hide_name": 0,
+          "bits": [ 56 ],
+          "attributes": {
+            "hdlname": "u_cmp t_le",
+            "keep": "00000000000000000000000000000001",
+            "src": "cmp8.v:12.19-12.23"
+          }
+        },
+        "u_cmp.t_lt": {
+          "hide_name": 0,
+          "bits": [ 55 ],
+          "attributes": {
+            "hdlname": "u_cmp t_lt",
+            "keep": "00000000000000000000000000000001",
+            "src": "cmp8.v:11.19-11.23"
+          }
+        },
+        "u_cmp.y_eq": {
+          "hide_name": 0,
+          "bits": [ 54 ],
+          "attributes": {
+            "hdlname": "u_cmp y_eq",
+            "src": "cmp8.v:4.10-4.14"
+          }
+        },
+        "u_cmp.y_ge": {
+          "hide_name": 0,
+          "bits": [ 58 ],
+          "attributes": {
+            "hdlname": "u_cmp y_ge",
+            "src": "cmp8.v:8.10-8.14"
+          }
+        },
+        "u_cmp.y_gt": {
+          "hide_name": 0,
+          "bits": [ 57 ],
+          "attributes": {
+            "hdlname": "u_cmp y_gt",
+            "src": "cmp8.v:7.10-7.14"
+          }
+        },
+        "u_cmp.y_le": {
+          "hide_name": 0,
+          "bits": [ 56 ],
+          "attributes": {
+            "hdlname": "u_cmp y_le",
+            "src": "cmp8.v:6.10-6.14"
+          }
+        },
+        "u_cmp.y_lt": {
+          "hide_name": 0,
+          "bits": [ 55 ],
+          "attributes": {
+            "hdlname": "u_cmp y_lt",
+            "src": "cmp8.v:5.10-5.14"
+          }
+        },
+        "u_sh.a": {
+          "hide_name": 0,
+          "bits": [ 2, 3, 4, 5, 6, 7, 8, 9 ],
+          "signed": 1,
+          "attributes": {
+            "hdlname": "u_sh a",
+            "src": "shifter8.v:2.23-2.24"
+          }
+        },
+        "u_sh.shamt": {
+          "hide_name": 0,
+          "bits": [ 18, 19, 20 ],
+          "attributes": {
+            "hdlname": "u_sh shamt",
+            "src": "shifter8.v:3.22-3.27"
+          }
+        },
+        "u_sh.t_ashr": {
+          "hide_name": 0,
+          "bits": [ 38, 39, 40, 41, 42, 43, 44, 45 ],
+          "signed": 1,
+          "attributes": {
+            "hdlname": "u_sh t_ashr",
+            "keep": "00000000000000000000000000000001",
+            "src": "shifter8.v:10.32-10.38"
+          }
+        },
+        "u_sh.t_shl": {
+          "hide_name": 0,
+          "bits": [ 107, 108, 109, 110, 111, 112, 113, 114 ],
+          "signed": 1,
+          "attributes": {
+            "hdlname": "u_sh t_shl",
+            "keep": "00000000000000000000000000000001",
+            "src": "shifter8.v:8.32-8.37"
+          }
+        },
+        "u_sh.t_shr": {
+          "hide_name": 0,
+          "bits": [ 115, 116, 117, 118, 119, 120, 121, 122 ],
+          "signed": 1,
+          "attributes": {
+            "hdlname": "u_sh t_shr",
+            "keep": "00000000000000000000000000000001",
+            "src": "shifter8.v:9.32-9.37"
+          }
+        },
+        "u_sh.y_ashr": {
+          "hide_name": 0,
+          "bits": [ 38, 39, 40, 41, 42, 43, 44, 45 ],
+          "signed": 1,
+          "attributes": {
+            "hdlname": "u_sh y_ashr",
+            "src": "shifter8.v:6.23-6.29"
+          }
+        },
+        "u_sh.y_shl": {
+          "hide_name": 0,
+          "bits": [ 107, 108, 109, 110, 111, 112, 113, 114 ],
+          "signed": 1,
+          "attributes": {
+            "hdlname": "u_sh y_shl",
+            "src": "shifter8.v:4.23-4.28"
+          }
+        },
+        "u_sh.y_shr": {
+          "hide_name": 0,
+          "bits": [ 115, 116, 117, 118, 119, 120, 121, 122 ],
+          "signed": 1,
+          "attributes": {
+            "hdlname": "u_sh y_shr",
+            "src": "shifter8.v:5.23-5.28"
+          }
+        },
+        "w_add": {
+          "hide_name": 0,
+          "bits": [ 59, 60, 61, 62, 63, 64, 65, 66 ],
+          "signed": 1,
+          "attributes": {
+            "src": "top.v:23.21-23.26"
+          }
+        },
+        "w_and": {
+          "hide_name": 0,
+          "bits": [ 67, 68, 69, 70, 71, 72, 73, 74 ],
+          "signed": 1,
+          "attributes": {
+            "src": "top.v:22.21-22.26"
+          }
+        },
+        "w_ashr": {
+          "hide_name": 0,
+          "bits": [ 38, 39, 40, 41, 42, 43, 44, 45 ],
+          "signed": 1,
+          "attributes": {
+            "src": "top.v:24.35-24.41"
+          }
+        },
+        "w_eq": {
+          "hide_name": 0,
+          "bits": [ 54 ],
+          "attributes": {
+            "src": "top.v:25.21-25.25"
+          }
+        },
+        "w_ge": {
+          "hide_name": 0,
+          "bits": [ 58 ],
+          "attributes": {
+            "src": "top.v:25.45-25.49"
+          }
+        },
+        "w_gt": {
+          "hide_name": 0,
+          "bits": [ 57 ],
+          "attributes": {
+            "src": "top.v:25.39-25.43"
+          }
+        },
+        "w_le": {
+          "hide_name": 0,
+          "bits": [ 56 ],
+          "attributes": {
+            "src": "top.v:25.33-25.37"
+          }
+        },
+        "w_lt": {
+          "hide_name": 0,
+          "bits": [ 55 ],
+          "attributes": {
+            "src": "top.v:25.27-25.31"
+          }
+        },
+        "w_not": {
+          "hide_name": 0,
+          "bits": [ 75, 76, 77, 78, 79, 80, 81, 82 ],
+          "signed": 1,
+          "attributes": {
+            "src": "top.v:22.41-22.46",
+            "unused_bits": "0 1 2 3 4 5 6 7"
+          }
+        },
+        "w_or": {
+          "hide_name": 0,
+          "bits": [ 83, 84, 85, 86, 87, 88, 89, 90 ],
+          "signed": 1,
+          "attributes": {
+            "src": "top.v:22.28-22.32"
+          }
+        },
+        "w_shl": {
+          "hide_name": 0,
+          "bits": [ 107, 108, 109, 110, 111, 112, 113, 114 ],
+          "signed": 1,
+          "attributes": {
+            "src": "top.v:24.21-24.26",
+            "unused_bits": "0 1 2 3 4 5 6 7"
+          }
+        },
+        "w_shr": {
+          "hide_name": 0,
+          "bits": [ 115, 116, 117, 118, 119, 120, 121, 122 ],
+          "signed": 1,
+          "attributes": {
+            "src": "top.v:24.28-24.33",
+            "unused_bits": "0 1 2 3 4 5 6 7"
+          }
+        },
+        "w_sub": {
+          "hide_name": 0,
+          "bits": [ 91, 92, 93, 94, 95, 96, 97, 98 ],
+          "signed": 1,
+          "attributes": {
+            "src": "top.v:23.28-23.33"
+          }
+        },
+        "w_xor": {
+          "hide_name": 0,
+          "bits": [ 99, 100, 101, 102, 103, 104, 105, 106 ],
+          "signed": 1,
+          "attributes": {
+            "src": "top.v:22.34-22.39",
+            "unused_bits": "0 1 2 3 4 5 6 7"
+          }
+        },
+        "y_arith": {
+          "hide_name": 0,
+          "bits": [ 30, 31, 32, 33, 34, 35, 36, 37 ],
+          "signed": 1,
+          "attributes": {
+            "src": "top.v:8.23-8.30"
+          }
+        },
+        "y_concat": {
+          "hide_name": 0,
+          "bits": [ 10, 11, 12, 13, 14, 15, 16, 17, 2, 3, 4, 5, 6, 7, 8, 9 ],
+          "signed": 1,
+          "attributes": {
+            "src": "top.v:19.24-19.32"
+          }
+        },
+        "y_eq": {
+          "hide_name": 0,
+          "bits": [ 54 ],
+          "attributes": {
+            "src": "top.v:12.23-12.27"
+          }
+        },
+        "y_final": {
+          "hide_name": 0,
+          "bits": [ 46, 47, 48, 49, 50, 51, 52, 53 ],
+          "signed": 1,
+          "attributes": {
+            "src": "top.v:10.23-10.30"
+          }
+        },
+        "y_ge": {
+          "hide_name": 0,
+          "bits": [ 58 ],
+          "attributes": {
+            "src": "top.v:16.23-16.27"
+          }
+        },
+        "y_gt": {
+          "hide_name": 0,
+          "bits": [ 57 ],
+          "attributes": {
+            "src": "top.v:15.23-15.27"
+          }
+        },
+        "y_le": {
+          "hide_name": 0,
+          "bits": [ 56 ],
+          "attributes": {
+            "src": "top.v:14.23-14.27"
+          }
+        },
+        "y_logic": {
+          "hide_name": 0,
+          "bits": [ 22, 23, 24, 25, 26, 27, 28, 29 ],
+          "signed": 1,
+          "attributes": {
+            "src": "top.v:7.23-7.30"
+          }
+        },
+        "y_lt": {
+          "hide_name": 0,
+          "bits": [ 55 ],
+          "attributes": {
+            "src": "top.v:13.23-13.27"
+          }
+        },
+        "y_shift": {
+          "hide_name": 0,
+          "bits": [ 38, 39, 40, 41, 42, 43, 44, 45 ],
+          "signed": 1,
+          "attributes": {
+            "src": "top.v:9.23-9.30"
+          }
+        },
+        "y_slice": {
+          "hide_name": 0,
+          "bits": [ 4, 5, 6, 7 ],
+          "signed": 1,
+          "attributes": {
+            "src": "top.v:18.24-18.31"
+          }
+        }
+      }
+    }
+  }
+}
