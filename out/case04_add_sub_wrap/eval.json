@@ -1,0 +1,120 @@
+{
+  "domain": "bv3",
+  "top_module": "top",
+  "assume": {
+    "signals": {
+      "a": {
+        "bits_msb": "111X"
+      },
+      "b": {
+        "bits_msb": "00X1"
+      }
+    }
+  },
+  "signals": {
+    "a": {
+      "width": 4,
+      "signed": false,
+      "bits_msb": "111X",
+      "known_mask_hex": "0xe",
+      "known_value_hex": "0xe",
+      "unknown_count": 1,
+      "range_unsigned": [
+        14,
+        15
+      ],
+      "range_signed": [
+        -2,
+        -1
+      ]
+    },
+    "b": {
+      "width": 4,
+      "signed": false,
+      "bits_msb": "00X1",
+      "known_mask_hex": "0xd",
+      "known_value_hex": "0x1",
+      "unknown_count": 1,
+      "range_unsigned": [
+        1,
+        3
+      ],
+      "range_signed": [
+        1,
+        3
+      ]
+    },
+    "y_add": {
+      "width": 4,
+      "signed": false,
+      "bits_msb": "XXXX",
+      "known_mask_hex": "0x0",
+      "known_value_hex": "0x0",
+      "unknown_count": 4,
+      "range_unsigned": [
+        0,
+        15
+      ],
+      "range_signed": [
+        -8,
+        7
+      ]
+    },
+    "y_sub": {
+      "width": 4,
+      "signed": false,
+      "bits_msb": "1XXX",
+      "known_mask_hex": "0x8",
+      "known_value_hex": "0x8",
+      "unknown_count": 3,
+      "range_unsigned": [
+        8,
+        15
+      ],
+      "range_signed": [
+        -8,
+        -1
+      ]
+    }
+  },
+  "nodes": {
+    "n2": {
+      "op": "SUB",
+      "out": {
+        "width": 4,
+        "signed": false,
+        "bits_msb": "1XXX",
+        "known_mask_hex": "0x8",
+        "known_value_hex": "0x8",
+        "unknown_count": 3,
+        "range_unsigned": [
+          8,
+          15
+        ],
+        "range_signed": [
+          -8,
+          -1
+        ]
+      }
+    },
+    "n1": {
+      "op": "ADD",
+      "out": {
+        "width": 4,
+        "signed": false,
+        "bits_msb": "XXXX",
+        "known_mask_hex": "0x0",
+        "known_value_hex": "0x0",
+        "unknown_count": 4,
+        "range_unsigned": [
+          0,
+          15
+        ],
+        "range_signed": [
+          -8,
+          7
+        ]
+      }
+    }
+  }
+}

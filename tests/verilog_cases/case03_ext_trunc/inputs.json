@@ -1,0 +1,6 @@
+{
+  "signals": {
+    "u": { "bits_msb": "10XX" },
+    "s": { "bits_msb": "1X01" }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "signals": {
+    "a": { "bits_msb": "0000XXXX" },
+    "b": { "bits_msb": "1111XXXX" }
+  }
+}

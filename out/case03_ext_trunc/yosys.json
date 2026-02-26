@@ -1,0 +1,100 @@
+{
+  "creator": "Yosys 0.61+112 (git sha1 ac427a79b-dirty, x86_64-w64-mingw32-g++ 13.2.1 -O3)",
+  "modules": {
+    "top": {
+      "attributes": {
+        "top": "00000000000000000000000000000001",
+        "src": "top.v:2.1-11.10"
+      },
+      "ports": {
+        "u": {
+          "direction": "input",
+          "bits": [ 2, 3, 4, 5 ]
+        },
+        "s": {
+          "direction": "input",
+          "signed": 1,
+          "bits": [ 6, 7, 8, 9 ]
+        },
+        "y": {
+          "direction": "output",
+          "bits": [ 10, 11, 12, 13, 14, 15 ]
+        }
+      },
+      "cells": {
+        "$add$top.v:9$1": {
+          "hide_name": 1,
+          "type": "$add",
+          "parameters": {
+            "A_SIGNED": "00000000000000000000000000000001",
+            "A_WIDTH": "00000000000000000000000000001001",
+            "B_SIGNED": "00000000000000000000000000000001",
+            "B_WIDTH": "00000000000000000000000000001000",
+            "Y_WIDTH": "00000000000000000000000000001001"
+          },
+          "attributes": {
+            "src": "top.v:9.27-9.47"
+          },
+          "port_directions": {
+            "A": "input",
+            "B": "input",
+            "Y": "output"
+          },
+          "connections": {
+            "A": [ 2, 3, 4, 5, "0", "0", "0", "0", "0" ],
+            "B": [ 6, 7, 8, 9, 9, 9, 9, 9 ],
+            "Y": [ 10, 11, 12, 13, 14, 15, 16, 17, 18 ]
+          }
+        }
+      },
+      "netnames": {
+        "s": {
+          "hide_name": 0,
+          "bits": [ 6, 7, 8, 9 ],
+          "signed": 1,
+          "attributes": {
+            "src": "top.v:4.28-4.29"
+          }
+        },
+        "sext": {
+          "hide_name": 0,
+          "bits": [ 6, 7, 8, 9, 9, 9, 9, 9 ],
+          "signed": 1,
+          "attributes": {
+            "src": "top.v:8.21-8.25"
+          }
+        },
+        "sum": {
+          "hide_name": 0,
+          "bits": [ 10, 11, 12, 13, 14, 15, 16, 17, 18 ],
+          "signed": 1,
+          "attributes": {
+            "src": "top.v:9.21-9.24",
+            "unused_bits": "6 7 8"
+          }
+        },
+        "u": {
+          "hide_name": 0,
+          "bits": [ 2, 3, 4, 5 ],
+          "attributes": {
+            "src": "top.v:3.21-3.22"
+          }
+        },
+        "y": {
+          "hide_name": 0,
+          "bits": [ 10, 11, 12, 13, 14, 15 ],
+          "attributes": {
+            "src": "top.v:5.21-5.22"
+          }
+        },
+        "zext": {
+          "hide_name": 0,
+          "bits": [ 2, 3, 4, 5, "0", "0", "0", "0" ],
+          "attributes": {
+            "src": "top.v:7.14-7.18"
+          }
+        }
+      }
+    }
+  }
+}

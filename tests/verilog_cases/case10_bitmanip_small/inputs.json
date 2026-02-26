@@ -1,0 +1,8 @@
+{
+  "signals": {
+    "a":   { "bits_msb": "0010XX01" },
+    "b":   { "bits_msb": "1101X0X1" },
+    "sh":  { "bits_msb": "0XX" },
+    "sel": { "bits_msb": "X0" }
+  }
+}

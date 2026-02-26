@@ -241,7 +241,6 @@ def _eval_concrete(ir: dict, in_env: dict) -> dict:
             else: outv = int(aval >= bval)
             write_bits(y, [outv])
 
-    # collect outputs
     outs = {}
     for s in signals:
         if s.get("kind") != "output":
@@ -252,14 +251,13 @@ def _eval_concrete(ir: dict, in_env: dict) -> dict:
 
 
 class TestSoundness(unittest.TestCase):
-    def test_case3_soundness(self):
-        case = "case3_ops_s_sound"
+    def test_case_soundness(self):
+        case = "case_ops_s_sound"
         ir = _read_json(_run_case(case))
         assume = _read_json(ROOT / "tests" / "verilog_cases" / case / "inputs.json")
         ev = eval_ir_bv3(ir, assume=assume)
         (out_dir := (ROOT / "out" / case)).mkdir(parents=True, exist_ok=True)
         (ROOT / "out" / case / "eval.json").write_text(json.dumps(ev, indent=2), encoding="utf-8")
-        # build bit patterns for inputs, enumerate X
         sig_map = {s["name"]: s for s in ir.get("signals", []) if s.get("kind") == "input"}
         base_env = {}
         unknown_bids = []
@@ -278,7 +276,6 @@ class TestSoundness(unittest.TestCase):
                 else:
                     unknown_bids.append(bid)
 
-        # abstract output bits
         abs_bits = {}
         for s in ir.get("signals", []):
             if s.get("kind") != "output":
@@ -286,7 +283,6 @@ class TestSoundness(unittest.TestCase):
             name = s["name"]
             abs_bits[name] = _bits_msb_to_lsb_list(ev["signals"][name]["bits_msb"])
 
-        # enumerate
         k = len(unknown_bids)
         self.assertLessEqual(k, 12, f"too many X bits for exhaustive soundness: {k}")
 
@@ -299,7 +295,6 @@ class TestSoundness(unittest.TestCase):
 
             for oname, bits_lsb in conc_out.items():
                 ab = abs_bits[oname]
-                # compare per bit
                 for i, bv in enumerate(bits_lsb):
                     if i >= len(ab):
                         continue

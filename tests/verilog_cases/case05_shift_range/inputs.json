@@ -1,0 +1,6 @@
+{
+  "signals": {
+    "x":  { "bits_msb": "1X0010XX" },
+    "sh": { "bits_msb": "0XX" }
+  }
+}

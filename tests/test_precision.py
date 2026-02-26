@@ -48,7 +48,7 @@ def _run_case(case: str) -> Path:
 
 class TestPrecision(unittest.TestCase):
     def test_det_is_precise(self):
-        case = "case1_ops_s_det"
+        case = "case_ops_s_det"
         ir = _read_json(_run_case(case))
         assume = _read_json(ROOT / "tests" / "verilog_cases" / case / "inputs.json")
         ev = eval_ir_bv3(ir, assume=assume)
@@ -61,7 +61,7 @@ class TestPrecision(unittest.TestCase):
             self.assertEqual(ev["signals"][name]["unknown_count"], 0, f"{name} should be fully known")
 
     def test_partial_shrinks_some_outputs(self):
-        case = "case2_ops_s_partial"
+        case = "case_ops_s_partial"
         ir = _read_json(_run_case(case))
         assume = _read_json(ROOT / "tests" / "verilog_cases" / case / "inputs.json")
         ev = eval_ir_bv3(ir, assume=assume)

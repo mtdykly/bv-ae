@@ -1,0 +1,887 @@
+{
+  "ir_version": "0.1",
+  "source_format": "yosys_write_json",
+  "source_creator": "Yosys 0.61+112 (git sha1 ac427a79b-dirty, x86_64-w64-mingw32-g++ 13.2.1 -O3)",
+  "top_module": "top",
+  "src_files": [
+    "top.v"
+  ],
+  "signals": [
+    {
+      "sid": "a",
+      "name": "a",
+      "kind": "input",
+      "width": 8,
+      "signed": false,
+      "bits": [
+        {
+          "kind": "wire",
+          "id": 2
+        },
+        {
+          "kind": "wire",
+          "id": 3
+        },
+        {
+          "kind": "wire",
+          "id": 4
+        },
+        {
+          "kind": "wire",
+          "id": 5
+        },
+        {
+          "kind": "wire",
+          "id": 6
+        },
+        {
+          "kind": "wire",
+          "id": 7
+        },
+        {
+          "kind": "wire",
+          "id": 8
+        },
+        {
+          "kind": "wire",
+          "id": 9
+        }
+      ],
+      "src": {
+        "raw": "top.v:3.21-3.22",
+        "file": "top.v",
+        "line_start": 3,
+        "col_start": 21,
+        "line_end": 3,
+        "col_end": 22
+      },
+      "alias_of": null
+    },
+    {
+      "sid": "b",
+      "name": "b",
+      "kind": "input",
+      "width": 8,
+      "signed": false,
+      "bits": [
+        {
+          "kind": "wire",
+          "id": 10
+        },
+        {
+          "kind": "wire",
+          "id": 11
+        },
+        {
+          "kind": "wire",
+          "id": 12
+        },
+        {
+          "kind": "wire",
+          "id": 13
+        },
+        {
+          "kind": "wire",
+          "id": 14
+        },
+        {
+          "kind": "wire",
+          "id": 15
+        },
+        {
+          "kind": "wire",
+          "id": 16
+        },
+        {
+          "kind": "wire",
+          "id": 17
+        }
+      ],
+      "src": {
+        "raw": "top.v:4.21-4.22",
+        "file": "top.v",
+        "line_start": 4,
+        "col_start": 21,
+        "line_end": 4,
+        "col_end": 22
+      },
+      "alias_of": null
+    },
+    {
+      "sid": "ge",
+      "name": "ge",
+      "kind": "output",
+      "width": 1,
+      "signed": false,
+      "bits": [
+        {
+          "kind": "wire",
+          "id": 19
+        }
+      ],
+      "src": {
+        "raw": "top.v:6.15-6.17",
+        "file": "top.v",
+        "line_start": 6,
+        "col_start": 15,
+        "line_end": 6,
+        "col_end": 17
+      },
+      "alias_of": null
+    },
+    {
+      "sid": "lt",
+      "name": "lt",
+      "kind": "output",
+      "width": 1,
+      "signed": false,
+      "bits": [
+        {
+          "kind": "wire",
+          "id": 18
+        }
+      ],
+      "src": {
+        "raw": "top.v:5.15-5.17",
+        "file": "top.v",
+        "line_start": 5,
+        "col_start": 15,
+        "line_end": 5,
+        "col_end": 17
+      },
+      "alias_of": null
+    }
+  ],
+  "nodes": [
+    {
+      "nid": "n1",
+      "op": "GE",
+      "yosys_type": "$ge",
+      "yosys_name": "$ge$top.v:9$2",
+      "ports": {
+        "A": [
+          {
+            "kind": "wire",
+            "id": 2
+          },
+          {
+            "kind": "wire",
+            "id": 3
+          },
+          {
+            "kind": "wire",
+            "id": 4
+          },
+          {
+            "kind": "wire",
+            "id": 5
+          },
+          {
+            "kind": "wire",
+            "id": 6
+          },
+          {
+            "kind": "wire",
+            "id": 7
+          },
+          {
+            "kind": "wire",
+            "id": 8
+          },
+          {
+            "kind": "wire",
+            "id": 9
+          }
+        ],
+        "B": [
+          {
+            "kind": "wire",
+            "id": 10
+          },
+          {
+            "kind": "wire",
+            "id": 11
+          },
+          {
+            "kind": "wire",
+            "id": 12
+          },
+          {
+            "kind": "wire",
+            "id": 13
+          },
+          {
+            "kind": "wire",
+            "id": 14
+          },
+          {
+            "kind": "wire",
+            "id": 15
+          },
+          {
+            "kind": "wire",
+            "id": 16
+          },
+          {
+            "kind": "wire",
+            "id": 17
+          }
+        ],
+        "Y": [
+          {
+            "kind": "wire",
+            "id": 19
+          }
+        ]
+      },
+      "args": {
+        "lhs": [
+          {
+            "kind": "wire",
+            "id": 2
+          },
+          {
+            "kind": "wire",
+            "id": 3
+          },
+          {
+            "kind": "wire",
+            "id": 4
+          },
+          {
+            "kind": "wire",
+            "id": 5
+          },
+          {
+            "kind": "wire",
+            "id": 6
+          },
+          {
+            "kind": "wire",
+            "id": 7
+          },
+          {
+            "kind": "wire",
+            "id": 8
+          },
+          {
+            "kind": "wire",
+            "id": 9
+          }
+        ],
+        "rhs": [
+          {
+            "kind": "wire",
+            "id": 10
+          },
+          {
+            "kind": "wire",
+            "id": 11
+          },
+          {
+            "kind": "wire",
+            "id": 12
+          },
+          {
+            "kind": "wire",
+            "id": 13
+          },
+          {
+            "kind": "wire",
+            "id": 14
+          },
+          {
+            "kind": "wire",
+            "id": 15
+          },
+          {
+            "kind": "wire",
+            "id": 16
+          },
+          {
+            "kind": "wire",
+            "id": 17
+          }
+        ],
+        "out": [
+          {
+            "kind": "wire",
+            "id": 19
+          }
+        ]
+      },
+      "params": {
+        "A_SIGNED": 0,
+        "A_WIDTH": 8,
+        "B_SIGNED": 0,
+        "B_WIDTH": 8,
+        "Y_WIDTH": 1
+      },
+      "out_width": 1,
+      "out_signed": false,
+      "src": {
+        "raw": "top.v:9.16-9.22",
+        "file": "top.v",
+        "line_start": 9,
+        "col_start": 16,
+        "line_end": 9,
+        "col_end": 22
+      }
+    },
+    {
+      "nid": "n2",
+      "op": "LT",
+      "yosys_type": "$lt",
+      "yosys_name": "$lt$top.v:8$1",
+      "ports": {
+        "A": [
+          {
+            "kind": "wire",
+            "id": 2
+          },
+          {
+            "kind": "wire",
+            "id": 3
+          },
+          {
+            "kind": "wire",
+            "id": 4
+          },
+          {
+            "kind": "wire",
+            "id": 5
+          },
+          {
+            "kind": "wire",
+            "id": 6
+          },
+          {
+            "kind": "wire",
+            "id": 7
+          },
+          {
+            "kind": "wire",
+            "id": 8
+          },
+          {
+            "kind": "wire",
+            "id": 9
+          }
+        ],
+        "B": [
+          {
+            "kind": "wire",
+            "id": 10
+          },
+          {
+            "kind": "wire",
+            "id": 11
+          },
+          {
+            "kind": "wire",
+            "id": 12
+          },
+          {
+            "kind": "wire",
+            "id": 13
+          },
+          {
+            "kind": "wire",
+            "id": 14
+          },
+          {
+            "kind": "wire",
+            "id": 15
+          },
+          {
+            "kind": "wire",
+            "id": 16
+          },
+          {
+            "kind": "wire",
+            "id": 17
+          }
+        ],
+        "Y": [
+          {
+            "kind": "wire",
+            "id": 18
+          }
+        ]
+      },
+      "args": {
+        "lhs": [
+          {
+            "kind": "wire",
+            "id": 2
+          },
+          {
+            "kind": "wire",
+            "id": 3
+          },
+          {
+            "kind": "wire",
+            "id": 4
+          },
+          {
+            "kind": "wire",
+            "id": 5
+          },
+          {
+            "kind": "wire",
+            "id": 6
+          },
+          {
+            "kind": "wire",
+            "id": 7
+          },
+          {
+            "kind": "wire",
+            "id": 8
+          },
+          {
+            "kind": "wire",
+            "id": 9
+          }
+        ],
+        "rhs": [
+          {
+            "kind": "wire",
+            "id": 10
+          },
+          {
+            "kind": "wire",
+            "id": 11
+          },
+          {
+            "kind": "wire",
+            "id": 12
+          },
+          {
+            "kind": "wire",
+            "id": 13
+          },
+          {
+            "kind": "wire",
+            "id": 14
+          },
+          {
+            "kind": "wire",
+            "id": 15
+          },
+          {
+            "kind": "wire",
+            "id": 16
+          },
+          {
+            "kind": "wire",
+            "id": 17
+          }
+        ],
+        "out": [
+          {
+            "kind": "wire",
+            "id": 18
+          }
+        ]
+      },
+      "params": {
+        "A_SIGNED": 0,
+        "A_WIDTH": 8,
+        "B_SIGNED": 0,
+        "B_WIDTH": 8,
+        "Y_WIDTH": 1
+      },
+      "out_width": 1,
+      "out_signed": false,
+      "src": {
+        "raw": "top.v:8.16-8.21",
+        "file": "top.v",
+        "line_start": 8,
+        "col_start": 16,
+        "line_end": 8,
+        "col_end": 21
+      }
+    }
+  ],
+  "outputs": {
+    "ge": {
+      "bits": [
+        {
+          "kind": "wire",
+          "id": 19
+        }
+      ]
+    },
+    "lt": {
+      "bits": [
+        {
+          "kind": "wire",
+          "id": 18
+        }
+      ]
+    }
+  },
+  "bit_index": {
+    "wire_bits": {
+      "2": {
+        "owners": [
+          "a"
+        ],
+        "driver": {
+          "kind": "port",
+          "name": "a"
+        },
+        "uses": [
+          {
+            "kind": "node",
+            "nid": "n1",
+            "port": "A"
+          },
+          {
+            "kind": "node",
+            "nid": "n2",
+            "port": "A"
+          }
+        ]
+      },
+      "3": {
+        "owners": [
+          "a"
+        ],
+        "driver": {
+          "kind": "port",
+          "name": "a"
+        },
+        "uses": [
+          {
+            "kind": "node",
+            "nid": "n1",
+            "port": "A"
+          },
+          {
+            "kind": "node",
+            "nid": "n2",
+            "port": "A"
+          }
+        ]
+      },
+      "4": {
+        "owners": [
+          "a"
+        ],
+        "driver": {
+          "kind": "port",
+          "name": "a"
+        },
+        "uses": [
+          {
+            "kind": "node",
+            "nid": "n1",
+            "port": "A"
+          },
+          {
+            "kind": "node",
+            "nid": "n2",
+            "port": "A"
+          }
+        ]
+      },
+      "5": {
+        "owners": [
+          "a"
+        ],
+        "driver": {
+          "kind": "port",
+          "name": "a"
+        },
+        "uses": [
+          {
+            "kind": "node",
+            "nid": "n1",
+            "port": "A"
+          },
+          {
+            "kind": "node",
+            "nid": "n2",
+            "port": "A"
+          }
+        ]
+      },
+      "6": {
+        "owners": [
+          "a"
+        ],
+        "driver": {
+          "kind": "port",
+          "name": "a"
+        },
+        "uses": [
+          {
+            "kind": "node",
+            "nid": "n1",
+            "port": "A"
+          },
+          {
+            "kind": "node",
+            "nid": "n2",
+            "port": "A"
+          }
+        ]
+      },
+      "7": {
+        "owners": [
+          "a"
+        ],
+        "driver": {
+          "kind": "port",
+          "name": "a"
+        },
+        "uses": [
+          {
+            "kind": "node",
+            "nid": "n1",
+            "port": "A"
+          },
+          {
+            "kind": "node",
+            "nid": "n2",
+            "port": "A"
+          }
+        ]
+      },
+      "8": {
+        "owners": [
+          "a"
+        ],
+        "driver": {
+          "kind": "port",
+          "name": "a"
+        },
+        "uses": [
+          {
+            "kind": "node",
+            "nid": "n1",
+            "port": "A"
+          },
+          {
+            "kind": "node",
+            "nid": "n2",
+            "port": "A"
+          }
+        ]
+      },
+      "9": {
+        "owners": [
+          "a"
+        ],
+        "driver": {
+          "kind": "port",
+          "name": "a"
+        },
+        "uses": [
+          {
+            "kind": "node",
+            "nid": "n1",
+            "port": "A"
+          },
+          {
+            "kind": "node",
+            "nid": "n2",
+            "port": "A"
+          }
+        ]
+      },
+      "10": {
+        "owners": [
+          "b"
+        ],
+        "driver": {
+          "kind": "port",
+          "name": "b"
+        },
+        "uses": [
+          {
+            "kind": "node",
+            "nid": "n1",
+            "port": "B"
+          },
+          {
+            "kind": "node",
+            "nid": "n2",
+            "port": "B"
+          }
+        ]
+      },
+      "11": {
+        "owners": [
+          "b"
+        ],
+        "driver": {
+          "kind": "port",
+          "name": "b"
+        },
+        "uses": [
+          {
+            "kind": "node",
+            "nid": "n1",
+            "port": "B"
+          },
+          {
+            "kind": "node",
+            "nid": "n2",
+            "port": "B"
+          }
+        ]
+      },
+      "12": {
+        "owners": [
+          "b"
+        ],
+        "driver": {
+          "kind": "port",
+          "name": "b"
+        },
+        "uses": [
+          {
+            "kind": "node",
+            "nid": "n1",
+            "port": "B"
+          },
+          {
+            "kind": "node",
+            "nid": "n2",
+            "port": "B"
+          }
+        ]
+      },
+      "13": {
+        "owners": [
+          "b"
+        ],
+        "driver": {
+          "kind": "port",
+          "name": "b"
+        },
+        "uses": [
+          {
+            "kind": "node",
+            "nid": "n1",
+            "port": "B"
+          },
+          {
+            "kind": "node",
+            "nid": "n2",
+            "port": "B"
+          }
+        ]
+      },
+      "14": {
+        "owners": [
+          "b"
+        ],
+        "driver": {
+          "kind": "port",
+          "name": "b"
+        },
+        "uses": [
+          {
+            "kind": "node",
+            "nid": "n1",
+            "port": "B"
+          },
+          {
+            "kind": "node",
+            "nid": "n2",
+            "port": "B"
+          }
+        ]
+      },
+      "15": {
+        "owners": [
+          "b"
+        ],
+        "driver": {
+          "kind": "port",
+          "name": "b"
+        },
+        "uses": [
+          {
+            "kind": "node",
+            "nid": "n1",
+            "port": "B"
+          },
+          {
+            "kind": "node",
+            "nid": "n2",
+            "port": "B"
+          }
+        ]
+      },
+      "16": {
+        "owners": [
+          "b"
+        ],
+        "driver": {
+          "kind": "port",
+          "name": "b"
+        },
+        "uses": [
+          {
+            "kind": "node",
+            "nid": "n1",
+            "port": "B"
+          },
+          {
+            "kind": "node",
+            "nid": "n2",
+            "port": "B"
+          }
+        ]
+      },
+      "17": {
+        "owners": [
+          "b"
+        ],
+        "driver": {
+          "kind": "port",
+          "name": "b"
+        },
+        "uses": [
+          {
+            "kind": "node",
+            "nid": "n1",
+            "port": "B"
+          },
+          {
+            "kind": "node",
+            "nid": "n2",
+            "port": "B"
+          }
+        ]
+      },
+      "18": {
+        "owners": [
+          "lt"
+        ],
+        "driver": {
+          "kind": "node",
+          "nid": "n2",
+          "port": "Y"
+        },
+        "uses": []
+      },
+      "19": {
+        "owners": [
+          "ge"
+        ],
+        "driver": {
+          "kind": "node",
+          "nid": "n1",
+          "port": "Y"
+        },
+        "uses": []
+      }
+    }
+  }
+}

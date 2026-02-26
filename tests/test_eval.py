@@ -57,8 +57,8 @@ def _to_signed(x: int, w: int) -> int:
     return x - (1 << w) if (x & sign) else x
 
 class TestEval(unittest.TestCase):
-    def test_case1_ops_s_det(self):
-        case = "case1_ops_s_det"
+    def test_case_ops_s_det(self):
+        case = "case_ops_s_det"
         ir = _read_json(_run_case(case))
         assume = _read_json(ROOT / "tests" / "verilog_cases" / case / "inputs.json")
         ev = eval_ir_bv3(ir, assume=assume)
@@ -106,8 +106,8 @@ class TestEval(unittest.TestCase):
         self.assertEqual(ev["signals"]["y_gt"]["bits_msb"], "1" if a_s > b_s else "0")
         self.assertEqual(ev["signals"]["y_ge"]["bits_msb"], "1" if a_s >= b_s else "0")
 
-    def test_case4_ops_u_det(self):
-        case = "case4_ops_u_det"
+    def test_case_ops_u_det(self):
+        case = "case_ops_u_det"
         ir = _read_json(_run_case(case))
         assume = _read_json(ROOT / "tests" / "verilog_cases" / case / "inputs.json")
         ev = eval_ir_bv3(ir, assume=assume)
@@ -126,8 +126,8 @@ class TestEval(unittest.TestCase):
         mux = b if sel == 1 else a
         self.assertEqual(ev["signals"]["y_mux"]["bits_msb"], _bits_msb(mux, 8))
 
-    def test_case5_cmp_must(self):
-        case = "case5_cmp_must"
+    def test_case_cmp_must(self):
+        case = "case_cmp_must"
         ir = _read_json(_run_case(case))
         assume = _read_json(ROOT / "tests" / "verilog_cases" / case / "inputs.json")
         ev = eval_ir_bv3(ir, assume=assume)
