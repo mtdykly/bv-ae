@@ -1,0 +1,35 @@
+{
+  "domain": "exact_enum",
+  "top_module": "top",
+  "assume": {
+    "signals": {
+      "u": {
+        "bits_msb": "10XX"
+      },
+      "s": {
+        "bits_msb": "1X01"
+      }
+    }
+  },
+  "enum_var_bits": 3,
+  "enum_count": 8,
+  "time_seconds": 0.0001414999715052545,
+  "signals": {
+    "y": {
+      "width": 6,
+      "signed": false,
+      "bits_msb": "00XXXX",
+      "known_mask_hex": "0x30",
+      "known_value_hex": "0x0",
+      "unknown_count": 4,
+      "range_unsigned": [
+        1,
+        8
+      ],
+      "range_signed": [
+        1,
+        8
+      ]
+    }
+  }
+}

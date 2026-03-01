@@ -1,0 +1,67 @@
+{
+  "domain": "exact_enum",
+  "top_module": "top",
+  "assume": {
+    "signals": {
+      "x": {
+        "bits_msb": "1X0010XX"
+      },
+      "sh": {
+        "bits_msb": "0XX"
+      }
+    }
+  },
+  "enum_var_bits": 5,
+  "enum_count": 32,
+  "time_seconds": 0.0012678999919444323,
+  "signals": {
+    "y_ashr": {
+      "width": 8,
+      "signed": false,
+      "bits_msb": "1XXXXXXX",
+      "known_mask_hex": "0x80",
+      "known_value_hex": "0x80",
+      "unknown_count": 7,
+      "range_unsigned": [
+        136,
+        249
+      ],
+      "range_signed": [
+        -120,
+        -7
+      ]
+    },
+    "y_shl": {
+      "width": 8,
+      "signed": false,
+      "bits_msb": "XXXXXXXX",
+      "known_mask_hex": "0x0",
+      "known_value_hex": "0x0",
+      "unknown_count": 8,
+      "range_unsigned": [
+        16,
+        203
+      ],
+      "range_signed": [
+        -120,
+        88
+      ]
+    },
+    "y_shr": {
+      "width": 8,
+      "signed": false,
+      "bits_msb": "XXXXXXXX",
+      "known_mask_hex": "0x0",
+      "known_value_hex": "0x0",
+      "unknown_count": 8,
+      "range_unsigned": [
+        17,
+        203
+      ],
+      "range_signed": [
+        -120,
+        101
+      ]
+    }
+  }
+}

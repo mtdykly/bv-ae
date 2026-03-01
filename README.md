@@ -52,6 +52,7 @@ bv-ae/
 |  |- ae/
 |  |  |- bv3.py                  # BV3抽象域实现
 |  |  |- eval.py                 # 抽象求值（前向传播）
+|  |  |- exact_eval.py           # 精确枚举基准
 |  |  |- report.py               # Markdown报告生成
 |  |- check/
 |  |  |- ir_check.py             # IR检查：结构/一致性/DAG/driver覆盖等
@@ -67,21 +68,32 @@ bv-ae/
 |  |- test_eval.py               # 功能正确性测试
 |  |- test_precision.py          # 精度测试
 |  |- test_soundness.py          # 健全性测试
+|  |- test_exact_vs_abstract.py  # 精确枚举 vs 抽象求值的安全性测试
 |  |- verilog_cases/
 |     |- case1_ops_s_det/        # 示例
 |     |  |- top.v                # Verilog电路
 |     |  |- inputs.json          # 抽象输入假设（bits_msb）
+|     |- case01_bitops/
+|     |  |- top.v
+|     |  |- inputs.json
+
+|- scripts/
+|  |- run_benchmark.py           # 批量跑case，生成bench.csv bench.md
 
 |- tools/
 |  |- flow.ys                    # Yosys脚本
 |  |- run_yosys.bat              # 运行Yosys生成yosys.json
 
 |- out/                          # 运行流程后生成的产物目录
-|  |- case1_ops_s_det/           # 示例
-|  |  |- yosys.json              # Yosys网表JSON
-|  |  |- ir.json                 # 项目IR
-|  |  |- eval.json               # 抽象求值结果
-|  |  |- report.md               # 可读报告
+|  |- bench.csv                  # 基准汇总表（CSV）
+|  |- bench.md                   # 基准汇总表（Markdown表格）
+|  |- <case_name>/
+|     |- yosys.json              # Yosys网表JSON
+|     |- ir.json                 # 项目IR
+|     |- eval.json               # 抽象求值结果
+|     |- exact.json              # 精确枚举结果
+|     |- compare.json            # 安全性对比结果（abstract vs exact）
+|     |- report.md               # 可读报告
 ```
 
 ---
@@ -243,11 +255,53 @@ BV3 抽象值结构：
 
 ## 测试与实验
 
-运行全部测试：
+**运行全部测试：**
 
 ```powershell
 python -m unittest discover -s tests -p "test_*.py" -q
 ```
+
+**安全性回归测试（精确枚举 vs 抽象求值）：**
+
+```powershell
+python -m unittest tests.test_exact_vs_abstract -q
+```
+
+**批量基准实验（生成 `bench.csv` 与 `bench.md`）：**
+
+```powershell
+python scripts/run_benchmark.py
+```
+
+**`bench.md` 的含义**
+
+bench 表每行对应一个 case，列含义如下：
+
+- case：用例名
+
+- sound_ok：安全性是否通过（抽象确定的位是否都被精确枚举支持）
+
+- enum_var_bits：精确枚举的变量位数 k（inputs 中 X 的总位数）
+
+- enum_count：枚举次数 2^k
+
+- abs_time_s：抽象求值耗时（秒）
+
+- exact_time_s：精确枚举耗时（秒）
+
+- abs_known_ratio：抽象输出的平均已知位比例（越大越好）
+
+- exact_known_ratio：精确枚举输出的平均已知位比例（真实恒定位比例，作为参考上界）
+
+- abs_avg_unknown_bits：抽象输出平均未知位数（越小越好）
+
+- exact_avg_unknown_bits：精确枚举输出平均未知位数（真实不确定性）
+
+- abs_avg_range_span：抽象输出 range_unsigned 的平均跨度 hi-lo（越小越紧）
+
+- exact_avg_range_span：精确枚举输出真实跨度（真实 min max）
+
+- issues_count：对比发现的问题数量
 
 ## 设计说明
 
