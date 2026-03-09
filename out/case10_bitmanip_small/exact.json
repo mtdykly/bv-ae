@@ -17,9 +17,9 @@
       }
     }
   },
-  "enum_var_bits": 8,
-  "enum_count": 256,
-  "time_seconds": 0.016066899988800287,
+  "enum_var_bits": 7,
+  "enum_count": 128,
+  "time_seconds": 0.008266899967566133,
   "signals": {
     "y": {
       "width": 8,
@@ -29,7 +29,7 @@
       "known_value_hex": "0x0",
       "unknown_count": 8,
       "range_unsigned": [
-        14,
+        29,
         232
       ],
       "range_signed": [

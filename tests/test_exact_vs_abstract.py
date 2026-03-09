@@ -7,7 +7,7 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-sys.path.insert(0, str(ROOT / "tests"))  # 让 from _cases import CASES 能工作
+sys.path.insert(0, str(ROOT / "tests"))
 
 from src.ae.eval import eval_ir_bv3
 from src.ae.exact_eval import eval_ir_exact_enum, compare_exact_vs_abstract

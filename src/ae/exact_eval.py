@@ -294,9 +294,33 @@ def _eval_node_concrete(op: str, ports: dict, params: dict, env: Dict[int, int],
                 r = 1 if av > bv else 0
             else:
                 r = 1 if av >= bv else 0
-
         return r & _mask(y_w)
 
+    if op == "LOGIC_NOT":
+        a, aw, _ = read("A")
+        r = 1 if (a & _mask(aw)) == 0 else 0
+        return r & _mask(y_w)
+
+    if op == "PMUX":
+        a, aw, asg = read("A")
+        b, bw, bsg = read("B")
+        s, sw = _read_vec_int(env, ports.get("S", []) or [], const_oid_to_vid)
+
+        a2 = _resize(a, aw, y_w, signed=asg)
+        b2 = _resize(b, bw, bw, signed=bsg)
+
+        selected = [i for i in range(sw) if ((s >> i) & 1) == 1]
+
+        if len(selected) == 0:
+            return a2 & _mask(y_w)
+
+        if len(selected) > 1:
+            raise ValueError(f"PMUX multi-hot select in concrete eval: S={bin(s)}, width={sw}")
+
+        i = selected[0]
+        out = (b2 >> (i * y_w)) & _mask(y_w)
+        return out & _mask(y_w)
+        
     raise ValueError(f"unsupported op in concrete eval: {op}")
 
 def eval_ir_exact_enum(

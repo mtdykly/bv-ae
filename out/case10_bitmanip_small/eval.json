@@ -359,7 +359,7 @@
       }
     },
     "n1": {
-      "op": "UNSUPPORTED",
+      "op": "LOGIC_NOT",
       "out": {
         "width": 1,
         "signed": false,

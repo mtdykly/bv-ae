@@ -79,7 +79,7 @@ def build_report_md(ir: dict | ModuleIR, assume: Optional[dict], ev: dict) -> st
     lines.append("| name | width | signed | bits_msb | known_mask_hex | known_value_hex | unknown_count | range_unsigned | range_signed |")
     lines.append("| --- | ---: | ---: | --- | --- | --- | ---: | --- | --- |")
 
-    # 输出顺序：尽量按端口声明顺序
+    # 输出按端口声明顺序
     out_names = _get_output_signal_order(ir)
 
     sig_ev = (ev.get("signals", {}) or {})

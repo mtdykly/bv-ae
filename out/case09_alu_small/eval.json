@@ -414,7 +414,7 @@
       }
     },
     "n13": {
-      "op": "UNSUPPORTED",
+      "op": "LOGIC_NOT",
       "out": {
         "width": 1,
         "signed": false,
@@ -642,7 +642,7 @@
       }
     },
     "n5": {
-      "op": "UNSUPPORTED",
+      "op": "PMUX",
       "out": {
         "width": 4,
         "signed": false,

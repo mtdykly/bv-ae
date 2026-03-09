@@ -1,4 +1,4 @@
-# 读取 Yosys write_json 输出，提供基础解析与映射工具
+# 读取Yosys write_json输出，提供基础解析与映射工具
 
 from __future__ import annotations
 
@@ -10,7 +10,9 @@ CELL_TYPE_TO_OP: Dict[str, str] = {
     "$or": "OR",
     "$xor": "XOR",
     "$not": "NOT",
+    "$logic_not": "LOGIC_NOT",
     "$mux": "MUX",
+    "$pmux": "PMUX",
     "$add": "ADD",
     "$sub": "SUB",
     "$slice": "EXTRACT",
@@ -65,7 +67,6 @@ def decode_bin32(raw: Any) -> int:
         if all(ch in "01" for ch in s):
             return int(s, 2)
         return int(s)
-
     return int(raw)
 
 # 解析Yosys的src字符串为SrcSpan

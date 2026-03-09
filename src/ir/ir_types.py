@@ -286,7 +286,7 @@ class Node:
         if self.src is not None:
             self.src.validate()
 
-        # args 只做“结构合法性”检查，不强制语义完整
+        # args只做结构合法性检查，不强制语义完整
         _expect(isinstance(self.args, dict), f"Node.args must be dict: nid={self.nid}")
         for ak, av in self.args.items():
             _expect(isinstance(ak, str) and ak, f"Node.args key invalid: nid={self.nid}")

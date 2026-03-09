@@ -13,7 +13,7 @@
   },
   "enum_var_bits": 8,
   "enum_count": 256,
-  "time_seconds": 0.006494199973531067,
+  "time_seconds": 0.005508499918505549,
   "signals": {
     "ge": {
       "width": 1,

@@ -34,8 +34,6 @@ def build_module_ir(yosys_obj: Dict[str, Any]) -> ModuleIR:
     }
     return ModuleIR.from_dict(ir)
 
-
-# 兼容旧的dict接口
 def build_module_ir_dict(yosys_obj: Dict[str, Any]) -> Dict[str, Any]:
     return build_module_ir(yosys_obj).to_dict()
 
@@ -131,18 +129,51 @@ def build_nodes(top_mod: Dict[str, Any]) -> List[Dict[str, Any]]:
         ports_obj: Dict[str, List[Dict[str, Any]]]
     ) -> Optional[bool]:
         y_bits = ports_obj.get("Y", []) or []
-        saw_declared = False
+        y_wire_ids: List[int] = []
         for br in y_bits:
             if br.get("kind") != "wire":
                 continue
-            bid = int(br["id"])
-            if bid in bit_signed_true:
-                return True
+            y_wire_ids.append(int(br["id"]))
+
+        if not y_wire_ids:
+            return None
+
+        # 向量级完全匹配：如果某个netname/port的bits序列完全等于Y，就用它的signed
+        def _bits_ids(bits_raw: List[Any]) -> List[int]:
+            ids: List[int] = []
+            for b in bits_raw or []:
+                br = to_bitref(b)
+                if br.get("kind") == "wire":
+                    ids.append(int(br["id"]))
+            return ids
+
+        for _n, nn in netnames.items():
+            if _bits_ids(nn.get("bits", []) or []) == y_wire_ids:
+                return bool(nn.get("signed", 0) == 1)
+        for _n, p in ports.items():
+            if _bits_ids(p.get("bits", []) or []) == y_wire_ids:
+                return bool(p.get("signed", 0) == 1)
+
+        # bit级一致性
+        saw_declared = False
+        all_signed = True
+        all_unsigned = True
+        for bid in y_wire_ids:
             if bid in bit_declared:
                 saw_declared = True
-        # Y里没有signed的声明 bit，但只要出现过声明bit，就能确定是unsigned
+            # 若某位属于signed net，则这一位signed
+            is_signed_bit = (bid in bit_signed_true)
+            all_signed = all_signed and is_signed_bit
+            all_unsigned = all_unsigned and (not is_signed_bit)
+
         if saw_declared:
-            return False
+            if all_signed:
+                return True
+            if all_unsigned:
+                return False
+            # 不确定
+            return None
+
         return None
     
     nodes: List[Dict[str, Any]] = []
@@ -293,14 +324,22 @@ def _normalize_args(node: Dict[str, Any]) -> Dict[str, Any]:
     ports_obj = node.get("ports", {}) or {}
 
     if op == "MUX":
-        # Yosys $mux: S=0 选 A, S=1 选 B
+        # Yosys $mux: S=0选A, S=1选 B
         return {
             "cond": ports_obj.get("S", []),
             "else": ports_obj.get("A", []),
             "then": ports_obj.get("B", []),
             "out": ports_obj.get("Y", []),
         }
-
+    if op == "PMUX":
+        # Yosys $pmux:S全0选A，S[i]=1选B的第i段
+        return {
+            "sel": ports_obj.get("S", []),
+            "default": ports_obj.get("A", []),
+            "cases": ports_obj.get("B", []),
+            "out": ports_obj.get("Y", []),
+        }
+    
     if op in ("AND", "OR", "XOR", "ADD", "SUB", "EQ", "LT", "LE", "GT", "GE"):
         return {
             "lhs": ports_obj.get("A", []),
@@ -308,7 +347,7 @@ def _normalize_args(node: Dict[str, Any]) -> Dict[str, Any]:
             "out": ports_obj.get("Y", []),
         }
 
-    if op == "NOT":
+    if op in ("NOT", "LOGIC_NOT"):
         return {
             "in": ports_obj.get("A", []),
             "out": ports_obj.get("Y", []),
@@ -401,7 +440,6 @@ def _find_contiguous_slice(parent_bits: list[dict], child_bits: list[dict]) -> i
             return off
     return None
 
-
 def _synth_view_nodes_from_wiring(
     top_mod: dict,
     nodes: list[dict],
@@ -411,7 +449,7 @@ def _synth_view_nodes_from_wiring(
 ) -> tuple[list[dict], int]:
     name_to_bits = _build_name_to_bits(top_mod)
     port_dirs = _build_port_dirs(top_mod)
-    # 反向索引：bits序列->signal name（用于拼接时匹配 lo/hi）
+    # 反向索引：bits序列->signal name（用于拼接时匹配lo/hi）
     bits_to_name: dict[tuple, str] = {}
     for n, bits in name_to_bits.items():
         bits_to_name[_bits_key(bits)] = n
@@ -436,17 +474,50 @@ def _synth_view_nodes_from_wiring(
     for _n, p2 in ports.items():
         _mark_bits_decl(p2.get("bits", []) or [], bool(p2.get("signed", 0) == 1))
 
-    def _infer_out_signed_from_Y_bits(y_bits: list[dict]) -> bool:
-        saw_declared = False
+    def _infer_out_signed_from_Y_bits(y_bits: list[dict]) -> Optional[bool]:
+        y_wire_ids: list[int] = []
         for br in y_bits or []:
             if br.get("kind") != "wire":
                 continue
-            bid = int(br["id"])
-            if bid in bit_signed_true:
-                return True
+            y_wire_ids.append(int(br["id"]))
+        if not y_wire_ids:
+            return None
+
+        # 向量级完全匹配：若某个netname/port的bits序列完全等于Y，就用它的signed
+        def _bits_ids(bits_raw) -> list[int]:
+            ids: list[int] = []
+            for b in bits_raw or []:
+                br = to_bitref(b)
+                if br.get("kind") == "wire":
+                    ids.append(int(br["id"]))
+            return ids
+
+        for _n, nn2 in netnames.items():
+            if _bits_ids(nn2.get("bits", []) or []) == y_wire_ids:
+                return bool(nn2.get("signed", 0) == 1)
+        for _n, p2 in ports.items():
+            if _bits_ids(p2.get("bits", []) or []) == y_wire_ids:
+                return bool(p2.get("signed", 0) == 1)
+
+        # bit级一致性
+        saw_declared = False
+        all_signed = True
+        all_unsigned = True
+        for bid in y_wire_ids:
             if bid in bit_declared:
                 saw_declared = True
-        return False
+            is_signed_bit = (bid in bit_signed_true)
+            all_signed = all_signed and is_signed_bit
+            all_unsigned = all_unsigned and (not is_signed_bit)
+
+        if saw_declared:
+            if all_signed:
+                return True
+            if all_unsigned:
+                return False
+            return None 
+
+        return None
     
     # 合成EXTRACT：对每个内部网线，找一个input端口作为父向量
     if want_extract:
@@ -495,51 +566,104 @@ def _synth_view_nodes_from_wiring(
             node["args"] = _normalize_args(node)
             nodes.append(node)
 
-    # 合成CONCAT：对每个output端口，拆成两段，各自匹配某个信号bits
+    # 合成CONCAT：对output端口和netnames，拆成两段，各自匹配某个信号bits
     if want_concat:
+        made: set[tuple] = set()
+        def _is_all_const(bits: list[dict]) -> bool:
+            return len(bits) > 0 and all(br.get("kind") == "const" for br in bits)
+
+        def _is_repeat(bits: list[dict]) -> bool:
+            if len(bits) <= 1:
+                return False
+            first = bits[0]
+            if first.get("kind") == "wire":
+                fid = first.get("id")
+                return all(br.get("kind") == "wire" and br.get("id") == fid for br in bits)
+            if first.get("kind") == "const":
+                fv = first.get("val")
+                return all(br.get("kind") == "const" and br.get("val") == fv for br in bits)
+            return False
+
+        def _chunk_ok(bits: list[dict]) -> bool:
+            # 能匹配到某个已命名信号
+            if _bits_key(bits) in bits_to_name:
+                return True
+            # 常量段：如0000
+            if _is_all_const(bits):
+                return True
+            # 重复段：如 {4{s[3]}}
+            if _is_repeat(bits):
+                return True
+            return False
+
+        def _try_split_concat(target_bits: list[dict]) -> Optional[tuple[list[dict], list[dict]]]:
+            if len(target_bits) < 2:
+                return None
+            for k in range(1, len(target_bits)):
+                low_bits = target_bits[0:k]
+                high_bits = target_bits[k:]
+                if _chunk_ok(low_bits) and _chunk_ok(high_bits):
+                    return (low_bits, high_bits)
+            return None
+
+        targets: list[tuple[str, list[dict], Optional[str]]] = []
+
+        # output ports
         for out_name, d in port_dirs.items():
             if d != "output":
                 continue
             out_bits = name_to_bits.get(out_name, [])
-            if len(out_bits) < 2:
+            if not out_bits:
                 continue
-            found = None
-            for k in range(1, len(out_bits)):
-                low_bits = out_bits[0:k]
-                high_bits = out_bits[k:]
-                low_name = bits_to_name.get(_bits_key(low_bits))
-                high_name = bits_to_name.get(_bits_key(high_bits))
-                if low_name and high_name:
-                    found = (low_name, high_name, low_bits, high_bits)
-                    break
-            if not found:
-                continue
-            low_name, high_name, low_bits, high_bits = found
-            nid_counter += 1
-            nid = f"n{nid_counter}"
-            # output的src用netnames里的src
             out_nn = (netnames.get(out_name) or {})
             out_src_raw = ((out_nn.get("attributes", {}) or {}).get("src"))
+            targets.append((out_name, out_bits, out_src_raw))
+
+        # netnames
+        for net_name, nn in netnames.items():
+            if net_name in port_dirs:
+                continue  # 排除端口名（input/output）
+            bits = name_to_bits.get(net_name, [])
+            if not bits:
+                continue
+            src_raw = ((nn.get("attributes", {}) or {}).get("src"))
+            targets.append((net_name, bits, src_raw))
+
+        # 生成CONCAT节点
+        for tgt_name, tgt_bits, tgt_src_raw in targets:
+            key = _bits_key(tgt_bits)
+            if key in made:
+                continue
+
+            found = _try_split_concat(tgt_bits)
+            if not found:
+                continue
+            low_bits, high_bits = found
+
+            nid_counter += 1
+            nid = f"n{nid_counter}"
             node = {
                 "nid": nid,
                 "op": "CONCAT",
                 "yosys_type": "$concat",
-                "yosys_name": f"$synth$concat${out_name}",
+                "yosys_name": f"$synth$concat${tgt_name}",
                 "ports": {
                     "A": low_bits,
                     "B": high_bits,
-                    "Y": out_bits,
+                    "Y": tgt_bits,
                 },
                 "params": {
                     "A_WIDTH": len(low_bits),
                     "B_WIDTH": len(high_bits),
-                    "Y_WIDTH": len(out_bits),
+                    "Y_WIDTH": len(tgt_bits),
                 },
-                "src": parse_src_span(out_src_raw),
+                "src": parse_src_span(tgt_src_raw),
                 "is_view": True,
             }
-            node["out_width"] = len(out_bits)
-            node["out_signed"] = _infer_out_signed_from_Y_bits(node["ports"]["Y"])
+            node["out_width"] = len(tgt_bits)
+            node["out_signed"] = bool(_infer_out_signed_from_Y_bits(node["ports"]["Y"]))
             node["args"] = _normalize_args(node)
+
             nodes.append(node)
+            made.add(key)
     return nodes, nid_counter

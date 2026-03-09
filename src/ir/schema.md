@@ -216,25 +216,27 @@ Yosys 的参数常是 32 位二进制字符串。统一解码为整数：
 
 ### 4.4 核心算子 op 枚举与映射
 
-| Yosys cell type | op        |
-| --------------- | --------- |
-| `$and`          | `AND`     |
-| `$or`           | `OR`      |
-| `$xor`          | `XOR`     |
-| `$not`          | `NOT`     |
-| `$mux`          | `MUX`     |
-| `$add`          | `ADD`     |
-| `$sub`          | `SUB`     |
-| `$slice`        | `EXTRACT` |
-| `$concat`       | `CONCAT`  |
-| `$shl`          | `SHL`     |
-| `$shr`          | `SHR`     |
-| `$eq`           | `EQ`      |
-| `$sshr`         | `ASHR`    |
-| `$lt`           | `LT`      |
-| `$le`           | `LE`      |
-| `$gt`           | `GT`      |
-| `$ge`           | `GE`      |
+| Yosys cell type | op          |
+| --------------- | ----------- |
+| `$and`          | `AND`       |
+| `$or`           | `OR`        |
+| `$xor`          | `XOR`       |
+| `$not`          | `NOT`       |
+| `$logic_not`    | `LOGIC_NOT` |
+| `$mux`          | `MUX`       |
+| `$pmux`         | `PMUX`      |
+| `$add`          | `ADD`       |
+| `$sub`          | `SUB`       |
+| `$slice`        | `EXTRACT`   |
+| `$concat`       | `CONCAT`    |
+| `$shl`          | `SHL`       |
+| `$shr`          | `SHR`       |
+| `$eq`           | `EQ`        |
+| `$sshr`         | `ASHR`      |
+| `$lt`           | `LT`        |
+| `$le`           | `LE`        |
+| `$gt`           | `GT`        |
+| `$ge`           | `GE`        |
 
 若遇到未知 type：
 
@@ -252,6 +254,15 @@ Yosys 的参数常是 32 位二进制字符串。统一解码为整数：
 { "cond": ports.S, "else": ports.A, "then": ports.B, "out": ports.Y }
 ```
 
+- PMUX（由 `$pmux` 构造）
+  - 约定：`S` 为选择信号，`A` 为默认分支，`B` 为候选分支集合，输出为 `Y`
+  - 说明：当 `S` 全为 0 时选择 `A`；当 `S` 的某一位为 1 时，选择 `B` 中对应的一段
+
+
+```json
+{ "sel": ports.S, "default": ports.A, "cases": ports.B, "out": ports.Y }
+```
+
 - 二元运算
   - 适用：`AND`, `OR`, `XOR`, `ADD`, `SUB`, `EQ`, `LT`, `LE`, `GT`, `GE`
   - 约定：`A` 为左操作数，`B` 为右操作数，输出为 `Y`
@@ -261,8 +272,8 @@ Yosys 的参数常是 32 位二进制字符串。统一解码为整数：
 { "lhs": ports.A, "rhs": ports.B, "out": ports.Y }
 ```
 
-- 一元运算
-  - 适用：`NOT`
+- 一元按位运算
+  - 适用：`NOT`（按位取反）
   - 约定：输入为 `A`，输出为 `Y`
 
 
@@ -270,7 +281,17 @@ Yosys 的参数常是 32 位二进制字符串。统一解码为整数：
 { "in": ports.A, "out": ports.Y }
 ```
 
+- 一元逻辑运算
+
+  - 适用：`LOGIC_NOT`（逻辑非`!`)
+  - 约定：输入为 `A`，输出为 `Y`
+
+  ```
+  { "in": ports.A, "out": ports.Y }
+  ```
+
 - EXTRACT（由 `$slice` 构造）
+
   - 约定：输入为 `A`，输出为 `Y`
 
 ```json
@@ -357,37 +378,35 @@ Yosys 的参数常是 32 位二进制字符串。统一解码为整数：
    - 对所有 input 端口 bits，设 driver 为 `{kind:"port", name:port_name}`
 
    - 对所有 nodes 的输出端口位（通常 `ports.Y`），设 driver 为 `{kind:"node", nid, port:"Y"}`
-      若同一位出现多重驱动，按冲突处理策略：
-     - 第一版建议保留最后一次写入，并在 `check_ir` 报告冲突（组合电路应无多驱动）
-
+   
 3. uses
 
    - 遍历 nodes 的非输出端口（如 A, B, S）
 
    - 对其 bits 中的 wire 位，追加 `{kind:"node", nid, port:port_name}`
 
-## 7. 不变量与检查要点（ check_ir ）
+## 7. 不变量与检查要点（`check_ir`）
 
-检查：
+`check_ir` 用于验证 IR 的结构合法性与语义，主要包括：
 
-1. width 一致性
-
-   - 每个 Signal：`width == len(bits)`
-
-   - 每个 Node：`out_width` 与 `ports.Y.length` 一致（若 ports.Y 存在）
-
-2. MUX 条件位宽
-   - `MUX` 的 `args.cond` 必须为 1 位
-      若不是 1 位，转换阶段应插入显式比较或规约（后续扩展）
-
-3. EXTRACT 合法性（当引入 `$slice` 后）
-
-   - hi, lo 满足范围且输出位宽等于 hi-lo+1
-
-   - 位序遵循约定
-
-4. 无环性（可选增强）
-   - 建立节点依赖图后应为 DAG（本项目默认无环组合电路）
+1. **顶层字段完整性**
+    IR 必须包含 `ir_version`、`source_format`、`top_module`、`signals`、`nodes`、`bit_index`，且 `source_format` 应为 `yosys_write_json`。
+2. **Signal 与 Node 一致性**
+   - 每个 `Signal` 满足 `width == len(bits)`，名称唯一，类型合法
+   - 每个 `Node` 满足 `out_width == len(ports.Y)`（若 `Y` 存在），`nid` 唯一，端口结构合法
+3. **关键算子约束**
+   - `MUX` 的条件位宽必须为 1
+   - `EXTRACT` 的切片范围必须合法，输出宽度与切片宽度一致
+   - `CONCAT` 满足输入宽度之和等于输出宽度
+   - `EQ` 与关系比较算子的输出必须为 1 位
+   - 移位算子的输出宽度必须与被移位值一致
+4. **驱动合法性**
+   - 同一个 `wire bit` 不允许被多个非 `view` 节点同时驱动
+   - 每个输出 bit 都必须在 `bit_index` 中具有合法驱动来源
+5. **`bit_index` 一致性**
+    `bit_index.wire_bits` 中记录的 `owners`、`driver`、`uses` 必须与 `signals` 和 `nodes` 一致。
+6. **无环性**
+    基于节点间 bit 依赖建立组合图，并要求其为 DAG，以满足当前原型仅处理无环组合电路的前提。
 
 ## 8. 从 Yosys JSON 到 IR 的对应关系
 

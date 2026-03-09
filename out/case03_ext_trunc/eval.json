@@ -110,6 +110,44 @@
     }
   },
   "nodes": {
+    "n3": {
+      "op": "CONCAT",
+      "out": {
+        "width": 8,
+        "signed": false,
+        "bits_msb": "000010XX",
+        "known_mask_hex": "0xfc",
+        "known_value_hex": "0x8",
+        "unknown_count": 2,
+        "range_unsigned": [
+          8,
+          11
+        ],
+        "range_signed": [
+          8,
+          11
+        ]
+      }
+    },
+    "n2": {
+      "op": "CONCAT",
+      "out": {
+        "width": 8,
+        "signed": true,
+        "bits_msb": "11111X01",
+        "known_mask_hex": "0xfb",
+        "known_value_hex": "0xf9",
+        "unknown_count": 1,
+        "range_unsigned": [
+          249,
+          253
+        ],
+        "range_signed": [
+          -7,
+          -3
+        ]
+      }
+    },
     "n1": {
       "op": "ADD",
       "out": {

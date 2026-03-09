@@ -78,6 +78,25 @@
     }
   },
   "nodes": {
+    "n2": {
+      "op": "CONCAT",
+      "out": {
+        "width": 8,
+        "signed": false,
+        "bits_msb": "1X0X0X11",
+        "known_mask_hex": "0xab",
+        "known_value_hex": "0x83",
+        "unknown_count": 3,
+        "range_unsigned": [
+          131,
+          215
+        ],
+        "range_signed": [
+          -125,
+          -41
+        ]
+      }
+    },
     "n1": {
       "op": "NOT",
       "out": {

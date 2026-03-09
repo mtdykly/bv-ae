@@ -20,6 +20,7 @@ def check_ir(ir: Dict[str, Any] | ModuleIR) -> None:
     _check_mux(nodes)
     _check_extract_concat(nodes)
     _check_shift_eq(nodes)
+    _check_logic_not_pmux(nodes)
     _check_rel_cmp(nodes)
     _check_multi_driver(nodes, signals)
     _check_bit_index(bit_index, signals, nodes)
@@ -212,6 +213,75 @@ def _check_shift_eq(nodes: list[dict]) -> None:
             if y_w is not None and y_w != len(y_bits):
                 raise ValueError(f"{op} param Y_WIDTH mismatch: nid={nid}, param={y_w}, Y={len(y_bits)}")
 
+def _check_logic_not_pmux(nodes: List[Dict[str, Any]]) -> None:
+    for n in nodes:
+        op = n.get("op")
+        nid = n.get("nid")
+        ports = n.get("ports", {}) or {}
+        params = n.get("params", {}) or {}
+
+        if op == "LOGIC_NOT":
+            if "A" not in ports or "Y" not in ports:
+                raise ValueError(f"LOGIC_NOT missing ports A or Y: nid={nid}")
+            a_bits = ports.get("A", [])
+            y_bits = ports.get("Y", [])
+            if not isinstance(a_bits, list) or not isinstance(y_bits, list):
+                raise ValueError(f"LOGIC_NOT ports not list: nid={nid}")
+            if len(y_bits) <= 0:
+                raise ValueError(f"LOGIC_NOT output is empty: nid={nid}")
+
+            a_w = _get_param_int(params, ["A_WIDTH"])
+            y_w = _get_param_int(params, ["Y_WIDTH", "WIDTH"])
+            if a_w is not None and a_w != len(a_bits):
+                raise ValueError(
+                    f"LOGIC_NOT param A_WIDTH mismatch: nid={nid}, param={a_w}, A={len(a_bits)}"
+                )
+            if y_w is not None and y_w != len(y_bits):
+                raise ValueError(
+                    f"LOGIC_NOT param Y_WIDTH mismatch: nid={nid}, param={y_w}, Y={len(y_bits)}"
+                )
+
+        if op == "PMUX":
+            if "A" not in ports or "B" not in ports or "S" not in ports or "Y" not in ports:
+                raise ValueError(f"PMUX missing ports A or B or S or Y: nid={nid}")
+            a_bits = ports.get("A", [])
+            b_bits = ports.get("B", [])
+            s_bits = ports.get("S", [])
+            y_bits = ports.get("Y", [])
+            if not isinstance(a_bits, list) or not isinstance(b_bits, list) \
+               or not isinstance(s_bits, list) or not isinstance(y_bits, list):
+                raise ValueError(f"PMUX ports not list: nid={nid}")
+
+            if len(a_bits) != len(y_bits):
+                raise ValueError(
+                    f"PMUX width mismatch: nid={nid}, A={len(a_bits)}, Y={len(y_bits)}"
+                )
+
+            if len(s_bits) == 0:
+                raise ValueError(f"PMUX select is empty: nid={nid}")
+
+            if len(b_bits) != len(s_bits) * len(y_bits):
+                raise ValueError(
+                    f"PMUX B width mismatch: nid={nid}, "
+                    f"B={len(b_bits)}, S={len(s_bits)}, Y={len(y_bits)}"
+                )
+
+            a_w = _get_param_int(params, ["WIDTH", "A_WIDTH"])
+            y_w = _get_param_int(params, ["WIDTH", "Y_WIDTH"])
+            s_w = _get_param_int(params, ["S_WIDTH"])
+            if a_w is not None and a_w != len(a_bits):
+                raise ValueError(
+                    f"PMUX param WIDTH mismatch with A: nid={nid}, param={a_w}, A={len(a_bits)}"
+                )
+            if y_w is not None and y_w != len(y_bits):
+                raise ValueError(
+                    f"PMUX param Y/WIDTH mismatch: nid={nid}, param={y_w}, Y={len(y_bits)}"
+                )
+            if s_w is not None and s_w != len(s_bits):
+                raise ValueError(
+                    f"PMUX param S_WIDTH mismatch: nid={nid}, param={s_w}, S={len(s_bits)}"
+                )
+
 def _check_rel_cmp(nodes: list[dict]) -> None:
     for n in nodes:
         op = n.get("op")
@@ -321,7 +391,7 @@ def _check_dag(nodes: List[Dict[str, Any]]) -> None:
             if isinstance(bid, int):
                 driver_of[bid] = nid
 
-    # 建图：v -> u
+    # 建图：v->u
     adj: Dict[str, Set[str]] = {nid: set() for nid in active_nodes.keys()}
     indeg: Dict[str, int] = {nid: 0 for nid in active_nodes.keys()}
 

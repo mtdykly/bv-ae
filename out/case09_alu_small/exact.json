@@ -14,9 +14,9 @@
       }
     }
   },
-  "enum_var_bits": 15,
-  "enum_count": 32768,
-  "time_seconds": 3.0437037000083365,
+  "enum_var_bits": 10,
+  "enum_count": 1024,
+  "time_seconds": 0.11746559990569949,
   "signals": {
     "flag": {
       "width": 1,

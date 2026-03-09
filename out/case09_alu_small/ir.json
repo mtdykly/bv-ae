@@ -1039,7 +1039,7 @@
     },
     {
       "nid": "n5",
-      "op": "UNSUPPORTED",
+      "op": "PMUX",
       "yosys_type": "$pmux",
       "yosys_name": "$procmux$11",
       "ports": {
@@ -1244,7 +1244,208 @@
           }
         ]
       },
-      "args": {},
+      "args": {
+        "sel": [
+          {
+            "kind": "wire",
+            "id": 46
+          },
+          {
+            "kind": "wire",
+            "id": 47
+          },
+          {
+            "kind": "wire",
+            "id": 48
+          },
+          {
+            "kind": "wire",
+            "id": 49
+          },
+          {
+            "kind": "wire",
+            "id": 50
+          },
+          {
+            "kind": "wire",
+            "id": 51
+          },
+          {
+            "kind": "wire",
+            "id": 52
+          },
+          {
+            "kind": "wire",
+            "id": 53
+          }
+        ],
+        "default": [
+          {
+            "kind": "const",
+            "val": "x"
+          },
+          {
+            "kind": "const",
+            "val": "x"
+          },
+          {
+            "kind": "const",
+            "val": "x"
+          },
+          {
+            "kind": "const",
+            "val": "x"
+          }
+        ],
+        "cases": [
+          {
+            "kind": "wire",
+            "id": 17
+          },
+          {
+            "kind": "const",
+            "val": "0"
+          },
+          {
+            "kind": "const",
+            "val": "0"
+          },
+          {
+            "kind": "const",
+            "val": "0"
+          },
+          {
+            "kind": "wire",
+            "id": 30
+          },
+          {
+            "kind": "wire",
+            "id": 31
+          },
+          {
+            "kind": "wire",
+            "id": 32
+          },
+          {
+            "kind": "wire",
+            "id": 33
+          },
+          {
+            "kind": "wire",
+            "id": 34
+          },
+          {
+            "kind": "wire",
+            "id": 35
+          },
+          {
+            "kind": "wire",
+            "id": 36
+          },
+          {
+            "kind": "wire",
+            "id": 37
+          },
+          {
+            "kind": "wire",
+            "id": 38
+          },
+          {
+            "kind": "wire",
+            "id": 39
+          },
+          {
+            "kind": "wire",
+            "id": 40
+          },
+          {
+            "kind": "wire",
+            "id": 41
+          },
+          {
+            "kind": "wire",
+            "id": 26
+          },
+          {
+            "kind": "wire",
+            "id": 27
+          },
+          {
+            "kind": "wire",
+            "id": 28
+          },
+          {
+            "kind": "wire",
+            "id": 29
+          },
+          {
+            "kind": "wire",
+            "id": 22
+          },
+          {
+            "kind": "wire",
+            "id": 23
+          },
+          {
+            "kind": "wire",
+            "id": 24
+          },
+          {
+            "kind": "wire",
+            "id": 25
+          },
+          {
+            "kind": "wire",
+            "id": 42
+          },
+          {
+            "kind": "wire",
+            "id": 43
+          },
+          {
+            "kind": "wire",
+            "id": 44
+          },
+          {
+            "kind": "wire",
+            "id": 45
+          },
+          {
+            "kind": "wire",
+            "id": 18
+          },
+          {
+            "kind": "wire",
+            "id": 19
+          },
+          {
+            "kind": "wire",
+            "id": 20
+          },
+          {
+            "kind": "wire",
+            "id": 21
+          }
+        ],
+        "out": [
+          {
+            "kind": "wire",
+            "id": 13
+          },
+          {
+            "kind": "wire",
+            "id": 14
+          },
+          {
+            "kind": "wire",
+            "id": 15
+          },
+          {
+            "kind": "wire",
+            "id": 16
+          }
+        ]
+      },
       "params": {
         "S_WIDTH": 8,
         "WIDTH": 4
@@ -1887,7 +2088,7 @@
     },
     {
       "nid": "n13",
-      "op": "UNSUPPORTED",
+      "op": "LOGIC_NOT",
       "yosys_type": "$logic_not",
       "yosys_name": "$procmux$19_CMP0",
       "ports": {
@@ -1912,7 +2113,28 @@
           }
         ]
       },
-      "args": {},
+      "args": {
+        "in": [
+          {
+            "kind": "wire",
+            "id": 10
+          },
+          {
+            "kind": "wire",
+            "id": 11
+          },
+          {
+            "kind": "wire",
+            "id": 12
+          }
+        ],
+        "out": [
+          {
+            "kind": "wire",
+            "id": 53
+          }
+        ]
+      },
       "params": {
         "A_SIGNED": 0,
         "A_WIDTH": 3,

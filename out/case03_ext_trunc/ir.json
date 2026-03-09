@@ -519,6 +519,338 @@
         "line_end": 9,
         "col_end": 47
       }
+    },
+    {
+      "nid": "n2",
+      "op": "CONCAT",
+      "yosys_type": "$concat",
+      "yosys_name": "$synth$concat$sext",
+      "ports": {
+        "A": [
+          {
+            "kind": "wire",
+            "id": 6
+          },
+          {
+            "kind": "wire",
+            "id": 7
+          },
+          {
+            "kind": "wire",
+            "id": 8
+          },
+          {
+            "kind": "wire",
+            "id": 9
+          }
+        ],
+        "B": [
+          {
+            "kind": "wire",
+            "id": 9
+          },
+          {
+            "kind": "wire",
+            "id": 9
+          },
+          {
+            "kind": "wire",
+            "id": 9
+          },
+          {
+            "kind": "wire",
+            "id": 9
+          }
+        ],
+        "Y": [
+          {
+            "kind": "wire",
+            "id": 6
+          },
+          {
+            "kind": "wire",
+            "id": 7
+          },
+          {
+            "kind": "wire",
+            "id": 8
+          },
+          {
+            "kind": "wire",
+            "id": 9
+          },
+          {
+            "kind": "wire",
+            "id": 9
+          },
+          {
+            "kind": "wire",
+            "id": 9
+          },
+          {
+            "kind": "wire",
+            "id": 9
+          },
+          {
+            "kind": "wire",
+            "id": 9
+          }
+        ]
+      },
+      "args": {
+        "low": [
+          {
+            "kind": "wire",
+            "id": 6
+          },
+          {
+            "kind": "wire",
+            "id": 7
+          },
+          {
+            "kind": "wire",
+            "id": 8
+          },
+          {
+            "kind": "wire",
+            "id": 9
+          }
+        ],
+        "high": [
+          {
+            "kind": "wire",
+            "id": 9
+          },
+          {
+            "kind": "wire",
+            "id": 9
+          },
+          {
+            "kind": "wire",
+            "id": 9
+          },
+          {
+            "kind": "wire",
+            "id": 9
+          }
+        ],
+        "out": [
+          {
+            "kind": "wire",
+            "id": 6
+          },
+          {
+            "kind": "wire",
+            "id": 7
+          },
+          {
+            "kind": "wire",
+            "id": 8
+          },
+          {
+            "kind": "wire",
+            "id": 9
+          },
+          {
+            "kind": "wire",
+            "id": 9
+          },
+          {
+            "kind": "wire",
+            "id": 9
+          },
+          {
+            "kind": "wire",
+            "id": 9
+          },
+          {
+            "kind": "wire",
+            "id": 9
+          }
+        ]
+      },
+      "params": {
+        "A_WIDTH": 4,
+        "B_WIDTH": 4,
+        "Y_WIDTH": 8
+      },
+      "out_width": 8,
+      "out_signed": true,
+      "src": {
+        "raw": "top.v:8.21-8.25",
+        "file": "top.v",
+        "line_start": 8,
+        "col_start": 21,
+        "line_end": 8,
+        "col_end": 25
+      },
+      "is_view": true
+    },
+    {
+      "nid": "n3",
+      "op": "CONCAT",
+      "yosys_type": "$concat",
+      "yosys_name": "$synth$concat$zext",
+      "ports": {
+        "A": [
+          {
+            "kind": "wire",
+            "id": 2
+          },
+          {
+            "kind": "wire",
+            "id": 3
+          },
+          {
+            "kind": "wire",
+            "id": 4
+          },
+          {
+            "kind": "wire",
+            "id": 5
+          }
+        ],
+        "B": [
+          {
+            "kind": "const",
+            "val": "0"
+          },
+          {
+            "kind": "const",
+            "val": "0"
+          },
+          {
+            "kind": "const",
+            "val": "0"
+          },
+          {
+            "kind": "const",
+            "val": "0"
+          }
+        ],
+        "Y": [
+          {
+            "kind": "wire",
+            "id": 2
+          },
+          {
+            "kind": "wire",
+            "id": 3
+          },
+          {
+            "kind": "wire",
+            "id": 4
+          },
+          {
+            "kind": "wire",
+            "id": 5
+          },
+          {
+            "kind": "const",
+            "val": "0"
+          },
+          {
+            "kind": "const",
+            "val": "0"
+          },
+          {
+            "kind": "const",
+            "val": "0"
+          },
+          {
+            "kind": "const",
+            "val": "0"
+          }
+        ]
+      },
+      "args": {
+        "low": [
+          {
+            "kind": "wire",
+            "id": 2
+          },
+          {
+            "kind": "wire",
+            "id": 3
+          },
+          {
+            "kind": "wire",
+            "id": 4
+          },
+          {
+            "kind": "wire",
+            "id": 5
+          }
+        ],
+        "high": [
+          {
+            "kind": "const",
+            "val": "0"
+          },
+          {
+            "kind": "const",
+            "val": "0"
+          },
+          {
+            "kind": "const",
+            "val": "0"
+          },
+          {
+            "kind": "const",
+            "val": "0"
+          }
+        ],
+        "out": [
+          {
+            "kind": "wire",
+            "id": 2
+          },
+          {
+            "kind": "wire",
+            "id": 3
+          },
+          {
+            "kind": "wire",
+            "id": 4
+          },
+          {
+            "kind": "wire",
+            "id": 5
+          },
+          {
+            "kind": "const",
+            "val": "0"
+          },
+          {
+            "kind": "const",
+            "val": "0"
+          },
+          {
+            "kind": "const",
+            "val": "0"
+          },
+          {
+            "kind": "const",
+            "val": "0"
+          }
+        ]
+      },
+      "params": {
+        "A_WIDTH": 4,
+        "B_WIDTH": 4,
+        "Y_WIDTH": 8
+      },
+      "out_width": 8,
+      "out_signed": false,
+      "src": {
+        "raw": "top.v:7.14-7.18",
+        "file": "top.v",
+        "line_start": 7,
+        "col_start": 14,
+        "line_end": 7,
+        "col_end": 18
+      },
+      "is_view": true
     }
   ],
   "outputs": {
@@ -567,6 +899,11 @@
             "kind": "node",
             "nid": "n1",
             "port": "A"
+          },
+          {
+            "kind": "node",
+            "nid": "n3",
+            "port": "A"
           }
         ]
       },
@@ -583,6 +920,11 @@
           {
             "kind": "node",
             "nid": "n1",
+            "port": "A"
+          },
+          {
+            "kind": "node",
+            "nid": "n3",
             "port": "A"
           }
         ]
@@ -601,6 +943,11 @@
             "kind": "node",
             "nid": "n1",
             "port": "A"
+          },
+          {
+            "kind": "node",
+            "nid": "n3",
+            "port": "A"
           }
         ]
       },
@@ -617,6 +964,11 @@
           {
             "kind": "node",
             "nid": "n1",
+            "port": "A"
+          },
+          {
+            "kind": "node",
+            "nid": "n3",
             "port": "A"
           }
         ]
@@ -635,6 +987,11 @@
             "kind": "node",
             "nid": "n1",
             "port": "B"
+          },
+          {
+            "kind": "node",
+            "nid": "n2",
+            "port": "A"
           }
         ]
       },
@@ -652,6 +1009,11 @@
             "kind": "node",
             "nid": "n1",
             "port": "B"
+          },
+          {
+            "kind": "node",
+            "nid": "n2",
+            "port": "A"
           }
         ]
       },
@@ -669,6 +1031,11 @@
             "kind": "node",
             "nid": "n1",
             "port": "B"
+          },
+          {
+            "kind": "node",
+            "nid": "n2",
+            "port": "A"
           }
         ]
       },
@@ -705,6 +1072,31 @@
           {
             "kind": "node",
             "nid": "n1",
+            "port": "B"
+          },
+          {
+            "kind": "node",
+            "nid": "n2",
+            "port": "A"
+          },
+          {
+            "kind": "node",
+            "nid": "n2",
+            "port": "B"
+          },
+          {
+            "kind": "node",
+            "nid": "n2",
+            "port": "B"
+          },
+          {
+            "kind": "node",
+            "nid": "n2",
+            "port": "B"
+          },
+          {
+            "kind": "node",
+            "nid": "n2",
             "port": "B"
           }
         ]

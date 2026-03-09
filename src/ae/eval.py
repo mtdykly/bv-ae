@@ -6,7 +6,6 @@ from itertools import product
 from src.ae.bv3 import BV3, Bit3
 from src.ir.ir_types import ModuleIR
 
-
 def _as_ir_dict(ir: dict | ModuleIR) -> dict:
     return ir.to_dict() if isinstance(ir, ModuleIR) else ir
 
@@ -34,26 +33,6 @@ def _write_bits(env: Dict[int, Bit3], out_bitrefs: List[dict], value: BV3) -> No
         if br.get("kind") == "wire":
             env[int(br["id"])] = bv
 
-# ----------按位逻辑运算----------
-def _bit_and(a: Bit3, b: Bit3) -> Bit3:
-    if a is Bit3.Z0 or b is Bit3.Z0:
-        return Bit3.Z0
-    if a is Bit3.Z1 and b is Bit3.Z1:
-        return Bit3.Z1
-    return Bit3.X
-
-def _bit_or(a: Bit3, b: Bit3) -> Bit3:
-    if a is Bit3.Z1 or b is Bit3.Z1:
-        return Bit3.Z1
-    if a is Bit3.Z0 and b is Bit3.Z0:
-        return Bit3.Z0
-    return Bit3.X
-
-def _bit_xor(a: Bit3, b: Bit3) -> Bit3:
-    if a is Bit3.X or b is Bit3.X:
-        return Bit3.X
-    return Bit3.Z1 if (a is not b) else Bit3.Z0
-
 def _bit_not(a: Bit3) -> Bit3:
     if a is Bit3.Z0:
         return Bit3.Z1
@@ -69,54 +48,27 @@ def _join_bv3_values(cands: List[BV3]) -> BV3:
         acc = acc.join(v)
     return acc
 
-# 若未知位数太多则返回 None；否则枚举所有可能的无符号值
-def _possible_uvals_from_bits(bits_lsb: List[Bit3], max_enum: int = 64) -> Optional[List[int]]:
-    unk = [i for i, b in enumerate(bits_lsb) if b is Bit3.X]
-    # 没有未知位
+def _possible_uvals_from_bv3(v: BV3, max_enum: int = 64) -> Optional[List[int]]:
+    unk = [i for i in range(v.width) if ((v.unknown_mask >> i) & 1) != 0]
     if len(unk) == 0:
-        v = 0
-        for i, b in enumerate(bits_lsb):
-            if b is Bit3.Z1:
-                v |= (1 << i)
-        return [v]
+        m = (1 << v.width) - 1 if v.width > 0 else 0
+        return [v.known_value & m]
     if len(unk) > 6:
         return None
     if (1 << len(unk)) > max_enum:
         return None
-    base = 0
-    for i, b in enumerate(bits_lsb):
-        if b is Bit3.Z1:
-            base |= (1 << i)
+    m = (1 << v.width) - 1 if v.width > 0 else 0
+    base = v.known_value & m
     vals: List[int] = []
     for assign in product([0, 1], repeat=len(unk)):
-        v = base
+        x = base
         for idx, bit in zip(unk, assign):
             if bit == 1:
-                v |= (1 << idx)
+                x |= (1 << idx)
             else:
-                v &= ~(1 << idx)
-        vals.append(v)
+                x &= ~(1 << idx)
+        vals.append(x & m)
     return vals
-
-# 左移
-def _shift_left(bits_lsb: List[Bit3], sh: int) -> List[Bit3]:
-    w = len(bits_lsb)
-    out = [Bit3.Z0] * w
-    for i in range(w):
-        src = i - sh
-        if 0 <= src < w:
-            out[i] = bits_lsb[src]
-    return out
-
-# 逻辑右移
-def _shift_right(bits_lsb: List[Bit3], sh: int) -> List[Bit3]:
-    w = len(bits_lsb)
-    out = [Bit3.Z0] * w
-    for i in range(w):
-        src = i + sh
-        if 0 <= src < w:
-            out[i] = bits_lsb[src]
-    return out
 
 def _ext_to(v: BV3, w: int) -> BV3:
     return v.sext(w) if getattr(v, "signed", False) else v.zext(w)
@@ -124,94 +76,6 @@ def _ext_to(v: BV3, w: int) -> BV3:
 def _align_mixed(a: BV3, b: BV3, out_w: int) -> Tuple[BV3, BV3]:
     w = max(a.width, b.width, out_w)
     return _ext_to(a, w), _ext_to(b, w)
-
-# 算术右移
-def _shift_arith_right(bits_lsb: List[Bit3], sh: int) -> List[Bit3]:
-    w = len(bits_lsb)
-    sign = bits_lsb[w - 1] if w > 0 else Bit3.X
-    out = [Bit3.X] * w
-    for i in range(w):
-        src = i + sh
-        if 0 <= src < w:
-            out[i] = bits_lsb[src]
-        else:
-            out[i] = sign
-    return out
-
-def _bit3_to_vals(b: Bit3) -> Set[int]:
-    if b is Bit3.Z0:
-        return {0}
-    if b is Bit3.Z1:
-        return {1}
-    return {0, 1}
-
-def _vals_to_bit3(vals: Set[int]) -> Bit3:
-    if vals == {0}:
-        return Bit3.Z0
-    if vals == {1}:
-        return Bit3.Z1
-    return Bit3.X
-
-def _collect_src_vals(bits_lsb: List[Bit3], j_lo: int, j_hi: int) -> Set[int]:
-    vals: Set[int] = set()
-    if j_lo > j_hi:
-        return vals
-    for j in range(j_lo, j_hi + 1):
-        vals |= _bit3_to_vals(bits_lsb[j])
-    return vals
-
-def _shift_left_interval(bits_lsb: List[Bit3], sh_lo: int, sh_hi: int) -> List[Bit3]:
-    w = len(bits_lsb)
-    out: List[Bit3] = []
-    for i in range(w):
-        vals: Set[int] = set()
-        valid_lo = i - (w - 1)
-        valid_hi = i
-        j_lo = max(0, i - sh_hi)
-        j_hi = min(w - 1, i - sh_lo)
-        vals |= _collect_src_vals(bits_lsb, j_lo, j_hi)
-        # 若区间包含无效移位，逻辑左移该位可能被0填充。
-        if sh_lo < valid_lo or sh_hi > valid_hi:
-            vals.add(0)
-        if not vals:
-            vals.add(0)
-        out.append(_vals_to_bit3(vals))
-    return out
-
-def _shift_right_interval(bits_lsb: List[Bit3], sh_lo: int, sh_hi: int) -> List[Bit3]:
-    w = len(bits_lsb)
-    out: List[Bit3] = []
-    for i in range(w):
-        vals: Set[int] = set()
-        valid_hi = w - 1 - i
-        j_lo = i + sh_lo
-        j_hi = min(w - 1, i + sh_hi)
-        vals |= _collect_src_vals(bits_lsb, j_lo, j_hi)
-        # 若区间包含超过可取源位的移位量，逻辑右移该位会被0填充。
-        if sh_hi > valid_hi:
-            vals.add(0)
-        if not vals:
-            vals.add(0)
-        out.append(_vals_to_bit3(vals))
-    return out
-
-def _shift_arith_right_interval(bits_lsb: List[Bit3], sh_lo: int, sh_hi: int) -> List[Bit3]:
-    w = len(bits_lsb)
-    sign = bits_lsb[w - 1] if w > 0 else Bit3.X
-    out: List[Bit3] = []
-    for i in range(w):
-        vals: Set[int] = set()
-        valid_hi = w - 1 - i
-        j_lo = i + sh_lo
-        j_hi = min(w - 1, i + sh_hi)
-        vals |= _collect_src_vals(bits_lsb, j_lo, j_hi)
-        # 若区间包含超过可取源位的移位量，算术右移该位会用符号位填充。
-        if sh_hi > valid_hi:
-            vals |= _bit3_to_vals(sign)
-        if not vals:
-            vals |= _bit3_to_vals(sign)
-        out.append(_vals_to_bit3(vals))
-    return out
 
 # 单bit全加器：枚举a,b,cin的可能取值集合，得到sum和cout的可能集合
 def _fa(a: Bit3, b: Bit3, cin: Bit3) -> Tuple[Bit3, Bit3]:
@@ -262,6 +126,7 @@ def _sub_bv3(a: BV3, b: BV3, out_w: int) -> BV3:
 def _resize_to_out(v: BV3, out_w: int) -> BV3:
     return v.sext(out_w) if getattr(v, "signed", False) else v.zext(out_w)
 
+# 提取区间公共二进制前缀
 def _interval_prefix_bv3(lo: int, hi: int, width: int, signed: bool) -> BV3:
     if width <= 0:
         return BV3(width=0, signed=signed, known_mask=0, known_value=0)
@@ -269,8 +134,10 @@ def _interval_prefix_bv3(lo: int, hi: int, width: int, signed: bool) -> BV3:
     lo &= m
     hi &= m
     diff = lo ^ hi
+    # 完全相同，区间只有一个值
     if diff == 0:
         return BV3(width=width, signed=signed, known_mask=m, known_value=lo)
+    # 最高的不同位
     highest_diff = diff.bit_length() - 1
     unknown_low_mask = (1 << (highest_diff + 1)) - 1
     known_mask = m & ~unknown_low_mask
@@ -366,7 +233,13 @@ def _apply_assumptions(ir: dict, env: Dict[int, Bit3], assume: Optional[dict]) -
             else:
                 raise ValueError(f"invalid char in assume bits_msb for {name}: {ch}")
 
-def _eval_node(op: str, ports: dict, params: dict, env: Dict[int, Bit3]) -> BV3:
+def _eval_node(
+    op: str,
+    ports: dict,
+    params: dict,
+    env: Dict[int, Bit3],
+    out_signed: bool = False,
+) -> BV3:
     y_bits = ports.get("Y", [])
     y_w = len(y_bits)
 
@@ -380,25 +253,77 @@ def _eval_node(op: str, ports: dict, params: dict, env: Dict[int, Bit3]) -> BV3:
     def vec(pn: str) -> BV3:
         return _read_bv3_from_bits(env, ports.get(pn, []), signed=_p_signed(pn))
 
+    def _as_out(v: BV3) -> BV3:
+        return BV3(
+            width=v.width,
+            signed=out_signed,
+            known_mask=v.known_mask,
+            known_value=v.known_value,
+        )
+
     if op == "AND":
-        a, b = _align_mixed(vec("A"), vec("B"), y_w)
-        out_bits = [_bit_and(x, y) for x, y in zip(a.to_bits(), b.to_bits())]
-        return BV3.from_bits(out_bits).trunc(y_w)
+        a = vec("A").zext(y_w).trunc(y_w)
+        b = vec("B").zext(y_w).trunc(y_w)
+        wm = (1 << y_w) - 1 if y_w > 0 else 0
+        a_k1 = a.known_mask & a.known_value
+        a_k0 = a.known_mask & ((~a.known_value) & wm)
+        b_k1 = b.known_mask & b.known_value
+        b_k0 = b.known_mask & ((~b.known_value) & wm)
+        known1 = a_k1 & b_k1
+        known0 = a_k0 | b_k0
+        km = (known0 | known1) & wm
+        kv = known1 & wm
+        return _as_out(BV3(width=y_w, signed=False, known_mask=km, known_value=kv))
 
     if op == "OR":
-        a, b = _align_mixed(vec("A"), vec("B"), y_w)
-        out_bits = [_bit_or(x, y) for x, y in zip(a.to_bits(), b.to_bits())]
-        return BV3.from_bits(out_bits).trunc(y_w)
+        a = vec("A").zext(y_w).trunc(y_w)
+        b = vec("B").zext(y_w).trunc(y_w)
+        wm = (1 << y_w) - 1 if y_w > 0 else 0
+        a_k1 = a.known_mask & a.known_value
+        a_k0 = a.known_mask & ((~a.known_value) & wm)
+        b_k1 = b.known_mask & b.known_value
+        b_k0 = b.known_mask & ((~b.known_value) & wm)
+        known1 = a_k1 | b_k1
+        known0 = a_k0 & b_k0
+        km = (known0 | known1) & wm
+        kv = known1 & wm
+        return _as_out(BV3(width=y_w, signed=False, known_mask=km, known_value=kv))
 
     if op == "XOR":
-        a, b = _align_mixed(vec("A"), vec("B"), y_w)
-        out_bits = [_bit_xor(x, y) for x, y in zip(a.to_bits(), b.to_bits())]
-        return BV3.from_bits(out_bits).trunc(y_w)
+        a = vec("A").zext(y_w).trunc(y_w)
+        b = vec("B").zext(y_w).trunc(y_w)
+        wm = (1 << y_w) - 1 if y_w > 0 else 0
+        known = a.known_mask & b.known_mask
+        value = (a.known_value ^ b.known_value) & known & wm
+        return _as_out(BV3(width=y_w, signed=False, known_mask=known & wm, known_value=value))
 
     if op == "NOT":
+        a = vec("A").zext(y_w).trunc(y_w)
+        wm = (1 << y_w) - 1 if y_w > 0 else 0
+        km = a.known_mask & wm
+        kv = ((~a.known_value) & wm) & km
+        return _as_out(BV3(width=y_w, signed=False, known_mask=km, known_value=kv))
+
+    if op == "LOGIC_NOT":
         a = vec("A")
-        out_bits = [_bit_not(x) for x in a.to_bits()]
-        return BV3.from_bits(out_bits).trunc(y_w)
+        if y_w <= 0:
+            return _as_out(BV3(width=0, signed=False, known_mask=0, known_value=0))
+
+        alo, ahi = a.range_unsigned()
+        if alo == 0 and ahi == 0:
+            bit0 = 1
+            bit0_known = 1
+        elif alo > 0:
+            bit0 = 0
+            bit0_known = 1
+        else:
+            bit0 = 0
+            bit0_known = 0
+
+        high_known_zero = (((1 << (y_w - 1)) - 1) << 1) if y_w > 1 else 0
+        km = high_known_zero | bit0_known
+        kv = bit0
+        return _as_out(BV3(width=y_w, signed=False, known_mask=km, known_value=kv))
 
     if op == "MUX":
         s = vec("S")
@@ -409,92 +334,380 @@ def _eval_node(op: str, ports: dict, params: dict, env: Dict[int, Bit3]) -> BV3:
         a_t = a.trunc(y_w)
         b_t = b.trunc(y_w)
         if sel is Bit3.Z0:
-            return a_t
+            return _as_out(a_t)
         if sel is Bit3.Z1:
-            return b_t
-        return a_t.join(b_t)
+            return _as_out(b_t)
+        return _as_out(a_t.join(b_t))
+
+    if op == "PMUX":
+        a = vec("A").trunc(y_w)
+        b = vec("B")
+        s = vec("S")
+
+        if s.width == 0:
+            return _as_out(a)
+
+        cases: List[BV3] = []
+        for i in range(s.width):
+            offset = i * y_w
+            avail = max(0, min(y_w, b.width - offset))
+            if avail <= 0:
+                case_i = BV3.top(y_w)
+            else:
+                m = (1 << avail) - 1
+                km = (b.known_mask >> offset) & m
+                kv = (b.known_value >> offset) & m
+                case_i = BV3(width=y_w, signed=False, known_mask=km, known_value=kv)
+            cases.append(case_i)
+
+        ones: List[int] = []
+        xs: List[int] = []
+        for i in range(s.width):
+            sb = s.bit(i)
+            if sb is Bit3.Z1:
+                ones.append(i)
+            elif sb is Bit3.X:
+                xs.append(i)
+
+        if len(ones) == 0 and len(xs) == 0:
+            return _as_out(a)
+        if len(ones) == 1 and len(xs) == 0:
+            return _as_out(cases[ones[0]])
+
+        cands = [a]
+        for i in range(s.width):
+            sb = s.bit(i)
+            if sb is not Bit3.Z0:
+                cands.append(cases[i])
+        return _as_out(_join_bv3_values(cands))
 
     if op == "EXTRACT":
         a = vec("A")
         offset = params.get("OFFSET")
-        width = params.get("Y_WIDTH", y_w)
-        if not isinstance(offset, int) or not isinstance(width, int):
-            return BV3.top(y_w)
-        out_bits = a.to_bits()[offset: offset + width]
-        if len(out_bits) < y_w:
-            out_bits = out_bits + [Bit3.X] * (y_w - len(out_bits))
-        return BV3.from_bits(out_bits[:y_w])
+        if not isinstance(offset, int) or offset < 0:
+            return _as_out(BV3.top(y_w))
+        avail = max(0, min(y_w, a.width - offset))
+        if avail == 0:
+            return _as_out(BV3.top(y_w))
+        m = (1 << avail) - 1
+        km = (a.known_mask >> offset) & m
+        kv = (a.known_value >> offset) & m
+        return _as_out(BV3(width=y_w, signed=False, known_mask=km, known_value=kv))
 
     if op == "CONCAT":
         low = vec("A")
         high = vec("B")
-        out_bits = low.to_bits() + high.to_bits()
-        if len(out_bits) < y_w:
-            out_bits = out_bits + [Bit3.X] * (y_w - len(out_bits))
-        return BV3.from_bits(out_bits[:y_w])
+        total_w = low.width + high.width
+        km = low.known_mask | (high.known_mask << low.width)
+        kv = low.known_value | (high.known_value << low.width)
+        if total_w >= y_w:
+            m = (1 << y_w) - 1 if y_w > 0 else 0
+            return _as_out(
+                BV3(
+                    width=y_w,
+                    signed=False,
+                    known_mask=km & m,
+                    known_value=kv & m,
+                )
+            )
+        return _as_out(
+            BV3(
+                width=y_w,
+                signed=False,
+                known_mask=km,
+                known_value=kv,
+            )
+        )
 
     if op == "EQ":
-        a, b = _align_mixed(vec("A"), vec("B"), 1)
+        va = vec("A")
+        vb = vec("B")
+        a, b = _align_mixed(va, vb, max(va.width, vb.width))
+        # 肯定不等
         conflict = ((a.known_value ^ b.known_value) & (a.known_mask & b.known_mask)) != 0
         if conflict:
-            return BV3.from_bits([Bit3.Z0]).trunc(y_w)
-        all_known = (a.known_mask == ((1 << a.width) - 1)) and (b.known_mask == ((1 << b.width) - 1))
+            return _as_out(BV3.from_bits([Bit3.Z0]).trunc(y_w))
+        # 肯定相等
+        full = (1 << a.width) - 1 if a.width > 0 else 0
+        all_known = (a.known_mask == full) and (b.known_mask == full)
         if all_known and (a.known_value == b.known_value):
-            return BV3.from_bits([Bit3.Z1]).trunc(y_w)
-        return BV3.from_bits([Bit3.X]).trunc(y_w)
+            return _as_out(BV3.from_bits([Bit3.Z1]).trunc(y_w))
+        # 未知
+        return _as_out(BV3.from_bits([Bit3.X]).trunc(y_w))
 
     if op == "SHL":
         a = vec("A").trunc(y_w)
         shv = vec("B")
-        a_bits = a.to_bits()
-        sh_bits = shv.to_bits()
-        cands = _possible_uvals_from_bits(sh_bits)
-        if cands is None:
-            sh_lo, sh_hi = shv.range_unsigned()
-            out_bits = _shift_left_interval(a_bits, int(sh_lo), int(sh_hi))
-            return BV3.from_bits(out_bits).trunc(y_w)
-        outs = [BV3.from_bits(_shift_left(a_bits, int(s))).trunc(y_w) for s in cands]
-        return _join_bv3_values(outs)
+        sh_lo, sh_hi = shv.range_unsigned()
+        # 移位量确定时
+        if sh_lo == sh_hi:
+            sh = int(sh_lo)
+            if y_w <= 0:
+                return _as_out(BV3(width=0, signed=False, known_mask=0, known_value=0))
+            m = (1 << y_w) - 1
+            fill = min(sh, y_w)
+            low_zero_mask = (1 << fill) - 1 if fill > 0 else 0
+            km = ((a.known_mask << sh) & m) | low_zero_mask
+            kv = (a.known_value << sh) & m
+            return _as_out(BV3(width=y_w, signed=False, known_mask=km, known_value=kv))
+        # 移位量可以小规模枚举时
+        cands = _possible_uvals_from_bv3(shv)
+        if cands is not None:
+            m = (1 << y_w) - 1 if y_w > 0 else 0
+            outs: List[BV3] = []
+            for sh in cands:
+                fill = min(int(sh), y_w)
+                low_zero_mask = (1 << fill) - 1 if fill > 0 else 0
+                km = ((a.known_mask << int(sh)) & m) | low_zero_mask
+                kv = (a.known_value << int(sh)) & m
+                outs.append(BV3(width=y_w, signed=False, known_mask=km, known_value=kv))
+            return _as_out(_join_bv3_values(outs))
+        # 枚举不了时
+        out_bits: List[Bit3] = []
+        for i in range(y_w):
+            maybe0 = bool(sh_hi > i)
+            maybe1 = False
+
+            j_lo = max(0, i - int(sh_hi))
+            j_hi = min(a.width - 1, i - int(sh_lo))
+
+            if j_lo <= j_hi:
+                for j in range(j_lo, j_hi + 1):
+                    bj = a.bit(j)
+                    if bj is Bit3.Z0:
+                        maybe0 = True
+                    elif bj is Bit3.Z1:
+                        maybe1 = True
+                    else:
+                        maybe0 = True
+                        maybe1 = True
+                    if maybe0 and maybe1:
+                        break
+
+            if maybe0 and not maybe1:
+                out_bits.append(Bit3.Z0)
+            elif maybe1 and not maybe0:
+                out_bits.append(Bit3.Z1)
+            else:
+                out_bits.append(Bit3.X)
+
+        return _as_out(BV3.from_bits(out_bits, signed=False).trunc(y_w))
 
     if op == "SHR":
         a = vec("A").trunc(y_w)
         shv = vec("B")
-        a_bits = a.to_bits()
-        sh_bits = shv.to_bits()
-        cands = _possible_uvals_from_bits(sh_bits)
-        if cands is None:
-            sh_lo, sh_hi = shv.range_unsigned()
-            out_bits = _shift_right_interval(a_bits, int(sh_lo), int(sh_hi))
-            return BV3.from_bits(out_bits).trunc(y_w)
-        outs = [BV3.from_bits(_shift_right(a_bits, int(s))).trunc(y_w) for s in cands]
-        return _join_bv3_values(outs)
+        sh_lo, sh_hi = shv.range_unsigned()
+        # 移位量确定时
+        if sh_lo == sh_hi:
+            sh = int(sh_lo)
+            if y_w <= 0:
+                return _as_out(BV3(width=0, signed=False, known_mask=0, known_value=0))
+            m = (1 << y_w) - 1
+            fill = min(sh, y_w)
+            hi_zero_mask = (((1 << fill) - 1) << (y_w - fill)) if fill > 0 else 0
+            km = ((a.known_mask >> sh) & m) | hi_zero_mask
+            kv = (a.known_value >> sh) & m
+            return _as_out(BV3(width=y_w, signed=False, known_mask=km, known_value=kv))
+        # 移位量可以小规模枚举时
+        cands = _possible_uvals_from_bv3(shv)
+        if cands is not None:
+            m = (1 << y_w) - 1 if y_w > 0 else 0
+            outs: List[BV3] = []
+            for sh in cands:
+                fill = min(int(sh), y_w)
+                hi_zero_mask = (((1 << fill) - 1) << (y_w - fill)) if fill > 0 else 0
+                km = ((a.known_mask >> int(sh)) & m) | hi_zero_mask
+                kv = (a.known_value >> int(sh)) & m
+                outs.append(BV3(width=y_w, signed=False, known_mask=km, known_value=kv))
+            return _as_out(_join_bv3_values(outs))
+        # 枚举不了时
+        out_bits: List[Bit3] = []
+        for i in range(y_w):
+            valid_hi = a.width - 1 - i
+            maybe0 = bool(sh_hi > valid_hi)
+            maybe1 = False
+
+            j_lo = i + int(sh_lo)
+            j_hi = min(a.width - 1, i + int(sh_hi))
+
+            if j_lo <= j_hi:
+                for j in range(j_lo, j_hi + 1):
+                    bj = a.bit(j)
+                    if bj is Bit3.Z0:
+                        maybe0 = True
+                    elif bj is Bit3.Z1:
+                        maybe1 = True
+                    else:
+                        maybe0 = True
+                        maybe1 = True
+                    if maybe0 and maybe1:
+                        break
+
+            if maybe0 and not maybe1:
+                out_bits.append(Bit3.Z0)
+            elif maybe1 and not maybe0:
+                out_bits.append(Bit3.Z1)
+            else:
+                out_bits.append(Bit3.X)
+
+        return _as_out(BV3.from_bits(out_bits, signed=False).trunc(y_w))
 
     if op == "ADD":
         a, b = _align_mixed(vec("A"), vec("B"), y_w)
-        out = _add_bv3(a, b, y_w)
         a2 = _resize_to_out(a, y_w)
         b2 = _resize_to_out(b, y_w)
-        return _tighten_add_no_split(out, a2, b2)
+        if y_w <= 0:
+            return _as_out(BV3(width=0, signed=False, known_mask=0, known_value=0))
+
+        full = (1 << y_w) - 1
+        res_signed = out_signed
+
+        if a2.known_mask == full and b2.known_mask == full:
+            v = (a2.known_value + b2.known_value) & full
+            return _as_out(BV3.const(y_w, v, signed=res_signed))
+        if a2.known_mask == full and a2.known_value == 0:
+            return _as_out(BV3(width=y_w, signed=res_signed, known_mask=b2.known_mask, known_value=b2.known_value))
+        if b2.known_mask == full and b2.known_value == 0:
+            return _as_out(BV3(width=y_w, signed=res_signed, known_mask=a2.known_mask, known_value=a2.known_value))
+
+        alo, ahi = a2.range_unsigned()
+        blo, bhi = b2.range_unsigned()
+        s_lo = alo + blo
+        s_hi = ahi + bhi
+        mod = 1 << y_w
+        if s_hi < mod:
+            return _as_out(_interval_prefix_bv3(s_lo, s_hi, y_w, res_signed))
+        if s_lo >= mod:
+            return _as_out(_interval_prefix_bv3(s_lo - mod, s_hi - mod, y_w, res_signed))
+
+        out = _as_out(_add_bv3(a, b, y_w))
+        return _as_out(_tighten_add_no_split(out, a2, b2))
 
     if op == "SUB":
         a, b = _align_mixed(vec("A"), vec("B"), y_w)
-        out = _sub_bv3(a, b, y_w)
         a2 = _resize_to_out(a, y_w)
         b2 = _resize_to_out(b, y_w)
-        return _tighten_sub_no_split(out, a2, b2)
-    
+
+        if y_w <= 0:
+            return _as_out(BV3(width=0, signed=False, known_mask=0, known_value=0))
+
+        full = (1 << y_w) - 1
+        res_signed = out_signed
+
+        if a2.known_mask == full and b2.known_mask == full:
+            v = (a2.known_value - b2.known_value) & full
+            return _as_out(BV3.const(y_w, v, signed=res_signed))
+        if b2.known_mask == full and b2.known_value == 0:
+            return _as_out(BV3(width=y_w, signed=res_signed, known_mask=a2.known_mask, known_value=a2.known_value))
+        if a2.known_mask == full and b2.known_mask == full and a2.known_value == b2.known_value:
+            return _as_out(BV3.const(y_w, 0, signed=res_signed))
+
+        alo, ahi = a2.range_unsigned()
+        blo, bhi = b2.range_unsigned()
+        d_lo = alo - bhi
+        d_hi = ahi - blo
+        mod = 1 << y_w
+        if d_lo >= 0:
+            return _as_out(_interval_prefix_bv3(d_lo, d_hi, y_w, res_signed))
+        if d_hi < 0:
+            return _as_out(_interval_prefix_bv3(d_lo + mod, d_hi + mod, y_w, res_signed))
+
+        out = _as_out(_sub_bv3(a, b, y_w))
+        return _as_out(_tighten_sub_no_split(out, a2, b2))
+
     if op == "ASHR":
         a = vec("A").trunc(y_w)
         shv = vec("B")
-        a_bits = a.to_bits()
-        cands = _possible_uvals_from_bits(shv.to_bits())
-        if cands is None:
-            sh_lo, sh_hi = shv.range_unsigned()
-            out_bits = _shift_arith_right_interval(a_bits, int(sh_lo), int(sh_hi))
-            return BV3.from_bits(out_bits).trunc(y_w)
-        outs = [BV3.from_bits(_shift_arith_right(a_bits, int(s))).trunc(y_w) for s in cands]
-        return _join_bv3_values(outs)
-    
+        sh_lo, sh_hi = shv.range_unsigned()
+        # 移位量确定时
+        if sh_lo == sh_hi:
+            sh = int(sh_lo)
+            if y_w <= 0:
+                return _as_out(BV3(width=0, signed=False, known_mask=0, known_value=0))
+            m = (1 << y_w) - 1
+            fill = min(sh, y_w)
+            body_km = (a.known_mask >> sh) & m
+            body_kv = (a.known_value >> sh) & m
+            hi_fill_mask = (((1 << fill) - 1) << (y_w - fill)) if fill > 0 else 0
+            sign_i = a.width - 1
+            sign_known = ((a.known_mask >> sign_i) & 1) if a.width > 0 else 0
+            sign_val = ((a.known_value >> sign_i) & 1) if a.width > 0 else 0
+
+            km = body_km
+            kv = body_kv
+            if sign_known:
+                km |= hi_fill_mask
+                if sign_val:
+                    kv |= hi_fill_mask
+
+            return _as_out(BV3(width=y_w, signed=False, known_mask=km, known_value=kv))
+        # 移位量可以小规模枚举时
+        cands = _possible_uvals_from_bv3(shv)
+        if cands is not None:
+            m = (1 << y_w) - 1 if y_w > 0 else 0
+            sign_i = a.width - 1
+            sign_known = ((a.known_mask >> sign_i) & 1) if a.width > 0 else 0
+            sign_val = ((a.known_value >> sign_i) & 1) if a.width > 0 else 0
+
+            outs: List[BV3] = []
+            for sh in cands:
+                fill = min(int(sh), y_w)
+                body_km = (a.known_mask >> int(sh)) & m
+                body_kv = (a.known_value >> int(sh)) & m
+                hi_fill_mask = (((1 << fill) - 1) << (y_w - fill)) if fill > 0 else 0
+
+                km = body_km
+                kv = body_kv
+                if sign_known:
+                    km |= hi_fill_mask
+                    if sign_val:
+                        kv |= hi_fill_mask
+
+                outs.append(BV3(width=y_w, signed=False, known_mask=km, known_value=kv))
+
+            return _as_out(_join_bv3_values(outs))
+        # 枚举不了时
+        sign_bit = a.bit(a.width - 1) if a.width > 0 else Bit3.X
+        out_bits: List[Bit3] = []
+        for i in range(y_w):
+            valid_hi = a.width - 1 - i
+            maybe0 = False
+            maybe1 = False
+
+            if sh_hi > valid_hi:
+                if sign_bit is Bit3.Z0:
+                    maybe0 = True
+                elif sign_bit is Bit3.Z1:
+                    maybe1 = True
+                else:
+                    maybe0 = True
+                    maybe1 = True
+
+            j_lo = i + int(sh_lo)
+            j_hi = min(a.width - 1, i + int(sh_hi))
+
+            if j_lo <= j_hi:
+                for j in range(j_lo, j_hi + 1):
+                    bj = a.bit(j)
+                    if bj is Bit3.Z0:
+                        maybe0 = True
+                    elif bj is Bit3.Z1:
+                        maybe1 = True
+                    else:
+                        maybe0 = True
+                        maybe1 = True
+                    if maybe0 and maybe1:
+                        break
+
+            if maybe0 and not maybe1:
+                out_bits.append(Bit3.Z0)
+            elif maybe1 and not maybe0:
+                out_bits.append(Bit3.Z1)
+            else:
+                out_bits.append(Bit3.X)
+
+        return _as_out(BV3.from_bits(out_bits, signed=False).trunc(y_w))
+
     if op in ("LT", "LE", "GT", "GE"):
         a, b = _align_mixed(vec("A"), vec("B"), max(1, y_w))
         signed_cmp = bool(params.get("A_SIGNED", 0) == 1) and bool(params.get("B_SIGNED", 0) == 1)
@@ -504,25 +717,36 @@ def _eval_node(op: str, ports: dict, params: dict, env: Dict[int, Bit3]) -> BV3:
         else:
             alo, ahi = a.range_unsigned()
             blo, bhi = b.range_unsigned()
+
         def definitely_true() -> bool:
-            if op == "LT": return ahi < blo
-            if op == "LE": return ahi <= blo
-            if op == "GT": return alo > bhi
-            if op == "GE": return alo >= bhi
+            if op == "LT":
+                return ahi < blo
+            if op == "LE":
+                return ahi <= blo
+            if op == "GT":
+                return alo > bhi
+            if op == "GE":
+                return alo >= bhi
             return False
-        
+
         def definitely_false() -> bool:
-            if op == "LT": return alo >= bhi
-            if op == "LE": return alo >  bhi
-            if op == "GT": return ahi <= blo
-            if op == "GE": return ahi <  blo
+            if op == "LT":
+                return alo >= bhi
+            if op == "LE":
+                return alo > bhi
+            if op == "GT":
+                return ahi <= blo
+            if op == "GE":
+                return ahi < blo
             return False
+
         if definitely_true():
-            return BV3.from_bits([Bit3.Z1]).trunc(y_w)
+            return _as_out(BV3.from_bits([Bit3.Z1]).trunc(y_w))
         if definitely_false():
-            return BV3.from_bits([Bit3.Z0]).trunc(y_w)
-        return BV3.from_bits([Bit3.X]).trunc(y_w)
-    return BV3.top(y_w)
+            return _as_out(BV3.from_bits([Bit3.Z0]).trunc(y_w))
+        return _as_out(BV3.from_bits([Bit3.X]).trunc(y_w))
+
+    return _as_out(BV3.top(y_w))
 
 def _build_bit_driver(ir: dict) -> Dict[int, Optional[str]]:
     out: Dict[int, Optional[str]] = {}
@@ -539,6 +763,7 @@ def _build_bit_driver(ir: dict) -> Dict[int, Optional[str]]:
 def _topo_sort_nodes(nodes: List[dict], bit_driver: Dict[int, Optional[str]]) -> List[dict]:
     nid_to_node = {n["nid"]: n for n in nodes}
     deps: Dict[str, Set[str]] = {n["nid"]: set() for n in nodes}
+    # deps[当前节点]={它依赖的那些节点}
     for n in nodes:
         nid = n["nid"]
         ports = n.get("ports", {}) or {}
@@ -551,6 +776,7 @@ def _topo_sort_nodes(nodes: List[dict], bit_driver: Dict[int, Optional[str]]) ->
                 dnid = bit_driver.get(int(br["id"]))
                 if dnid and dnid != nid:
                     deps[nid].add(dnid)
+    # Kahn拓扑排序
     ready = [nid for nid, ds in deps.items() if not ds]
     order: List[str] = []
     while ready:
@@ -588,7 +814,13 @@ def eval_ir_bv3(ir: dict | ModuleIR, assume: Optional[dict] = None) -> dict:
         params = n.get("params", {}) or {}
         if "Y" not in ports:
             continue
-        outv = _eval_node(op, ports, params, env)
+        outv = _eval_node(
+            op,
+            ports,
+            params,
+            env,
+            out_signed=bool(n.get("out_signed", False)),
+        )
         _write_bits(env, ports["Y"], outv)
         node_out[n["nid"]] = {"op": op, "out": outv.to_dict()}
 

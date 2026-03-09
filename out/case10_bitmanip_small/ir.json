@@ -583,7 +583,7 @@
   "nodes": [
     {
       "nid": "n1",
-      "op": "UNSUPPORTED",
+      "op": "LOGIC_NOT",
       "yosys_type": "$logic_not",
       "yosys_name": "$eq$top.v:13$3",
       "ports": {
@@ -604,7 +604,24 @@
           }
         ]
       },
-      "args": {},
+      "args": {
+        "in": [
+          {
+            "kind": "wire",
+            "id": 21
+          },
+          {
+            "kind": "wire",
+            "id": 22
+          }
+        ],
+        "out": [
+          {
+            "kind": "wire",
+            "id": 31
+          }
+        ]
+      },
       "params": {
         "A_SIGNED": 0,
         "A_WIDTH": 2,
