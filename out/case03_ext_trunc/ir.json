@@ -270,9 +270,217 @@
         "col_end": 18
       },
       "alias_of": null
+    },
+    {
+      "sid": "__canon_tmp_0",
+      "name": "__canon_tmp_0",
+      "kind": "wire",
+      "width": 9,
+      "signed": true,
+      "bits": [
+        {
+          "kind": "wire",
+          "id": 19
+        },
+        {
+          "kind": "wire",
+          "id": 20
+        },
+        {
+          "kind": "wire",
+          "id": 21
+        },
+        {
+          "kind": "wire",
+          "id": 22
+        },
+        {
+          "kind": "wire",
+          "id": 23
+        },
+        {
+          "kind": "wire",
+          "id": 24
+        },
+        {
+          "kind": "wire",
+          "id": 25
+        },
+        {
+          "kind": "wire",
+          "id": 26
+        },
+        {
+          "kind": "wire",
+          "id": 27
+        }
+      ],
+      "src": null,
+      "alias_of": null
     }
   ],
   "nodes": [
+    {
+      "nid": "n4",
+      "op": "SEXT",
+      "yosys_type": "$canon_sext",
+      "yosys_name": "$canon$sext$n1_B",
+      "ports": {
+        "A": [
+          {
+            "kind": "wire",
+            "id": 6
+          },
+          {
+            "kind": "wire",
+            "id": 7
+          },
+          {
+            "kind": "wire",
+            "id": 8
+          },
+          {
+            "kind": "wire",
+            "id": 9
+          },
+          {
+            "kind": "wire",
+            "id": 9
+          },
+          {
+            "kind": "wire",
+            "id": 9
+          },
+          {
+            "kind": "wire",
+            "id": 9
+          },
+          {
+            "kind": "wire",
+            "id": 9
+          }
+        ],
+        "Y": [
+          {
+            "kind": "wire",
+            "id": 19
+          },
+          {
+            "kind": "wire",
+            "id": 20
+          },
+          {
+            "kind": "wire",
+            "id": 21
+          },
+          {
+            "kind": "wire",
+            "id": 22
+          },
+          {
+            "kind": "wire",
+            "id": 23
+          },
+          {
+            "kind": "wire",
+            "id": 24
+          },
+          {
+            "kind": "wire",
+            "id": 25
+          },
+          {
+            "kind": "wire",
+            "id": 26
+          },
+          {
+            "kind": "wire",
+            "id": 27
+          }
+        ]
+      },
+      "args": {
+        "in": [
+          {
+            "kind": "wire",
+            "id": 6
+          },
+          {
+            "kind": "wire",
+            "id": 7
+          },
+          {
+            "kind": "wire",
+            "id": 8
+          },
+          {
+            "kind": "wire",
+            "id": 9
+          },
+          {
+            "kind": "wire",
+            "id": 9
+          },
+          {
+            "kind": "wire",
+            "id": 9
+          },
+          {
+            "kind": "wire",
+            "id": 9
+          },
+          {
+            "kind": "wire",
+            "id": 9
+          }
+        ],
+        "out": [
+          {
+            "kind": "wire",
+            "id": 19
+          },
+          {
+            "kind": "wire",
+            "id": 20
+          },
+          {
+            "kind": "wire",
+            "id": 21
+          },
+          {
+            "kind": "wire",
+            "id": 22
+          },
+          {
+            "kind": "wire",
+            "id": 23
+          },
+          {
+            "kind": "wire",
+            "id": 24
+          },
+          {
+            "kind": "wire",
+            "id": 25
+          },
+          {
+            "kind": "wire",
+            "id": 26
+          },
+          {
+            "kind": "wire",
+            "id": 27
+          }
+        ]
+      },
+      "params": {
+        "A_WIDTH": 8,
+        "Y_WIDTH": 9
+      },
+      "out_width": 9,
+      "out_signed": true,
+      "src": null
+    },
     {
       "nid": "n1",
       "op": "ADD",
@@ -320,35 +528,39 @@
         "B": [
           {
             "kind": "wire",
-            "id": 6
+            "id": 19
           },
           {
             "kind": "wire",
-            "id": 7
+            "id": 20
           },
           {
             "kind": "wire",
-            "id": 8
+            "id": 21
           },
           {
             "kind": "wire",
-            "id": 9
+            "id": 22
           },
           {
             "kind": "wire",
-            "id": 9
+            "id": 23
           },
           {
             "kind": "wire",
-            "id": 9
+            "id": 24
           },
           {
             "kind": "wire",
-            "id": 9
+            "id": 25
           },
           {
             "kind": "wire",
-            "id": 9
+            "id": 26
+          },
+          {
+            "kind": "wire",
+            "id": 27
           }
         ],
         "Y": [
@@ -432,35 +644,39 @@
         "rhs": [
           {
             "kind": "wire",
-            "id": 6
+            "id": 19
           },
           {
             "kind": "wire",
-            "id": 7
+            "id": 20
           },
           {
             "kind": "wire",
-            "id": 8
+            "id": 21
           },
           {
             "kind": "wire",
-            "id": 9
+            "id": 22
           },
           {
             "kind": "wire",
-            "id": 9
+            "id": 23
           },
           {
             "kind": "wire",
-            "id": 9
+            "id": 24
           },
           {
             "kind": "wire",
-            "id": 9
+            "id": 25
           },
           {
             "kind": "wire",
-            "id": 9
+            "id": 26
+          },
+          {
+            "kind": "wire",
+            "id": 27
           }
         ],
         "out": [
@@ -506,7 +722,7 @@
         "A_SIGNED": 1,
         "A_WIDTH": 9,
         "B_SIGNED": 1,
-        "B_WIDTH": 8,
+        "B_WIDTH": 9,
         "Y_WIDTH": 9
       },
       "out_width": 9,
@@ -985,8 +1201,8 @@
         "uses": [
           {
             "kind": "node",
-            "nid": "n1",
-            "port": "B"
+            "nid": "n4",
+            "port": "A"
           },
           {
             "kind": "node",
@@ -1007,8 +1223,8 @@
         "uses": [
           {
             "kind": "node",
-            "nid": "n1",
-            "port": "B"
+            "nid": "n4",
+            "port": "A"
           },
           {
             "kind": "node",
@@ -1029,8 +1245,8 @@
         "uses": [
           {
             "kind": "node",
-            "nid": "n1",
-            "port": "B"
+            "nid": "n4",
+            "port": "A"
           },
           {
             "kind": "node",
@@ -1051,28 +1267,28 @@
         "uses": [
           {
             "kind": "node",
-            "nid": "n1",
-            "port": "B"
+            "nid": "n4",
+            "port": "A"
           },
           {
             "kind": "node",
-            "nid": "n1",
-            "port": "B"
+            "nid": "n4",
+            "port": "A"
           },
           {
             "kind": "node",
-            "nid": "n1",
-            "port": "B"
+            "nid": "n4",
+            "port": "A"
           },
           {
             "kind": "node",
-            "nid": "n1",
-            "port": "B"
+            "nid": "n4",
+            "port": "A"
           },
           {
             "kind": "node",
-            "nid": "n1",
-            "port": "B"
+            "nid": "n4",
+            "port": "A"
           },
           {
             "kind": "node",
@@ -1205,6 +1421,159 @@
           "port": "Y"
         },
         "uses": []
+      },
+      "19": {
+        "owners": [
+          "__canon_tmp_0"
+        ],
+        "driver": {
+          "kind": "node",
+          "nid": "n4",
+          "port": "Y"
+        },
+        "uses": [
+          {
+            "kind": "node",
+            "nid": "n1",
+            "port": "B"
+          }
+        ]
+      },
+      "20": {
+        "owners": [
+          "__canon_tmp_0"
+        ],
+        "driver": {
+          "kind": "node",
+          "nid": "n4",
+          "port": "Y"
+        },
+        "uses": [
+          {
+            "kind": "node",
+            "nid": "n1",
+            "port": "B"
+          }
+        ]
+      },
+      "21": {
+        "owners": [
+          "__canon_tmp_0"
+        ],
+        "driver": {
+          "kind": "node",
+          "nid": "n4",
+          "port": "Y"
+        },
+        "uses": [
+          {
+            "kind": "node",
+            "nid": "n1",
+            "port": "B"
+          }
+        ]
+      },
+      "22": {
+        "owners": [
+          "__canon_tmp_0"
+        ],
+        "driver": {
+          "kind": "node",
+          "nid": "n4",
+          "port": "Y"
+        },
+        "uses": [
+          {
+            "kind": "node",
+            "nid": "n1",
+            "port": "B"
+          }
+        ]
+      },
+      "23": {
+        "owners": [
+          "__canon_tmp_0"
+        ],
+        "driver": {
+          "kind": "node",
+          "nid": "n4",
+          "port": "Y"
+        },
+        "uses": [
+          {
+            "kind": "node",
+            "nid": "n1",
+            "port": "B"
+          }
+        ]
+      },
+      "24": {
+        "owners": [
+          "__canon_tmp_0"
+        ],
+        "driver": {
+          "kind": "node",
+          "nid": "n4",
+          "port": "Y"
+        },
+        "uses": [
+          {
+            "kind": "node",
+            "nid": "n1",
+            "port": "B"
+          }
+        ]
+      },
+      "25": {
+        "owners": [
+          "__canon_tmp_0"
+        ],
+        "driver": {
+          "kind": "node",
+          "nid": "n4",
+          "port": "Y"
+        },
+        "uses": [
+          {
+            "kind": "node",
+            "nid": "n1",
+            "port": "B"
+          }
+        ]
+      },
+      "26": {
+        "owners": [
+          "__canon_tmp_0"
+        ],
+        "driver": {
+          "kind": "node",
+          "nid": "n4",
+          "port": "Y"
+        },
+        "uses": [
+          {
+            "kind": "node",
+            "nid": "n1",
+            "port": "B"
+          }
+        ]
+      },
+      "27": {
+        "owners": [
+          "__canon_tmp_0"
+        ],
+        "driver": {
+          "kind": "node",
+          "nid": "n4",
+          "port": "Y"
+        },
+        "uses": [
+          {
+            "kind": "node",
+            "nid": "n1",
+            "port": "B"
+          }
+        ]
       }
     }
   }

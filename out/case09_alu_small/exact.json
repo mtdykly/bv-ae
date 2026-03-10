@@ -16,7 +16,7 @@
   },
   "enum_var_bits": 10,
   "enum_count": 1024,
-  "time_seconds": 0.11746559990569949,
+  "time_seconds": 0.12073389999568462,
   "signals": {
     "flag": {
       "width": 1,

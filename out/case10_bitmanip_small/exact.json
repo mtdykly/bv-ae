@@ -19,7 +19,7 @@
   },
   "enum_var_bits": 7,
   "enum_count": 128,
-  "time_seconds": 0.008266899967566133,
+  "time_seconds": 0.007678000023588538,
   "signals": {
     "y": {
       "width": 8,

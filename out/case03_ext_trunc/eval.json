@@ -107,6 +107,22 @@
         8,
         11
       ]
+    },
+    "__canon_tmp_0": {
+      "width": 9,
+      "signed": true,
+      "bits_msb": "111111X01",
+      "known_mask_hex": "0x1fb",
+      "known_value_hex": "0x1f9",
+      "unknown_count": 1,
+      "range_unsigned": [
+        505,
+        509
+      ],
+      "range_signed": [
+        -7,
+        -3
+      ]
     }
   },
   "nodes": {
@@ -141,6 +157,25 @@
         "range_unsigned": [
           249,
           253
+        ],
+        "range_signed": [
+          -7,
+          -3
+        ]
+      }
+    },
+    "n4": {
+      "op": "SEXT",
+      "out": {
+        "width": 9,
+        "signed": true,
+        "bits_msb": "111111X01",
+        "known_mask_hex": "0x1fb",
+        "known_value_hex": "0x1f9",
+        "unknown_count": 1,
+        "range_unsigned": [
+          505,
+          509
         ],
         "range_signed": [
           -7,

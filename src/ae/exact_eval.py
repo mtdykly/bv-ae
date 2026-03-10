@@ -211,39 +211,61 @@ def _eval_node_concrete(op: str, ports: dict, params: dict, env: Dict[int, int],
     def read(pn: str) -> Tuple[int, int, bool]:
         v, w = _read_vec_int(env, ports.get(pn, []) or [], const_oid_to_vid)
         return v, w, p_signed(pn)
+    
+    if op == "ZEXT":
+        a, aw, _ = read("A")
+        if aw > y_w:
+            raise ValueError(f"ZEXT requires |A| <= |Y|, got A={aw}, Y={y_w}")
+        return _resize(a, aw, y_w, signed=False) & _mask(y_w)
 
+    if op == "SEXT":
+        a, aw, _ = read("A")
+        if aw > y_w:
+            raise ValueError(f"SEXT requires |A| <= |Y|, got A={aw}, Y={y_w}")
+        return _resize(a, aw, y_w, signed=True) & _mask(y_w)
+
+    if op == "TRUNC":
+        a, aw, _ = read("A")
+        if aw < y_w:
+            raise ValueError(f"TRUNC requires |A| >= |Y|, got A={aw}, Y={y_w}")
+        return _resize(a, aw, y_w, signed=False) & _mask(y_w)
+    
     if op in ("AND", "OR", "XOR"):
-        a, aw, asg = read("A")
-        b, bw, bsg = read("B")
-        a2 = _resize(a, aw, y_w, signed=asg)
-        b2 = _resize(b, bw, y_w, signed=bsg)
+        a, aw, _ = read("A")
+        b, bw, _ = read("B")
+        if aw != bw or aw != y_w:
+            raise ValueError(f"{op} expects canonical widths, got A={aw}, B={bw}, Y={y_w}")
+
         if op == "AND":
-            out = a2 & b2
+            out = a & b
         elif op == "OR":
-            out = a2 | b2
+            out = a | b
         else:
-            out = a2 ^ b2
+            out = a ^ b
         return out & _mask(y_w)
 
     if op == "NOT":
-        a, aw, asg = read("A")
-        a2 = _resize(a, aw, y_w, signed=asg)
-        return (~a2) & _mask(y_w)
+        a, aw, _ = read("A")
+        if aw != y_w:
+            raise ValueError(f"NOT expects canonical widths, got A={aw}, Y={y_w}")
+        return (~a) & _mask(y_w)
 
     if op == "MUX":
-        a, aw, asg = read("A")
-        b, bw, bsg = read("B")
-        s, sw = _read_vec_int(env, ports.get("S", []) or [], const_oid_to_vid)
+        a, aw, _ = read("A")
+        b, bw, _ = read("B")
+        s, _ = _read_vec_int(env, ports.get("S", []) or [], const_oid_to_vid)
+        if aw != bw or aw != y_w:
+            raise ValueError(f"MUX expects canonical widths, got A={aw}, B={bw}, Y={y_w}")
         sel = s & 1
-        chosen = _resize(a, aw, y_w, signed=asg) if sel == 0 else _resize(b, bw, y_w, signed=bsg)
-        return chosen & _mask(y_w)
+        out = a if sel == 0 else b
+        return out & _mask(y_w)
 
     if op in ("ADD", "SUB"):
-        a, aw, asg = read("A")
-        b, bw, bsg = read("B")
-        a2 = _resize(a, aw, y_w, signed=asg)
-        b2 = _resize(b, bw, y_w, signed=bsg)
-        out = (a2 + b2) if op == "ADD" else (a2 - b2)
+        a, aw, _ = read("A")
+        b, bw, _ = read("B")
+        if aw != bw or aw != y_w:
+            raise ValueError(f"{op} expects canonical widths, got A={aw}, B={bw}, Y={y_w}")
+        out = (a + b) if op == "ADD" else (a - b)
         return out & _mask(y_w)
 
     if op == "EXTRACT":
@@ -264,28 +286,30 @@ def _eval_node_concrete(op: str, ports: dict, params: dict, env: Dict[int, int],
     if op in ("SHL", "SHR", "ASHR"):
         a, aw, asg = read("A")
         b, bw, _ = read("B")
+        if aw != y_w:
+            raise ValueError(f"{op} expects canonical widths, got A={aw}, Y={y_w}")
+        if bw <= 0:
+            raise ValueError(f"{op} shift amount is empty")
         sh = b & _mask(bw)
-        a2 = _resize(a, aw, y_w, signed=asg)
         if op == "SHL":
-            return (a2 << sh) & _mask(y_w)
+            return (a << sh) & _mask(y_w)
         if op == "SHR":
-            return (a2 >> sh) & _mask(y_w)
-        # 算术右移
-        return ((_as_signed(a2, y_w) >> sh) & _mask(y_w)) if asg else ((a2 >> sh) & _mask(y_w))
+            return (a >> sh) & _mask(y_w)
+        return ((_as_signed(a, y_w) >> sh) & _mask(y_w)) if asg else ((a >> sh) & _mask(y_w))
 
     if op in ("EQ", "LT", "LE", "GT", "GE"):
         a, aw, asg = read("A")
         b, bw, bsg = read("B")
-        w = max(aw, bw, 1)
-        a2 = _resize(a, aw, w, signed=asg)
-        b2 = _resize(b, bw, w, signed=bsg)
-
+        if aw != bw:
+            raise ValueError(f"{op} expects canonical widths, got A={aw}, B={bw}")
+        if y_w != 1:
+            raise ValueError(f"{op} output width must be 1, got Y={y_w}")
         if op == "EQ":
-            r = 1 if a2 == b2 else 0
+            r = 1 if a == b else 0
         else:
             signed_cmp = asg and bsg
-            av = _as_signed(a2, w) if signed_cmp else a2
-            bv = _as_signed(b2, w) if signed_cmp else b2
+            av = _as_signed(a, aw) if signed_cmp else a
+            bv = _as_signed(b, bw) if signed_cmp else b
             if op == "LT":
                 r = 1 if av < bv else 0
             elif op == "LE":
@@ -294,34 +318,36 @@ def _eval_node_concrete(op: str, ports: dict, params: dict, env: Dict[int, int],
                 r = 1 if av > bv else 0
             else:
                 r = 1 if av >= bv else 0
-        return r & _mask(y_w)
+        return r & 1
 
     if op == "LOGIC_NOT":
         a, aw, _ = read("A")
+        if y_w != 1:
+            raise ValueError(f"LOGIC_NOT expects canonical width Y=1, got Y={y_w}")
         r = 1 if (a & _mask(aw)) == 0 else 0
-        return r & _mask(y_w)
+        return r & 1
 
     if op == "PMUX":
-        a, aw, asg = read("A")
-        b, bw, bsg = read("B")
+        a, aw, _ = read("A")
+        b, bw, _ = read("B")
         s, sw = _read_vec_int(env, ports.get("S", []) or [], const_oid_to_vid)
 
-        a2 = _resize(a, aw, y_w, signed=asg)
-        b2 = _resize(b, bw, bw, signed=bsg)
+        if aw != y_w:
+            raise ValueError(f"PMUX expects canonical widths, got A={aw}, Y={y_w}")
+        if bw != sw * y_w:
+            raise ValueError(f"PMUX expects |B| = |S| * |Y|, got B={bw}, S={sw}, Y={y_w}")
 
         selected = [i for i in range(sw) if ((s >> i) & 1) == 1]
 
         if len(selected) == 0:
-            return a2 & _mask(y_w)
+            return a & _mask(y_w)
 
         if len(selected) > 1:
             raise ValueError(f"PMUX multi-hot select in concrete eval: S={bin(s)}, width={sw}")
 
         i = selected[0]
-        out = (b2 >> (i * y_w)) & _mask(y_w)
+        out = (b >> (i * y_w)) & _mask(y_w)
         return out & _mask(y_w)
-        
-    raise ValueError(f"unsupported op in concrete eval: {op}")
 
 def eval_ir_exact_enum(
     ir: dict | ModuleIR,

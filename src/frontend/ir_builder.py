@@ -18,6 +18,8 @@ def build_module_ir(yosys_obj: Dict[str, Any]) -> ModuleIR:
     creator = yosys_obj.get("creator", "")
     signals = build_signals(top_mod)
     nodes = build_nodes(top_mod)
+    # 把位宽对齐、扩展、截断显式下沉到IR
+    signals, nodes = canonicalize_ir(signals, nodes)
     bit_index = build_bit_index(signals, nodes, top_mod)
     outputs = _build_outputs(signals)
     src_files = _collect_src_files(top_mod, signals, nodes)
@@ -347,7 +349,7 @@ def _normalize_args(node: Dict[str, Any]) -> Dict[str, Any]:
             "out": ports_obj.get("Y", []),
         }
 
-    if op in ("NOT", "LOGIC_NOT"):
+    if op in ("NOT", "LOGIC_NOT", "ZEXT", "SEXT", "TRUNC"):
         return {
             "in": ports_obj.get("A", []),
             "out": ports_obj.get("Y", []),
@@ -375,6 +377,389 @@ def _normalize_args(node: Dict[str, Any]) -> Dict[str, Any]:
         }
 
     return {}
+
+def _clone_bits(bits: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    return [dict(br) for br in (bits or [])]
+
+def _clone_node(n: Dict[str, Any]) -> Dict[str, Any]:
+    return {
+        **n,
+        "ports": {k: _clone_bits(v) for k, v in (n.get("ports", {}) or {}).items()},
+        "args": {k: _clone_bits(v) for k, v in (n.get("args", {}) or {}).items()},
+        "params": dict(n.get("params", {}) or {}),
+        "src": (dict(n["src"]) if isinstance(n.get("src"), dict) else n.get("src")),
+    }
+
+def _next_nid_seed(nodes: List[Dict[str, Any]]) -> int:
+    mx = 0
+    for n in nodes:
+        nid = n.get("nid", "")
+        if isinstance(nid, str) and nid.startswith("n") and nid[1:].isdigit():
+            mx = max(mx, int(nid[1:]))
+    return mx + 1
+
+def _next_wire_id_seed(signals: List[Dict[str, Any]], nodes: List[Dict[str, Any]]) -> int:
+    mx = 0
+    def _scan_bits(bits: List[Dict[str, Any]]) -> None:
+        nonlocal mx
+        for br in bits or []:
+            if br.get("kind") == "wire" and isinstance(br.get("id"), int):
+                mx = max(mx, int(br["id"]))
+    for s in signals:
+        _scan_bits(s.get("bits", []))
+    for n in nodes:
+        for bits in (n.get("ports", {}) or {}).values():
+            _scan_bits(bits)
+    return mx + 1
+
+def _node_port_signed(node: Dict[str, Any], port_name: str) -> bool:
+    params = node.get("params", {}) or {}
+    if port_name == "A":
+        return bool(params.get("A_SIGNED", 0) == 1)
+    if port_name == "B":
+        return bool(params.get("B_SIGNED", 0) == 1)
+    if port_name == "Y":
+        return bool(node.get("out_signed", False))
+    return False
+
+def _alloc_tmp_signal(
+    signals: List[Dict[str, Any]],
+    width: int,
+    signed: bool,
+    next_wire_id: int,
+    tmp_idx: int,
+) -> Tuple[Dict[str, Any], List[Dict[str, Any]], int, int]:
+    bits: List[Dict[str, Any]] = []
+    for _ in range(width):
+        bits.append({"kind": "wire", "id": next_wire_id})
+        next_wire_id += 1
+
+    name = f"__canon_tmp_{tmp_idx}"
+    tmp_idx += 1
+
+    sig = {
+        "sid": name,
+        "name": name,
+        "kind": "wire",
+        "width": width,
+        "signed": bool(signed),
+        "bits": bits,
+        "src": None,
+        "alias_of": None,
+    }
+    signals.append(sig)
+    return sig, bits, next_wire_id, tmp_idx
+
+def _make_resize_node(
+    nid: str,
+    op: str,
+    a_bits: List[Dict[str, Any]],
+    y_bits: List[Dict[str, Any]],
+    out_signed: bool,
+    yosys_name: str,
+) -> Dict[str, Any]:
+    node = {
+        "nid": nid,
+        "op": op,
+        "yosys_type": f"$canon_{op.lower()}",
+        "yosys_name": yosys_name,
+        "ports": {
+            "A": _clone_bits(a_bits),
+            "Y": _clone_bits(y_bits),
+        },
+        "params": {
+            "A_WIDTH": len(a_bits),
+            "Y_WIDTH": len(y_bits),
+        },
+        "src": None,
+        "out_width": len(y_bits),
+        "out_signed": bool(out_signed),
+        "is_view": False,
+    }
+    node["args"] = _normalize_args(node)
+    return node
+
+
+def _resize_bits_via_node(
+    signals: List[Dict[str, Any]],
+    src_bits: List[Dict[str, Any]],
+    dst_w: int,
+    signed_hint: bool,
+    next_nid: int,
+    next_wire_id: int,
+    tmp_idx: int,
+    tag: str,
+) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]], int, int, int]:
+    # 返回resized_bits, emitted_nodes, next_nid, next_wire_id, tmp_idx
+    src_w = len(src_bits)
+    if src_w == dst_w:
+        return _clone_bits(src_bits), [], next_nid, next_wire_id, tmp_idx
+
+    if src_w < dst_w:
+        op = "SEXT" if signed_hint else "ZEXT"
+        tmp_signed = True if signed_hint else False
+    else:
+        op = "TRUNC"
+        tmp_signed = bool(signed_hint)
+    # 建一个临时输出信号
+    _, y_bits, next_wire_id, tmp_idx = _alloc_tmp_signal(
+        signals=signals,
+        width=dst_w,
+        signed=tmp_signed,
+        next_wire_id=next_wire_id,
+        tmp_idx=tmp_idx,
+    )
+    # 建一个ZEXT、SEXT或TRUNC节点
+    nid = f"n{next_nid}"
+    next_nid += 1
+    resize_node = _make_resize_node(
+        nid=nid,
+        op=op,
+        a_bits=src_bits,
+        y_bits=y_bits,
+        out_signed=tmp_signed,
+        yosys_name=f"$canon${op.lower()}${tag}",
+    )
+    return y_bits, [resize_node], next_nid, next_wire_id, tmp_idx
+
+def _refresh_width_params(node: Dict[str, Any]) -> None:
+    ports = node.get("ports", {}) or {}
+    params = dict(node.get("params", {}) or {})
+
+    if "A" in ports:
+        params["A_WIDTH"] = len(ports["A"])
+    if "B" in ports:
+        params["B_WIDTH"] = len(ports["B"])
+    if "Y" in ports:
+        params["Y_WIDTH"] = len(ports["Y"])
+
+    node["params"] = params
+    node["out_width"] = len(ports.get("Y", []))
+
+def canonicalize_ir(
+    signals: List[Dict[str, Any]],
+    nodes: List[Dict[str, Any]],
+) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]]]:
+    out_nodes: List[Dict[str, Any]] = []
+    next_nid = _next_nid_seed(nodes)
+    next_wire_id = _next_wire_id_seed(signals, nodes)
+    tmp_idx = 0
+
+    for raw in nodes:
+        n = _clone_node(raw)
+        op = n.get("op")
+        ports = n.get("ports", {}) or {}
+
+        if n.get("is_view", False):
+            out_nodes.append(n)
+            continue
+
+        if op not in (
+            "AND", "OR", "XOR",
+            "NOT",
+            "LOGIC_NOT",
+            "ADD", "SUB",
+            "EQ", "LT", "LE", "GT", "GE",
+            "MUX",
+            "PMUX",
+        ):
+            out_nodes.append(n)
+            continue
+
+        emitted_pre: List[Dict[str, Any]] = []
+        emitted_post: List[Dict[str, Any]] = []
+
+        a0 = _clone_bits(ports.get("A", []))
+        b0 = _clone_bits(ports.get("B", []))
+        y0 = _clone_bits(ports.get("Y", []))
+
+        a_signed = _node_port_signed(n, "A")
+        b_signed = _node_port_signed(n, "B")
+        y_signed = _node_port_signed(n, "Y")
+
+        if op in ("AND", "OR", "XOR"):
+            target_w = len(y0)
+
+            a1, extra, next_nid, next_wire_id, tmp_idx = _resize_bits_via_node(
+                signals, a0, target_w, False, next_nid, next_wire_id, tmp_idx, f"{n['nid']}_A"
+            )
+            emitted_pre.extend(extra)
+
+            b1, extra, next_nid, next_wire_id, tmp_idx = _resize_bits_via_node(
+                signals, b0, target_w, False, next_nid, next_wire_id, tmp_idx, f"{n['nid']}_B"
+            )
+            emitted_pre.extend(extra)
+            n["ports"]["A"] = a1
+            n["ports"]["B"] = b1
+            n["ports"]["Y"] = y0
+            _refresh_width_params(n)
+            n["args"] = _normalize_args(n)
+            out_nodes.extend(emitted_pre)
+            out_nodes.append(n)
+            continue
+
+        if op == "NOT":
+            target_w = len(y0)
+            a1, extra, next_nid, next_wire_id, tmp_idx = _resize_bits_via_node(
+                signals, a0, target_w, False, next_nid, next_wire_id, tmp_idx, f"{n['nid']}_A"
+            )
+            emitted_pre.extend(extra)
+            n["ports"]["A"] = a1
+            n["ports"]["Y"] = y0
+            _refresh_width_params(n)
+            n["args"] = _normalize_args(n)
+            out_nodes.extend(emitted_pre)
+            out_nodes.append(n)
+            continue
+
+        if op == "LOGIC_NOT":
+            if len(y0) <= 0:
+                out_nodes.append(n)
+                continue
+            if len(y0) == 1:
+                n["ports"]["Y"] = y0
+                _refresh_width_params(n)
+                n["args"] = _normalize_args(n)
+                out_nodes.append(n)
+                continue
+            _, tmp_y_bits, next_wire_id, tmp_idx = _alloc_tmp_signal(
+                signals=signals,
+                width=1,
+                signed=False,
+                next_wire_id=next_wire_id,
+                tmp_idx=tmp_idx,
+            )
+
+            n["ports"]["Y"] = tmp_y_bits
+            _refresh_width_params(n)
+            n["args"] = _normalize_args(n)
+
+            zext_nid = f"n{next_nid}"
+            next_nid += 1
+            zext_node = _make_resize_node(
+                nid=zext_nid,
+                op="ZEXT",
+                a_bits=tmp_y_bits,
+                y_bits=y0,
+                out_signed=False,
+                yosys_name=f"$canon$zext${n['nid']}_Y",
+            )
+            out_nodes.append(n)
+            out_nodes.append(zext_node)
+            continue
+
+        if op in ("EQ", "LT", "LE", "GT", "GE"):
+            work_w = max(len(a0), len(b0))
+
+            a1, extra, next_nid, next_wire_id, tmp_idx = _resize_bits_via_node(
+                signals, a0, work_w, a_signed, next_nid, next_wire_id, tmp_idx, f"{n['nid']}_A"
+            )
+            emitted_pre.extend(extra)
+
+            b1, extra, next_nid, next_wire_id, tmp_idx = _resize_bits_via_node(
+                signals, b0, work_w, b_signed, next_nid, next_wire_id, tmp_idx, f"{n['nid']}_B"
+            )
+            emitted_pre.extend(extra)
+
+            n["ports"]["A"] = a1
+            n["ports"]["B"] = b1
+            n["ports"]["Y"] = y0
+            _refresh_width_params(n)
+            n["args"] = _normalize_args(n)
+
+            out_nodes.extend(emitted_pre)
+            out_nodes.append(n)
+            continue
+
+        if op == "MUX":
+            target_w = len(y0)
+            a1, extra, next_nid, next_wire_id, tmp_idx = _resize_bits_via_node(
+                signals, a0, target_w, y_signed, next_nid, next_wire_id, tmp_idx, f"{n['nid']}_A"
+            )
+            emitted_pre.extend(extra)
+
+            b1, extra, next_nid, next_wire_id, tmp_idx = _resize_bits_via_node(
+                signals, b0, target_w, y_signed, next_nid, next_wire_id, tmp_idx, f"{n['nid']}_B"
+            )
+            emitted_pre.extend(extra)
+
+            n["ports"]["A"] = a1
+            n["ports"]["B"] = b1
+            n["ports"]["Y"] = y0
+            _refresh_width_params(n)
+            n["args"] = _normalize_args(n)
+
+            out_nodes.extend(emitted_pre)
+            out_nodes.append(n)
+            continue
+
+        if op == "PMUX":
+            target_w = len(y0)
+
+            a1, extra, next_nid, next_wire_id, tmp_idx = _resize_bits_via_node(
+                signals, a0, target_w, y_signed, next_nid, next_wire_id, tmp_idx, f"{n['nid']}_A"
+            )
+            emitted_pre.extend(extra)
+
+            n["ports"]["A"] = a1
+            n["ports"]["B"] = b0
+            n["ports"]["Y"] = y0
+            _refresh_width_params(n)
+            n["args"] = _normalize_args(n)
+
+            out_nodes.extend(emitted_pre)
+            out_nodes.append(n)
+            continue
+
+        if op in ("ADD", "SUB"):
+            work_w = max(len(a0), len(b0), len(y0))
+
+            a1, extra, next_nid, next_wire_id, tmp_idx = _resize_bits_via_node(
+                signals, a0, work_w, a_signed, next_nid, next_wire_id, tmp_idx, f"{n['nid']}_A"
+            )
+            emitted_pre.extend(extra)
+
+            b1, extra, next_nid, next_wire_id, tmp_idx = _resize_bits_via_node(
+                signals, b0, work_w, b_signed, next_nid, next_wire_id, tmp_idx, f"{n['nid']}_B"
+            )
+            emitted_pre.extend(extra)
+            if len(y0) < work_w:
+                _, tmp_y_bits, next_wire_id, tmp_idx = _alloc_tmp_signal(
+                    signals=signals,
+                    width=work_w,
+                    signed=y_signed,
+                    next_wire_id=next_wire_id,
+                    tmp_idx=tmp_idx,
+                )
+                n["ports"]["Y"] = tmp_y_bits
+
+                trunc_nid = f"n{next_nid}"
+                next_nid += 1
+                trunc_node = _make_resize_node(
+                    nid=trunc_nid,
+                    op="TRUNC",
+                    a_bits=tmp_y_bits,
+                    y_bits=y0,
+                    out_signed=y_signed,
+                    yosys_name=f"$canon$trunc${n['nid']}_Y",
+                )
+                emitted_post.append(trunc_node)
+            else:
+                n["ports"]["Y"] = y0
+
+            n["ports"]["A"] = a1
+            n["ports"]["B"] = b1
+            _refresh_width_params(n)
+            n["args"] = _normalize_args(n)
+
+            out_nodes.extend(emitted_pre)
+            out_nodes.append(n)
+            out_nodes.extend(emitted_post)
+            continue
+
+        out_nodes.append(n)
+
+    return signals, out_nodes
 
 # 收集出现过的源文件名，用于ModuleIR.src_files
 def _collect_src_files(

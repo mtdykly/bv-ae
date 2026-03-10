@@ -40,29 +40,36 @@ def _run_yosys(case: str) -> Path:
         raise RuntimeError(f"ir.json not found after yosys run: {ir_path}")
     return ir_path
 
-def _outputs_only(signals: Dict[str, dict]) -> Dict[str, dict]:
-    return {k: v for k, v in (signals or {}).items() if isinstance(v, dict) and "width" in v}
+def _output_names_from_ir(ir: dict) -> set[str]:
+    return {
+        s.get("name")
+        for s in (ir.get("signals", []) or [])
+        if isinstance(s, dict) and s.get("kind") == "output" and s.get("name")
+    }
 
-def _avg_metrics(signals: Dict[str, dict]) -> Tuple[float, float, float]:
-    sigs = _outputs_only(signals)
+def _select_named_signals(signals: Dict[str, dict], names: set[str]) -> Dict[str, dict]:
+    return {
+        k: v for k, v in (signals or {}).items()
+        if k in names and isinstance(v, dict) and "width" in v
+    }
+
+def _avg_metrics_for_names(signals: Dict[str, dict], names: set[str]) -> Tuple[float, float, float]:
+    sigs = _select_named_signals(signals, names)
     if not sigs:
         return 0.0, 0.0, 0.0
 
-    known_ratios: List[float] = []
-    unknowns: List[float] = []
-    spans: List[float] = []
-
-    for _name, s in sigs.items():
+    known_ratios = []
+    unknowns = []
+    spans = []
+    for s in sigs.values():
         w = int(s.get("width", 0))
         unk = int(s.get("unknown_count", 0))
         lo, hi = (s.get("range_unsigned") or [0, 0])
         span = int(hi) - int(lo)
-
         if w > 0:
             known_ratios.append((w - unk) / w)
         unknowns.append(float(unk))
         spans.append(float(span))
-
     return (
         sum(known_ratios) / len(known_ratios),
         sum(unknowns) / len(unknowns),
@@ -113,8 +120,9 @@ def main() -> None:
         rep = compare_exact_vs_abstract(exact, abstract)
         _write_json(out_dir / "compare.json", rep)
 
-        abs_known, abs_unk, abs_span = _avg_metrics(abstract.get("signals", {}))
-        ex_known, ex_unk, ex_span = _avg_metrics(exact.get("signals", {}))
+        output_names = _output_names_from_ir(ir)
+        abs_known, abs_unk, abs_span = _avg_metrics_for_names(abstract.get("signals", {}), output_names)
+        ex_known, ex_unk, ex_span = _avg_metrics_for_names(exact.get("signals", {}), output_names)
 
         rows.append(
             {
@@ -148,7 +156,7 @@ def main() -> None:
         for r in rows:
             writer.writerow(r)
 
-    # 写Markdown 表
+    # 写Markdown表
     out_md = ROOT / args.out_md
     out_md.parent.mkdir(parents=True, exist_ok=True)
 

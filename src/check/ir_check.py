@@ -11,21 +11,23 @@ def _as_ir_dict(ir: Dict[str, Any] | ModuleIR) -> Dict[str, Any]:
 
 def check_ir(ir: Dict[str, Any] | ModuleIR) -> None:
     ir = _as_ir_dict(ir)
-    _check_top_fields(ir)
+    _check_top_fields(ir) # # 检查IR顶层结构是否完整
     signals: List[Dict[str, Any]] = ir.get("signals", [])
     nodes: List[Dict[str, Any]] = ir.get("nodes", [])
     bit_index: Dict[str, Any] = ir.get("bit_index", {})
-    _check_signals(signals)
-    _check_nodes(nodes)
-    _check_mux(nodes)
-    _check_extract_concat(nodes)
+    _check_signals(signals) # 检查signals中信号的合法性
+    _check_nodes(nodes) # 检查nodes中节点的结构完整性
+    _check_resize_nodes(nodes) # 检查显式位宽调整节点ZEXT、SEXT、TRUNC的合法性
+    _check_canonical_widths(nodes) # 检查关键运算节点是否满足位宽约束
+    _check_mux(nodes) 
+    _check_extract_concat(nodes) 
     _check_shift_eq(nodes)
     _check_logic_not_pmux(nodes)
     _check_rel_cmp(nodes)
-    _check_multi_driver(nodes, signals)
+    _check_multi_driver(nodes, signals) # 检查多驱动问题
     _check_bit_index(bit_index, signals, nodes)
-    _check_driver_coverage(bit_index, signals)
-    _check_dag(nodes)
+    _check_driver_coverage(bit_index, signals) # 检查驱动覆盖是否完整
+    _check_dag(nodes) 
 
 def _check_top_fields(ir: Dict[str, Any]) -> None:
     must = ["ir_version", "source_format", "top_module", "signals", "nodes", "bit_index"]
@@ -96,18 +98,146 @@ def _check_nodes(nodes: List[Dict[str, Any]]) -> None:
                 raise ValueError(
                     f"Node out_width mismatch with Y: nid={nid}, out_width={out_width}, Y={len(y_bits)}"
                 )
-    
+
+def _check_resize_nodes(nodes: List[Dict[str, Any]]) -> None:
+    for n in nodes:
+        op = n.get("op")
+        if op not in ("ZEXT", "SEXT", "TRUNC"):
+            continue
+
+        nid = n.get("nid")
+        ports = n.get("ports", {}) or {}
+        if "A" not in ports or "Y" not in ports:
+            raise ValueError(f"{op} missing ports A or Y: nid={nid}")
+
+        a_bits = ports.get("A", [])
+        y_bits = ports.get("Y", [])
+        if not isinstance(a_bits, list) or not isinstance(y_bits, list):
+            raise ValueError(f"{op} ports not list: nid={nid}")
+
+        if op in ("ZEXT", "SEXT"):
+            if len(a_bits) > len(y_bits):
+                raise ValueError(
+                    f"{op} requires |A| <= |Y|: nid={nid}, A={len(a_bits)}, Y={len(y_bits)}"
+                )
+
+        if op == "TRUNC":
+            if len(a_bits) < len(y_bits):
+                raise ValueError(
+                    f"TRUNC requires |A| >= |Y|: nid={nid}, A={len(a_bits)}, Y={len(y_bits)}"
+                )
+
+def _check_canonical_widths(nodes: List[Dict[str, Any]]) -> None:
+    for n in nodes:
+        op = n.get("op")
+        nid = n.get("nid")
+        ports = n.get("ports", {}) or {}
+
+        if op in ("AND", "OR", "XOR"):
+            if "A" not in ports or "B" not in ports or "Y" not in ports:
+                raise ValueError(f"{op} missing ports: nid={nid}")
+            a_bits = ports.get("A", [])
+            b_bits = ports.get("B", [])
+            y_bits = ports.get("Y", [])
+            if not isinstance(a_bits, list) or not isinstance(b_bits, list) or not isinstance(y_bits, list):
+                raise ValueError(f"{op} ports not list: nid={nid}")
+            if not (len(a_bits) == len(b_bits) == len(y_bits)):
+                raise ValueError(
+                    f"{op} canonical width mismatch: nid={nid}, A={len(a_bits)}, B={len(b_bits)}, Y={len(y_bits)}"
+                )
+
+        elif op == "NOT":
+            if "A" not in ports or "Y" not in ports:
+                raise ValueError(f"NOT missing ports: nid={nid}")
+            a_bits = ports.get("A", [])
+            y_bits = ports.get("Y", [])
+            if not isinstance(a_bits, list) or not isinstance(y_bits, list):
+                raise ValueError(f"NOT ports not list: nid={nid}")
+            if len(a_bits) != len(y_bits):
+                raise ValueError(
+                    f"NOT canonical width mismatch: nid={nid}, A={len(a_bits)}, Y={len(y_bits)}"
+                )
+
+        elif op in ("ADD", "SUB"):
+            if "A" not in ports or "B" not in ports or "Y" not in ports:
+                raise ValueError(f"{op} missing ports: nid={nid}")
+            a_bits = ports.get("A", [])
+            b_bits = ports.get("B", [])
+            y_bits = ports.get("Y", [])
+            if not isinstance(a_bits, list) or not isinstance(b_bits, list) or not isinstance(y_bits, list):
+                raise ValueError(f"{op} ports not list: nid={nid}")
+            if not (len(a_bits) == len(b_bits) == len(y_bits)):
+                raise ValueError(
+                    f"{op} canonical width mismatch: nid={nid}, A={len(a_bits)}, B={len(b_bits)}, Y={len(y_bits)}"
+                )
+
+        elif op in ("EQ", "LT", "LE", "GT", "GE"):
+            if "A" not in ports or "B" not in ports or "Y" not in ports:
+                raise ValueError(f"{op} missing ports: nid={nid}")
+            a_bits = ports.get("A", [])
+            b_bits = ports.get("B", [])
+            y_bits = ports.get("Y", [])
+            if not isinstance(a_bits, list) or not isinstance(b_bits, list) or not isinstance(y_bits, list):
+                raise ValueError(f"{op} ports not list: nid={nid}")
+            if len(a_bits) != len(b_bits):
+                raise ValueError(
+                    f"{op} canonical width mismatch: nid={nid}, A={len(a_bits)}, B={len(b_bits)}"
+                )
+            if len(y_bits) != 1:
+                raise ValueError(f"{op} output width must be 1: nid={nid}, Y={len(y_bits)}")
+
+        elif op == "LOGIC_NOT":
+            if "A" not in ports or "Y" not in ports:
+                raise ValueError(f"LOGIC_NOT missing ports: nid={nid}")
+            y_bits = ports.get("Y", [])
+            if not isinstance(y_bits, list):
+                raise ValueError(f"LOGIC_NOT Y not list: nid={nid}")
+            if len(y_bits) != 1:
+                raise ValueError(f"LOGIC_NOT canonical output width must be 1: nid={nid}, Y={len(y_bits)}")
+
+        elif op == "PMUX":
+            if "A" not in ports or "B" not in ports or "S" not in ports or "Y" not in ports:
+                raise ValueError(f"PMUX missing ports: nid={nid}")
+            a_bits = ports.get("A", [])
+            b_bits = ports.get("B", [])
+            s_bits = ports.get("S", [])
+            y_bits = ports.get("Y", [])
+            if not isinstance(a_bits, list) or not isinstance(b_bits, list) \
+               or not isinstance(s_bits, list) or not isinstance(y_bits, list):
+                raise ValueError(f"PMUX ports not list: nid={nid}")
+            if len(a_bits) != len(y_bits):
+                raise ValueError(
+                    f"PMUX canonical width mismatch: nid={nid}, A={len(a_bits)}, Y={len(y_bits)}"
+                )
+            if len(b_bits) != len(s_bits) * len(y_bits):
+                raise ValueError(
+                    f"PMUX canonical B width mismatch: nid={nid}, "
+                    f"B={len(b_bits)}, S={len(s_bits)}, Y={len(y_bits)}"
+                )
+            
 def _check_mux(nodes: List[Dict[str, Any]]) -> None:
     for n in nodes:
         if n.get("op") != "MUX":
             continue
         nid = n.get("nid")
+        ports = n.get("ports", {}) or {}
         args = n.get("args", {})
+
         cond = (args or {}).get("cond", [])
         if not isinstance(cond, list):
             raise ValueError(f"MUX cond not list: nid={nid}")
         if len(cond) != 1:
             raise ValueError(f"MUX cond width must be 1: nid={nid}, got={len(cond)}")
+
+        a_bits = ports.get("A", [])
+        b_bits = ports.get("B", [])
+        y_bits = ports.get("Y", [])
+        if not isinstance(a_bits, list) or not isinstance(b_bits, list) or not isinstance(y_bits, list):
+            raise ValueError(f"MUX ports not list: nid={nid}")
+        if not (len(a_bits) == len(b_bits) == len(y_bits)):
+            raise ValueError(
+                f"MUX canonical width mismatch: nid={nid}, A={len(a_bits)}, B={len(b_bits)}, Y={len(y_bits)}"
+            )
 
 def _get_param_int(params: dict, keys: list[str]) -> int | None:
     for k in keys:
@@ -187,6 +317,12 @@ def _check_shift_eq(nodes: list[dict]) -> None:
             y_width_param = _get_param_int(params, ["Y_WIDTH", "WIDTH"])
             if y_width_param is not None and y_width_param != 1:
                 raise ValueError(f"EQ param Y_WIDTH must be 1: nid={nid}, param={y_width_param}")
+            a_bits = ports.get("A", [])
+            b_bits = ports.get("B", [])
+            if not isinstance(a_bits, list) or not isinstance(b_bits, list):
+                raise ValueError(f"EQ A/B not list: nid={nid}")
+            if len(a_bits) != len(b_bits):
+                raise ValueError(f"EQ canonical width mismatch: nid={nid}, A={len(a_bits)}, B={len(b_bits)}")
         if op in ("SHL", "SHR", "ASHR"):
             if "A" not in ports or "B" not in ports or "Y" not in ports:
                 raise ValueError(f"{op} missing ports: nid={nid}")
@@ -227,8 +363,8 @@ def _check_logic_not_pmux(nodes: List[Dict[str, Any]]) -> None:
             y_bits = ports.get("Y", [])
             if not isinstance(a_bits, list) or not isinstance(y_bits, list):
                 raise ValueError(f"LOGIC_NOT ports not list: nid={nid}")
-            if len(y_bits) <= 0:
-                raise ValueError(f"LOGIC_NOT output is empty: nid={nid}")
+            if len(y_bits) != 1:
+                raise ValueError(f"LOGIC_NOT output width must be 1 in canonical IR: nid={nid}, Y={len(y_bits)}")
 
             a_w = _get_param_int(params, ["A_WIDTH"])
             y_w = _get_param_int(params, ["Y_WIDTH", "WIDTH"])
@@ -298,6 +434,10 @@ def _check_rel_cmp(nodes: list[dict]) -> None:
         y_bits = ports.get("Y", [])
         if not isinstance(a_bits, list) or not isinstance(b_bits, list) or not isinstance(y_bits, list):
             raise ValueError(f"{op} ports not list: nid={nid}")
+        if len(a_bits) != len(b_bits):
+            raise ValueError(
+                f"{op} canonical width mismatch: nid={nid}, A={len(a_bits)}, B={len(b_bits)}"
+            )
         if len(y_bits) != 1:
             raise ValueError(f"{op} output width must be 1: nid={nid}, Y={len(y_bits)}")
         y_width_param = _get_param_int(params, ["Y_WIDTH", "WIDTH"])
