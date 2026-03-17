@@ -12,8 +12,13 @@
     }
   },
   "enum_var_bits": 4,
+  "enum_mode": "bit_product",
+  "enum_domain_sizes": [
+    4,
+    4
+  ],
   "enum_count": 16,
-  "time_seconds": 0.0006759001407772303,
+  "time_seconds": 0.0010563000000729517,
   "signals": {
     "y": {
       "width": 8,

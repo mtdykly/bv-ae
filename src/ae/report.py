@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 from typing import Any, Dict, Optional, List
 
+from src.ae.assumptions import parse_input_constraints
 from src.ae.eval import eval_ir_bv3
 from src.ir.ir_types import ModuleIR
 
@@ -61,17 +62,13 @@ def build_report_md(ir: dict | ModuleIR, assume: Optional[dict], ev: dict) -> st
         lines.append("_No assumptions provided._")
         lines.append("")
     else:
-        sigs = assume.get("signals", {}) or {}
-        lines.append("| name | bits_msb |")
+        constraints = parse_input_constraints(ir, assume)
+        lines.append("| name | spec |")
         lines.append("| --- | --- |")
-        for name, spec in sigs.items():
-            if isinstance(spec, str):
-                bits_msb = spec
-            elif isinstance(spec, dict):
-                bits_msb = spec.get("bits_msb", "")
-            else:
-                bits_msb = ""
-            lines.append(f"| `{_md_escape(str(name))}` | `{_md_escape(str(bits_msb))}` |")
+        for name, constraint in constraints.items():
+            lines.append(
+                f"| `{_md_escape(str(name))}` | `{_md_escape(constraint.display_spec())}` |"
+            )
         lines.append("")
 
     lines.append("## Outputs")

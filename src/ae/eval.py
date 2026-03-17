@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Dict, Any, List, Optional, Set, Tuple
 from itertools import product
 
+from src.ae.assumptions import parse_input_constraints
 from src.ae.bv3 import BV3, Bit3
 from src.ir.ir_types import ModuleIR
 
@@ -180,47 +181,24 @@ def _tighten_sub_no_split(base: BV3, a: BV3, b: BV3) -> BV3:
     return _meet_known_bits(base, _interval_prefix_bv3(lo, hi, w, base.signed))
 
 def _apply_assumptions(ir: dict, env: Dict[int, Bit3], assume: Optional[dict]) -> None:
-    if not assume:
-        return
-    sigs = assume.get("signals", {})
-    if not isinstance(sigs, dict):
-        raise ValueError("assume.signals must be an object")
-    sig_map = {s.get("name"): s for s in ir.get("signals", []) if isinstance(s, dict) and s.get("name")}
-    for name, spec in sigs.items():
-        if name not in sig_map:
-            raise ValueError(f"assume signal not found in IR: {name}")
-        s = sig_map[name]
-        if s.get("kind") != "input":
-            raise ValueError(f"assume only supports input signals currently: {name}")
+    constraints = parse_input_constraints(ir, assume)
+    sig_map = {
+        s.get("name"): s
+        for s in ir.get("signals", [])
+        if isinstance(s, dict) and s.get("kind") == "input" and s.get("name")
+    }
+    for name, constraint in constraints.items():
+        s = sig_map.get(name)
+        if not isinstance(s, dict):
+            continue
         bits = s.get("bits", [])
         if not isinstance(bits, list):
             raise ValueError(f"IR signal bits malformed: {name}")
-        if isinstance(spec, str):
-            bits_msb = spec
-        elif isinstance(spec, dict):
-            bits_msb = spec.get("bits_msb")
-        else:
-            raise ValueError(f"assume spec must be string or object: {name}")
-        if not isinstance(bits_msb, str):
-            raise ValueError(f"assume.{name}.bits_msb must be string")
-        if len(bits_msb) != len(bits):
-            raise ValueError(
-                f"assume width mismatch for {name}: bits_msb len={len(bits_msb)} IR width={len(bits)}"
-            )
-        bits_lsb = list(reversed(bits_msb))
-        for i, ch in enumerate(bits_lsb):
-            br = bits[i]
+        value = constraint.to_bv3().to_bits()
+        for br, bv in zip(bits, value):
             if br.get("kind") != "wire":
                 continue
-            bid = int(br["id"])
-            if ch == "0":
-                env[bid] = Bit3.Z0
-            elif ch == "1":
-                env[bid] = Bit3.Z1
-            elif ch in ("X", "x"):
-                env[bid] = Bit3.X
-            else:
-                raise ValueError(f"invalid char in assume bits_msb for {name}: {ch}")
+            env[int(br["id"])] = bv
 
 def _eval_node(
     op: str,

@@ -4,10 +4,10 @@ from __future__ import annotations
 import argparse
 import json
 import time
-from itertools import product
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Set, Tuple
 
+from src.ae.assumptions import InputConstraint, parse_input_constraints
 from src.ir.ir_types import ModuleIR
 
 def _as_ir_dict(ir: dict | ModuleIR) -> dict:
@@ -104,60 +104,93 @@ def _scan_const_nondet_ids(ir: dict) -> Dict[int, int]:
             visit_bitrefs(bits or [])
     return mapping
 
-# 收集输入环境：哪些位固定，哪些位需要枚举
-def _collect_input_env(
+class _EnumDomain:
+    def __init__(
+        self,
+        *,
+        name: str,
+        size: int,
+        signal_bits: Optional[List[dict]] = None,
+        constraint: Optional[InputConstraint] = None,
+        const_vid: Optional[int] = None,
+    ) -> None:
+        self.name = name
+        self.size = int(size)
+        self.signal_bits = signal_bits
+        self.constraint = constraint
+        self.const_vid = const_vid
+
+    def iter_values(self):
+        if self.constraint is not None:
+            yield from self.constraint.iter_unsigned_values()
+            return
+        if self.const_vid is not None:
+            yield 0
+            yield 1
+            return
+        raise ValueError(f"invalid enum domain: {self.name}")
+
+    def assign(self, env: Dict[int, int], value: int) -> None:
+        if self.constraint is not None:
+            for i, br in enumerate(self.signal_bits or []):
+                if not isinstance(br, dict) or br.get("kind") != "wire":
+                    continue
+                env[int(br["id"])] = (value >> i) & 1
+            return
+        if self.const_vid is not None:
+            env[self.const_vid] = int(value) & 1
+            return
+        raise ValueError(f"invalid enum domain: {self.name}")
+
+
+def _build_enum_domains(
     ir: dict, assume: Optional[dict], const_oid_to_vid: Dict[int, int]
-) -> Tuple[Dict[int, int], List[int]]:
+) -> Tuple[Dict[int, int], List[_EnumDomain], int, str]:
     fixed_env: Dict[int, int] = {}
-    var_set: Set[int] = set()
+    domains: List[_EnumDomain] = []
+    enum_var_bits = 0
+    enum_mode = "bit_product"
 
-    assume_sigs = {}
-    if assume:
-        assume_sigs = assume.get("signals", {}) or {}
-        if not isinstance(assume_sigs, dict):
-            raise ValueError("inputs.json: signals must be an object")
+    constraints = parse_input_constraints(ir, assume)
 
-    # 输入端口
     for s in (ir.get("signals", []) or []):
         if not isinstance(s, dict) or s.get("kind") != "input":
             continue
         name = s.get("name")
+        if not isinstance(name, str) or name not in constraints:
+            continue
         bits = s.get("bits", []) or []
         if not isinstance(bits, list):
             continue
-
-        spec = assume_sigs.get(name)
-        if isinstance(spec, str):
-            bits_msb = spec
-        elif isinstance(spec, dict):
-            bits_msb = spec.get("bits_msb")
+        constraint = constraints[name]
+        size = constraint.domain_size()
+        if size <= 0:
+            raise ValueError(f"assume.{name} has empty value domain")
+        if constraint.has_exact_bit_cube():
+            enum_var_bits += constraint.bit_unknown_count()
         else:
-            bits_msb = None
+            enum_mode = "value_domains"
+        if size == 1:
+            fixed_val = next(constraint.iter_unsigned_values())
+            for i, br in enumerate(bits):
+                if not isinstance(br, dict) or br.get("kind") != "wire":
+                    continue
+                fixed_env[int(br["id"])] = (fixed_val >> i) & 1
+        else:
+            domains.append(
+                _EnumDomain(
+                    name=name,
+                    size=size,
+                    signal_bits=bits,
+                    constraint=constraint,
+                )
+            )
 
-        if bits_msb is None:
-            bits_msb = "X" * len(bits)
-        if not isinstance(bits_msb, str) or len(bits_msb) != len(bits):
-            raise ValueError(f"inputs width mismatch for {name}: got {len(bits_msb)} want {len(bits)}")
+    for vid in sorted(const_oid_to_vid.values()):
+        domains.append(_EnumDomain(name=f"const_{vid}", size=2, const_vid=vid))
+        enum_var_bits += 1
 
-        bits_lsb = list(reversed(bits_msb))
-        for i, ch in enumerate(bits_lsb):
-            br = bits[i]
-            if not isinstance(br, dict) or br.get("kind") != "wire":
-                continue
-            bid = int(br["id"])
-            if ch == "0":
-                fixed_env[bid] = 0
-            elif ch == "1":
-                fixed_env[bid] = 1
-            elif ch in ("X", "x"):
-                var_set.add(bid)
-            else:
-                raise ValueError(f"invalid char in bits_msb for {name}: {ch}")
-    for vid in const_oid_to_vid.values():
-        var_set.add(vid)
-
-    var_bits = sorted(var_set)
-    return fixed_env, var_bits
+    return fixed_env, domains, enum_var_bits, enum_mode
 
 def _collect_unsupported_output_bits(ir: dict) -> List[int]:
     var_set: Set[int] = set()
@@ -361,14 +394,17 @@ def eval_ir_exact_enum(
     nodes = ir.get("nodes", []) or []
 
     const_oid_to_vid = _scan_const_nondet_ids(ir)
-    fixed_env, var_bits = _collect_input_env(ir, assume, const_oid_to_vid)
+    fixed_env, domains, enum_var_bits, enum_mode = _build_enum_domains(ir, assume, const_oid_to_vid)
     unsupported_var_bits = _collect_unsupported_output_bits(ir)
-    var_bits = sorted(set(var_bits) | set(unsupported_var_bits))
+    for vid in unsupported_var_bits:
+        domains.append(_EnumDomain(name=f"unsupported_{vid}", size=2, const_vid=vid))
+        enum_var_bits += 1
 
-    k = len(var_bits)
-    enum_count = 1 << k
-    if enum_count > max_enum:
-        raise ValueError(f"too many enumerations: 2^{k} = {enum_count} > max_enum={max_enum}")
+    enum_count = 1
+    for dom in domains:
+        enum_count *= dom.size
+        if enum_count > max_enum:
+            raise ValueError(f"too many enumerations: count={enum_count} > max_enum={max_enum}")
 
     bit_driver = _build_bit_driver(ir)
     ordered_nodes = _topo_sort_nodes(nodes, bit_driver)
@@ -396,11 +432,7 @@ def eval_ir_exact_enum(
 
     t0 = time.perf_counter()
 
-    for bits in product((0, 1), repeat=k):
-        env = dict(fixed_env)
-        for bid, b in zip(var_bits, bits):
-            env[bid] = b
-
+    def _run_one_env(env: Dict[int, int]) -> None:
         for n in ordered_nodes:
             if not isinstance(n, dict):
                 continue
@@ -428,6 +460,18 @@ def eval_ir_exact_enum(
             sv = _as_signed(v, w)
             a["smin"] = sv if a["smin"] is None else min(a["smin"], sv)
             a["smax"] = sv if a["smax"] is None else max(a["smax"], sv)
+
+    def _enum_domains(idx: int, env: Dict[int, int]) -> None:
+        if idx >= len(domains):
+            _run_one_env(env)
+            return
+        dom = domains[idx]
+        for value in dom.iter_values():
+            next_env = dict(env)
+            dom.assign(next_env, int(value))
+            _enum_domains(idx + 1, next_env)
+
+    _enum_domains(0, dict(fixed_env))
 
     t1 = time.perf_counter()
     sig_out: Dict[str, dict] = {}
@@ -458,7 +502,9 @@ def eval_ir_exact_enum(
         "domain": "exact_enum",
         "top_module": ir.get("top_module"),
         "assume": assume or {},
-        "enum_var_bits": k,
+        "enum_var_bits": enum_var_bits,
+        "enum_mode": enum_mode,
+        "enum_domain_sizes": [dom.size for dom in domains],
         "enum_count": enum_count,
         "time_seconds": (t1 - t0),
         "signals": sig_out,
@@ -533,10 +579,16 @@ def main() -> None:
         if not rep["ok"]:
             print("issues:", len(rep["issues"]))
 
-    print(
-        f"exact enum done: vars={exact['enum_var_bits']} count={exact['enum_count']} "
-        f"time={exact['time_seconds']:.6f}s"
-    )
+    if exact.get("enum_mode") == "bit_product":
+        print(
+            f"exact enum done: vars={exact['enum_var_bits']} count={exact['enum_count']} "
+            f"time={exact['time_seconds']:.6f}s"
+        )
+    else:
+        print(
+            f"exact enum done: mode={exact.get('enum_mode')} count={exact['enum_count']} "
+            f"time={exact['time_seconds']:.6f}s"
+        )
 
 if __name__ == "__main__":
     main()

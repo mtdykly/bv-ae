@@ -163,24 +163,49 @@ out/<case_name>/report.md
 
 ## 输入假设 inputs.json 格式
 
-文件示例：
+文件示例（两种格式可混用）：
 
 ```json
 {
   "signals": {
     "a": { "bits_msb": "10XX" },
-    "b": { "bits_msb": "11XX" },
-    "s": { "bits_msb": "1" }
+    "b": { "range_unsigned": [8, 11] },
+    "s": { "range": [-4, -1] },
+    "sel": { "bits_msb": "1" }
   }
 }
 ```
 
 规则：
 
+- 每个输入信号可以使用以下三种约束形式之一：
+  - `bits_msb`
+  - `range_unsigned`
+  - `range_signed`
+  - `range`
+- 同一个信号的约束对象中，以上字段必须 **恰好出现一个**
 - `bits_msb` 为 **MSB→LSB** 字符串
-- 允许字符：`0` / `1` / `X`
-- 字符串长度必须等于该输入信号位宽
+- `bits_msb` 允许字符：`0` / `1` / `X`
+- `bits_msb` 字符串长度必须等于该输入信号位宽
 - IR 内部 bit 列表为 LSB-first，工具会自动对齐（反转映射）
+- `range_unsigned: [lo, hi]`
+  - 要求 `0 <= lo <= hi <= 2^width - 1`
+  - 按无符号整数范围解释
+- `range_signed: [lo, hi]`
+  - 要求 `-(2^(width-1)) <= lo <= hi <= 2^(width-1)-1`
+  - 按 two's complement 有符号范围解释
+- `range: [lo, hi]`
+  - 会根据该输入信号在 IR 中的 `signed` 属性自动解释
+  - 若信号是 unsigned，则等价于 `range_unsigned`
+  - 若信号是 signed，则等价于 `range_signed`
+
+补充说明：
+
+- `bits_msb: "10XX"` 表示这是一个按位约束，允许的具体值集合是 `1000/1001/1010/1011`
+- 对于这种“可枚举的有限范围”，`range_unsigned: [8, 11]` 与上面的 `bits_msb: "10XX"` 是等价的
+- 当范围不是 2 的幂大小、也不是单纯公共前缀能精确表示时：
+  - 抽象求值会把它转成一个 sound 的 BV3 近似
+  - 精确枚举器会按范围内所有具体值逐个枚举
 
 ## IR 结构与算子支持
 
