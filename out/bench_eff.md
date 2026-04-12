@@ -1,0 +1,8 @@
+| case | max_signal_width | input_bits | output_bits | node_count | signal_count | repeat | avg_abs_time_s | min_abs_time_s | max_abs_time_s |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| eff01_midwidth_bitop_chain | 16 | 48 | 16 | 33 | 36 | 30 | 0.002124 | 0.002070 | 0.002339 |
+| eff02_midwidth_arith_chain | 16 | 64 | 18 | 15 | 19 | 30 | 0.002009 | 0.001977 | 0.002188 |
+| eff03_shift_cmp_mix | 32 | 106 | 34 | 8 | 13 | 30 | 0.001442 | 0.001350 | 0.002243 |
+| eff04_deep_dependency_chain | 32 | 96 | 32 | 16 | 19 | 30 | 0.003894 | 0.003799 | 0.004412 |
+| eff05_highwidth_mixed | 64 | 136 | 64 | 10 | 16 | 30 | 0.002302 | 0.002247 | 0.002574 |
+| eff06_complex_combo | 64 | 270 | 129 | 15 | 24 | 30 | 0.004620 | 0.004535 | 0.005214 |

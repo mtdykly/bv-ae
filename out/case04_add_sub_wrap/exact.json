@@ -4,21 +4,27 @@
   "assume": {
     "signals": {
       "a": {
-        "bits_msb": "111X"
+        "range_unsigned": [
+          14,
+          15
+        ]
       },
       "b": {
-        "bits_msb": "00X1"
+        "range_unsigned": [
+          1,
+          3
+        ]
       }
     }
   },
-  "enum_var_bits": 2,
-  "enum_mode": "bit_product",
+  "enum_var_bits": 0,
+  "enum_mode": "value_domains",
   "enum_domain_sizes": [
     2,
-    2
+    3
   ],
-  "enum_count": 4,
-  "time_seconds": 0.00011080000012952951,
+  "enum_count": 6,
+  "time_seconds": 0.00014429999282583594,
   "signals": {
     "y_add": {
       "width": 4,

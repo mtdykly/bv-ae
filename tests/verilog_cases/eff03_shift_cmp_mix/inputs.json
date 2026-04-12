@@ -1,0 +1,9 @@
+{
+  "signals": {
+    "x": { "range_unsigned": [0, 4294967295] },
+    "y": { "range_unsigned": [268435456, 4294967295] },
+    "z": { "range_unsigned": [0, 4294967295] },
+    "sh0": { "range_unsigned": [0, 31] },
+    "sh1": { "range_unsigned": [0, 31] }
+  }
+}

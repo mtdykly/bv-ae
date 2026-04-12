@@ -1,6 +1,6 @@
 {
   "signals": {
-    "a": { "bits_msb": "111X" },
-    "b": { "bits_msb": "00X1" }
+    "a": { "range_unsigned": [14, 15] },
+    "b": { "range_unsigned": [1, 3] }
   }
 }

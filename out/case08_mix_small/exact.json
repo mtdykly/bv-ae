@@ -4,29 +4,41 @@
   "assume": {
     "signals": {
       "a": {
-        "bits_msb": "0001XX10"
+        "range_unsigned": [
+          18,
+          30
+        ]
       },
       "b": {
-        "bits_msb": "1110X0X1"
+        "range_unsigned": [
+          225,
+          235
+        ]
       },
       "sh": {
-        "bits_msb": "01X"
+        "range_unsigned": [
+          2,
+          3
+        ]
       },
       "sel": {
-        "bits_msb": "X"
+        "range_unsigned": [
+          0,
+          1
+        ]
       }
     }
   },
-  "enum_var_bits": 6,
-  "enum_mode": "bit_product",
+  "enum_var_bits": 0,
+  "enum_mode": "value_domains",
   "enum_domain_sizes": [
-    4,
-    4,
+    13,
+    11,
     2,
     2
   ],
-  "enum_count": 64,
-  "time_seconds": 0.003176400000029389,
+  "enum_count": 572,
+  "time_seconds": 0.02637560002040118,
   "signals": {
     "y": {
       "width": 8,
@@ -36,12 +48,12 @@
       "known_value_hex": "0x0",
       "unknown_count": 8,
       "range_unsigned": [
-        1,
+        0,
         239
       ],
       "range_signed": [
-        -95,
-        111
+        -128,
+        127
       ]
     }
   }

@@ -1,0 +1,7 @@
+{
+  "signals": {
+    "a": { "range_unsigned": [0, 4294967295] },
+    "b": { "range_unsigned": [305419896, 3989547399] },
+    "c": { "range_unsigned": [252645135, 4042322160] }
+  }
+}

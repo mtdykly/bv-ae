@@ -4,19 +4,34 @@
   "assume": {
     "signals": {
       "a": {
-        "bits_msb": "00XX1100"
+        "range_unsigned": [
+          12,
+          60
+        ]
       },
       "b": {
-        "bits_msb": "00XX1111"
+        "range_unsigned": [
+          15,
+          63
+        ]
       },
       "c": {
-        "bits_msb": "00001111"
+        "range_unsigned": [
+          15,
+          15
+        ]
       },
       "s0": {
-        "bits_msb": "X"
+        "range_unsigned": [
+          0,
+          1
+        ]
       },
       "s1": {
-        "bits_msb": "X"
+        "range_unsigned": [
+          0,
+          1
+        ]
       }
     }
   },
@@ -24,32 +39,32 @@
     "a": {
       "width": 8,
       "signed": false,
-      "bits_msb": "00XX1100",
-      "known_mask_hex": "0xcf",
-      "known_value_hex": "0xc",
-      "unknown_count": 2,
+      "bits_msb": "00XXXXXX",
+      "known_mask_hex": "0xc0",
+      "known_value_hex": "0x0",
+      "unknown_count": 6,
       "range_unsigned": [
-        12,
-        60
+        0,
+        63
       ],
       "range_signed": [
-        12,
-        60
+        0,
+        63
       ]
     },
     "b": {
       "width": 8,
       "signed": false,
-      "bits_msb": "00XX1111",
-      "known_mask_hex": "0xcf",
-      "known_value_hex": "0xf",
-      "unknown_count": 2,
+      "bits_msb": "00XXXXXX",
+      "known_mask_hex": "0xc0",
+      "known_value_hex": "0x0",
+      "unknown_count": 6,
       "range_unsigned": [
-        15,
+        0,
         63
       ],
       "range_signed": [
-        15,
+        0,
         63
       ]
     },
@@ -72,16 +87,16 @@
     "m0": {
       "width": 8,
       "signed": false,
-      "bits_msb": "00XX11XX",
-      "known_mask_hex": "0xcc",
-      "known_value_hex": "0xc",
-      "unknown_count": 4,
+      "bits_msb": "00XXXXXX",
+      "known_mask_hex": "0xc0",
+      "known_value_hex": "0x0",
+      "unknown_count": 6,
       "range_unsigned": [
-        12,
+        0,
         63
       ],
       "range_signed": [
-        12,
+        0,
         63
       ]
     },
@@ -120,16 +135,16 @@
     "y": {
       "width": 8,
       "signed": false,
-      "bits_msb": "00XX11XX",
-      "known_mask_hex": "0xcc",
-      "known_value_hex": "0xc",
-      "unknown_count": 4,
+      "bits_msb": "00XXXXXX",
+      "known_mask_hex": "0xc0",
+      "known_value_hex": "0x0",
+      "unknown_count": 6,
       "range_unsigned": [
-        12,
+        0,
         63
       ],
       "range_signed": [
-        12,
+        0,
         63
       ]
     }
@@ -140,16 +155,16 @@
       "out": {
         "width": 8,
         "signed": false,
-        "bits_msb": "00XX11XX",
-        "known_mask_hex": "0xcc",
-        "known_value_hex": "0xc",
-        "unknown_count": 4,
+        "bits_msb": "00XXXXXX",
+        "known_mask_hex": "0xc0",
+        "known_value_hex": "0x0",
+        "unknown_count": 6,
         "range_unsigned": [
-          12,
+          0,
           63
         ],
         "range_signed": [
-          12,
+          0,
           63
         ]
       }
@@ -159,16 +174,16 @@
       "out": {
         "width": 8,
         "signed": false,
-        "bits_msb": "00XX11XX",
-        "known_mask_hex": "0xcc",
-        "known_value_hex": "0xc",
-        "unknown_count": 4,
+        "bits_msb": "00XXXXXX",
+        "known_mask_hex": "0xc0",
+        "known_value_hex": "0x0",
+        "unknown_count": 6,
         "range_unsigned": [
-          12,
+          0,
           63
         ],
         "range_signed": [
-          12,
+          0,
           63
         ]
       }

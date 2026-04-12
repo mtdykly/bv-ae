@@ -1,0 +1,915 @@
+{
+  "domain": "bv3",
+  "top_module": "top",
+  "assume": {
+    "signals": {
+      "a": {
+        "bits_msb": "10X110X110X110X110X110X110X110X110X110X110X110X110X110X110X110X110X110X110X110X110X110X110X110X110X110X110X110X110X110X110X110X1"
+      },
+      "b": {
+        "bits_msb": "01X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X0"
+      },
+      "c": {
+        "bits_msb": "11X011X011X011X011X011X011X011X011X011X011X011X011X011X011X011X011X011X011X011X011X011X011X011X011X011X011X011X011X011X011X011X0"
+      },
+      "d": {
+        "bits_msb": "00X100X100X100X100X100X100X100X100X100X100X100X100X100X100X100X100X100X100X100X100X100X100X100X100X100X100X100X100X100X100X100X1"
+      },
+      "sh": {
+        "range_unsigned": [
+          0,
+          127
+        ]
+      },
+      "sel": {
+        "bits_msb": "X"
+      }
+    }
+  },
+  "signals": {
+    "$add$top.v:19$13_Y": {
+      "width": 128,
+      "signed": false,
+      "bits_msb": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+      "known_mask_hex": "0x0",
+      "known_value_hex": "0x0",
+      "unknown_count": 128,
+      "range_unsigned": [
+        0,
+        340282366920938463463374607431768211455
+      ],
+      "range_signed": [
+        -170141183460469231731687303715884105728,
+        170141183460469231731687303715884105727
+      ]
+    },
+    "$and$top.v:12$3_Y": {
+      "width": 128,
+      "signed": false,
+      "bits_msb": "00XX00XX00XX00XX00XX00XX00XX00XX00XX00XX00XX00XX00XX00XX00XX00XX00XX00XX00XX00XX00XX00XX00XX00XX00XX00XX00XX00XX00XX00XX00XX00XX",
+      "known_mask_hex": "0xcccccccccccccccccccccccccccccccc",
+      "known_value_hex": "0x0",
+      "unknown_count": 64,
+      "range_unsigned": [
+        0,
+        68056473384187692692674921486353642291
+      ],
+      "range_signed": [
+        0,
+        68056473384187692692674921486353642291
+      ]
+    },
+    "$and$top.v:21$20_Y": {
+      "width": 128,
+      "signed": false,
+      "bits_msb": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+      "known_mask_hex": "0x0",
+      "known_value_hex": "0x0",
+      "unknown_count": 128,
+      "range_unsigned": [
+        0,
+        340282366920938463463374607431768211455
+      ],
+      "range_signed": [
+        -170141183460469231731687303715884105728,
+        170141183460469231731687303715884105727
+      ]
+    },
+    "$not$top.v:12$4_Y": {
+      "width": 128,
+      "signed": false,
+      "bits_msb": "01X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X0",
+      "known_mask_hex": "0xdddddddddddddddddddddddddddddddd",
+      "known_value_hex": "0x44444444444444444444444444444444",
+      "unknown_count": 32,
+      "range_unsigned": [
+        90741964512250256923566561981804856388,
+        136112946768375385385349842972707284582
+      ],
+      "range_signed": [
+        90741964512250256923566561981804856388,
+        136112946768375385385349842972707284582
+      ]
+    },
+    "$not$top.v:21$19_Y": {
+      "width": 128,
+      "signed": false,
+      "bits_msb": "1XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+      "known_mask_hex": "0x80000000000000000000000000000000",
+      "known_value_hex": "0x80000000000000000000000000000000",
+      "unknown_count": 127,
+      "range_unsigned": [
+        170141183460469231731687303715884105728,
+        340282366920938463463374607431768211455
+      ],
+      "range_signed": [
+        -170141183460469231731687303715884105728,
+        -1
+      ]
+    },
+    "$or$top.v:20$17_Y": {
+      "width": 128,
+      "signed": false,
+      "bits_msb": "1XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+      "known_mask_hex": "0x80000000000000000000000000000000",
+      "known_value_hex": "0x80000000000000000000000000000000",
+      "unknown_count": 127,
+      "range_unsigned": [
+        170141183460469231731687303715884105728,
+        340282366920938463463374607431768211455
+      ],
+      "range_signed": [
+        -170141183460469231731687303715884105728,
+        -1
+      ]
+    },
+    "$shl$top.v:13$6_Y": {
+      "width": 128,
+      "signed": false,
+      "bits_msb": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+      "known_mask_hex": "0x0",
+      "known_value_hex": "0x0",
+      "unknown_count": 128,
+      "range_unsigned": [
+        0,
+        340282366920938463463374607431768211455
+      ],
+      "range_signed": [
+        -170141183460469231731687303715884105728,
+        170141183460469231731687303715884105727
+      ]
+    },
+    "$shr$top.v:13$7_Y": {
+      "width": 128,
+      "signed": false,
+      "bits_msb": "0XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+      "known_mask_hex": "0x80000000000000000000000000000000",
+      "known_value_hex": "0x0",
+      "unknown_count": 127,
+      "range_unsigned": [
+        0,
+        170141183460469231731687303715884105727
+      ],
+      "range_signed": [
+        0,
+        170141183460469231731687303715884105727
+      ]
+    },
+    "$sub$top.v:19$14_Y": {
+      "width": 128,
+      "signed": false,
+      "bits_msb": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+      "known_mask_hex": "0x0",
+      "known_value_hex": "0x0",
+      "unknown_count": 128,
+      "range_unsigned": [
+        0,
+        340282366920938463463374607431768211455
+      ],
+      "range_signed": [
+        -170141183460469231731687303715884105728,
+        170141183460469231731687303715884105727
+      ]
+    },
+    "$xor$top.v:11$1_Y": {
+      "width": 128,
+      "signed": false,
+      "bits_msb": "11X111X111X111X111X111X111X111X111X111X111X111X111X111X111X111X111X111X111X111X111X111X111X111X111X111X111X111X111X111X111X111X1",
+      "known_mask_hex": "0xdddddddddddddddddddddddddddddddd",
+      "known_value_hex": "0xdddddddddddddddddddddddddddddddd",
+      "unknown_count": 32,
+      "range_unsigned": [
+        294911384664813335001591326440865783261,
+        340282366920938463463374607431768211455
+      ],
+      "range_signed": [
+        -45370982256125128461783280990902428195,
+        -1
+      ]
+    },
+    "$xor$top.v:20$16_Y": {
+      "width": 128,
+      "signed": false,
+      "bits_msb": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+      "known_mask_hex": "0x0",
+      "known_value_hex": "0x0",
+      "unknown_count": 128,
+      "range_unsigned": [
+        0,
+        340282366920938463463374607431768211455
+      ],
+      "range_signed": [
+        -170141183460469231731687303715884105728,
+        170141183460469231731687303715884105727
+      ]
+    },
+    "a": {
+      "width": 128,
+      "signed": false,
+      "bits_msb": "10X110X110X110X110X110X110X110X110X110X110X110X110X110X110X110X110X110X110X110X110X110X110X110X110X110X110X110X110X110X110X110X1",
+      "known_mask_hex": "0xdddddddddddddddddddddddddddddddd",
+      "known_value_hex": "0x99999999999999999999999999999999",
+      "unknown_count": 32,
+      "range_unsigned": [
+        204169420152563078078024764459060926873,
+        249540402408688206539808045449963355067
+      ],
+      "range_signed": [
+        -136112946768375385385349842972707284583,
+        -90741964512250256923566561981804856389
+      ]
+    },
+    "b": {
+      "width": 128,
+      "signed": false,
+      "bits_msb": "01X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X0",
+      "known_mask_hex": "0xdddddddddddddddddddddddddddddddd",
+      "known_value_hex": "0x44444444444444444444444444444444",
+      "unknown_count": 32,
+      "range_unsigned": [
+        90741964512250256923566561981804856388,
+        136112946768375385385349842972707284582
+      ],
+      "range_signed": [
+        90741964512250256923566561981804856388,
+        136112946768375385385349842972707284582
+      ]
+    },
+    "c": {
+      "width": 128,
+      "signed": false,
+      "bits_msb": "11X011X011X011X011X011X011X011X011X011X011X011X011X011X011X011X011X011X011X011X011X011X011X011X011X011X011X011X011X011X011X011X0",
+      "known_mask_hex": "0xdddddddddddddddddddddddddddddddd",
+      "known_value_hex": "0xcccccccccccccccccccccccccccccccc",
+      "unknown_count": 32,
+      "range_unsigned": [
+        272225893536750770770699685945414569164,
+        317596875792875899232482966936316997358
+      ],
+      "range_signed": [
+        -68056473384187692692674921486353642292,
+        -22685491128062564230891640495451214098
+      ]
+    },
+    "d": {
+      "width": 128,
+      "signed": false,
+      "bits_msb": "00X100X100X100X100X100X100X100X100X100X100X100X100X100X100X100X100X100X100X100X100X100X100X100X100X100X100X100X100X100X100X100X1",
+      "known_mask_hex": "0xdddddddddddddddddddddddddddddddd",
+      "known_value_hex": "0x11111111111111111111111111111111",
+      "unknown_count": 32,
+      "range_unsigned": [
+        22685491128062564230891640495451214097,
+        68056473384187692692674921486353642291
+      ],
+      "range_signed": [
+        22685491128062564230891640495451214097,
+        68056473384187692692674921486353642291
+      ]
+    },
+    "eq": {
+      "width": 1,
+      "signed": false,
+      "bits_msb": "X",
+      "known_mask_hex": "0x0",
+      "known_value_hex": "0x0",
+      "unknown_count": 1,
+      "range_unsigned": [
+        0,
+        1
+      ],
+      "range_signed": [
+        -1,
+        0
+      ]
+    },
+    "flag": {
+      "width": 1,
+      "signed": false,
+      "bits_msb": "X",
+      "known_mask_hex": "0x0",
+      "known_value_hex": "0x0",
+      "unknown_count": 1,
+      "range_unsigned": [
+        0,
+        1
+      ],
+      "range_signed": [
+        -1,
+        0
+      ]
+    },
+    "lt": {
+      "width": 1,
+      "signed": false,
+      "bits_msb": "X",
+      "known_mask_hex": "0x0",
+      "known_value_hex": "0x0",
+      "unknown_count": 1,
+      "range_unsigned": [
+        0,
+        1
+      ],
+      "range_signed": [
+        -1,
+        0
+      ]
+    },
+    "n0": {
+      "width": 128,
+      "signed": false,
+      "bits_msb": "1XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+      "known_mask_hex": "0x80000000000000000000000000000000",
+      "known_value_hex": "0x80000000000000000000000000000000",
+      "unknown_count": 127,
+      "range_unsigned": [
+        170141183460469231731687303715884105728,
+        340282366920938463463374607431768211455
+      ],
+      "range_signed": [
+        -170141183460469231731687303715884105728,
+        -1
+      ]
+    },
+    "n1": {
+      "width": 128,
+      "signed": false,
+      "bits_msb": "01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX",
+      "known_mask_hex": "0xcccccccccccccccccccccccccccccccc",
+      "known_value_hex": "0x44444444444444444444444444444444",
+      "unknown_count": 64,
+      "range_unsigned": [
+        90741964512250256923566561981804856388,
+        158798437896437949616241483468158498679
+      ],
+      "range_signed": [
+        90741964512250256923566561981804856388,
+        158798437896437949616241483468158498679
+      ]
+    },
+    "n1s": {
+      "width": 128,
+      "signed": true,
+      "bits_msb": "01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX",
+      "known_mask_hex": "0xcccccccccccccccccccccccccccccccc",
+      "known_value_hex": "0x44444444444444444444444444444444",
+      "unknown_count": 64,
+      "range_unsigned": [
+        90741964512250256923566561981804856388,
+        158798437896437949616241483468158498679
+      ],
+      "range_signed": [
+        90741964512250256923566561981804856388,
+        158798437896437949616241483468158498679
+      ]
+    },
+    "n2": {
+      "width": 128,
+      "signed": false,
+      "bits_msb": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+      "known_mask_hex": "0x0",
+      "known_value_hex": "0x0",
+      "unknown_count": 128,
+      "range_unsigned": [
+        0,
+        340282366920938463463374607431768211455
+      ],
+      "range_signed": [
+        -170141183460469231731687303715884105728,
+        170141183460469231731687303715884105727
+      ]
+    },
+    "n3": {
+      "width": 128,
+      "signed": false,
+      "bits_msb": "0XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+      "known_mask_hex": "0x80000000000000000000000000000000",
+      "known_value_hex": "0x0",
+      "unknown_count": 127,
+      "range_unsigned": [
+        0,
+        170141183460469231731687303715884105727
+      ],
+      "range_signed": [
+        0,
+        170141183460469231731687303715884105727
+      ]
+    },
+    "n4": {
+      "width": 128,
+      "signed": false,
+      "bits_msb": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+      "known_mask_hex": "0x0",
+      "known_value_hex": "0x0",
+      "unknown_count": 128,
+      "range_unsigned": [
+        0,
+        340282366920938463463374607431768211455
+      ],
+      "range_signed": [
+        -170141183460469231731687303715884105728,
+        170141183460469231731687303715884105727
+      ]
+    },
+    "n5": {
+      "width": 128,
+      "signed": false,
+      "bits_msb": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+      "known_mask_hex": "0x0",
+      "known_value_hex": "0x0",
+      "unknown_count": 128,
+      "range_unsigned": [
+        0,
+        340282366920938463463374607431768211455
+      ],
+      "range_signed": [
+        -170141183460469231731687303715884105728,
+        170141183460469231731687303715884105727
+      ]
+    },
+    "n6": {
+      "width": 128,
+      "signed": false,
+      "bits_msb": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+      "known_mask_hex": "0x0",
+      "known_value_hex": "0x0",
+      "unknown_count": 128,
+      "range_unsigned": [
+        0,
+        340282366920938463463374607431768211455
+      ],
+      "range_signed": [
+        -170141183460469231731687303715884105728,
+        170141183460469231731687303715884105727
+      ]
+    },
+    "sel": {
+      "width": 1,
+      "signed": false,
+      "bits_msb": "X",
+      "known_mask_hex": "0x0",
+      "known_value_hex": "0x0",
+      "unknown_count": 1,
+      "range_unsigned": [
+        0,
+        1
+      ],
+      "range_signed": [
+        -1,
+        0
+      ]
+    },
+    "sh": {
+      "width": 7,
+      "signed": false,
+      "bits_msb": "XXXXXXX",
+      "known_mask_hex": "0x0",
+      "known_value_hex": "0x0",
+      "unknown_count": 7,
+      "range_unsigned": [
+        0,
+        127
+      ],
+      "range_signed": [
+        -64,
+        63
+      ]
+    },
+    "y": {
+      "width": 128,
+      "signed": false,
+      "bits_msb": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+      "known_mask_hex": "0x0",
+      "known_value_hex": "0x0",
+      "unknown_count": 128,
+      "range_unsigned": [
+        0,
+        340282366920938463463374607431768211455
+      ],
+      "range_signed": [
+        -170141183460469231731687303715884105728,
+        170141183460469231731687303715884105727
+      ]
+    }
+  },
+  "nodes": {
+    "n18": {
+      "op": "XOR",
+      "out": {
+        "width": 128,
+        "signed": false,
+        "bits_msb": "11X111X111X111X111X111X111X111X111X111X111X111X111X111X111X111X111X111X111X111X111X111X111X111X111X111X111X111X111X111X111X111X1",
+        "known_mask_hex": "0xdddddddddddddddddddddddddddddddd",
+        "known_value_hex": "0xdddddddddddddddddddddddddddddddd",
+        "unknown_count": 32,
+        "range_unsigned": [
+          294911384664813335001591326440865783261,
+          340282366920938463463374607431768211455
+        ],
+        "range_signed": [
+          -45370982256125128461783280990902428195,
+          -1
+        ]
+      }
+    },
+    "n1": {
+      "op": "ADD",
+      "out": {
+        "width": 128,
+        "signed": false,
+        "bits_msb": "1XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "known_mask_hex": "0x80000000000000000000000000000000",
+        "known_value_hex": "0x80000000000000000000000000000000",
+        "unknown_count": 127,
+        "range_unsigned": [
+          170141183460469231731687303715884105728,
+          340282366920938463463374607431768211455
+        ],
+        "range_signed": [
+          -170141183460469231731687303715884105728,
+          -1
+        ]
+      }
+    },
+    "n3": {
+      "op": "AND",
+      "out": {
+        "width": 128,
+        "signed": false,
+        "bits_msb": "00XX00XX00XX00XX00XX00XX00XX00XX00XX00XX00XX00XX00XX00XX00XX00XX00XX00XX00XX00XX00XX00XX00XX00XX00XX00XX00XX00XX00XX00XX00XX00XX",
+        "known_mask_hex": "0xcccccccccccccccccccccccccccccccc",
+        "known_value_hex": "0x0",
+        "unknown_count": 64,
+        "range_unsigned": [
+          0,
+          68056473384187692692674921486353642291
+        ],
+        "range_signed": [
+          0,
+          68056473384187692692674921486353642291
+        ]
+      }
+    },
+    "n12": {
+      "op": "SHR",
+      "out": {
+        "width": 128,
+        "signed": false,
+        "bits_msb": "0XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "known_mask_hex": "0x80000000000000000000000000000000",
+        "known_value_hex": "0x0",
+        "unknown_count": 127,
+        "range_unsigned": [
+          0,
+          170141183460469231731687303715884105727
+        ],
+        "range_signed": [
+          0,
+          170141183460469231731687303715884105727
+        ]
+      }
+    },
+    "n7": {
+      "op": "NOT",
+      "out": {
+        "width": 128,
+        "signed": false,
+        "bits_msb": "01X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X001X0",
+        "known_mask_hex": "0xdddddddddddddddddddddddddddddddd",
+        "known_value_hex": "0x44444444444444444444444444444444",
+        "unknown_count": 32,
+        "range_unsigned": [
+          90741964512250256923566561981804856388,
+          136112946768375385385349842972707284582
+        ],
+        "range_signed": [
+          90741964512250256923566561981804856388,
+          136112946768375385385349842972707284582
+        ]
+      }
+    },
+    "n9": {
+      "op": "OR",
+      "out": {
+        "width": 128,
+        "signed": false,
+        "bits_msb": "01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX01XX",
+        "known_mask_hex": "0xcccccccccccccccccccccccccccccccc",
+        "known_value_hex": "0x44444444444444444444444444444444",
+        "unknown_count": 64,
+        "range_unsigned": [
+          90741964512250256923566561981804856388,
+          158798437896437949616241483468158498679
+        ],
+        "range_signed": [
+          90741964512250256923566561981804856388,
+          158798437896437949616241483468158498679
+        ]
+      }
+    },
+    "n13": {
+      "op": "ASHR",
+      "out": {
+        "width": 128,
+        "signed": false,
+        "bits_msb": "0XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "known_mask_hex": "0x80000000000000000000000000000000",
+        "known_value_hex": "0x0",
+        "unknown_count": 127,
+        "range_unsigned": [
+          0,
+          170141183460469231731687303715884105727
+        ],
+        "range_signed": [
+          0,
+          170141183460469231731687303715884105727
+        ]
+      }
+    },
+    "n8": {
+      "op": "NOT",
+      "out": {
+        "width": 128,
+        "signed": false,
+        "bits_msb": "1XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "known_mask_hex": "0x80000000000000000000000000000000",
+        "known_value_hex": "0x80000000000000000000000000000000",
+        "unknown_count": 127,
+        "range_unsigned": [
+          170141183460469231731687303715884105728,
+          340282366920938463463374607431768211455
+        ],
+        "range_signed": [
+          -170141183460469231731687303715884105728,
+          -1
+        ]
+      }
+    },
+    "n11": {
+      "op": "SHL",
+      "out": {
+        "width": 128,
+        "signed": false,
+        "bits_msb": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "known_mask_hex": "0x0",
+        "known_value_hex": "0x0",
+        "unknown_count": 128,
+        "range_unsigned": [
+          0,
+          340282366920938463463374607431768211455
+        ],
+        "range_signed": [
+          -170141183460469231731687303715884105728,
+          170141183460469231731687303715884105727
+        ]
+      }
+    },
+    "n19": {
+      "op": "XOR",
+      "out": {
+        "width": 128,
+        "signed": false,
+        "bits_msb": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "known_mask_hex": "0x0",
+        "known_value_hex": "0x0",
+        "unknown_count": 128,
+        "range_unsigned": [
+          0,
+          340282366920938463463374607431768211455
+        ],
+        "range_signed": [
+          -170141183460469231731687303715884105728,
+          170141183460469231731687303715884105727
+        ]
+      }
+    },
+    "n20": {
+      "op": "XOR",
+      "out": {
+        "width": 128,
+        "signed": false,
+        "bits_msb": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "known_mask_hex": "0x0",
+        "known_value_hex": "0x0",
+        "unknown_count": 128,
+        "range_unsigned": [
+          0,
+          340282366920938463463374607431768211455
+        ],
+        "range_signed": [
+          -170141183460469231731687303715884105728,
+          170141183460469231731687303715884105727
+        ]
+      }
+    },
+    "n14": {
+      "op": "SUB",
+      "out": {
+        "width": 128,
+        "signed": false,
+        "bits_msb": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "known_mask_hex": "0x0",
+        "known_value_hex": "0x0",
+        "unknown_count": 128,
+        "range_unsigned": [
+          0,
+          340282366920938463463374607431768211455
+        ],
+        "range_signed": [
+          -170141183460469231731687303715884105728,
+          170141183460469231731687303715884105727
+        ]
+      }
+    },
+    "n6": {
+      "op": "LT",
+      "out": {
+        "width": 1,
+        "signed": false,
+        "bits_msb": "X",
+        "known_mask_hex": "0x0",
+        "known_value_hex": "0x0",
+        "unknown_count": 1,
+        "range_unsigned": [
+          0,
+          1
+        ],
+        "range_signed": [
+          -1,
+          0
+        ]
+      }
+    },
+    "n2": {
+      "op": "ADD",
+      "out": {
+        "width": 128,
+        "signed": false,
+        "bits_msb": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "known_mask_hex": "0x0",
+        "known_value_hex": "0x0",
+        "unknown_count": 128,
+        "range_unsigned": [
+          0,
+          340282366920938463463374607431768211455
+        ],
+        "range_signed": [
+          -170141183460469231731687303715884105728,
+          170141183460469231731687303715884105727
+        ]
+      }
+    },
+    "n15": {
+      "op": "MUX",
+      "out": {
+        "width": 128,
+        "signed": false,
+        "bits_msb": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "known_mask_hex": "0x0",
+        "known_value_hex": "0x0",
+        "unknown_count": 128,
+        "range_unsigned": [
+          0,
+          340282366920938463463374607431768211455
+        ],
+        "range_signed": [
+          -170141183460469231731687303715884105728,
+          170141183460469231731687303715884105727
+        ]
+      }
+    },
+    "n21": {
+      "op": "XOR",
+      "out": {
+        "width": 128,
+        "signed": false,
+        "bits_msb": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "known_mask_hex": "0x0",
+        "known_value_hex": "0x0",
+        "unknown_count": 128,
+        "range_unsigned": [
+          0,
+          340282366920938463463374607431768211455
+        ],
+        "range_signed": [
+          -170141183460469231731687303715884105728,
+          170141183460469231731687303715884105727
+        ]
+      }
+    },
+    "n10": {
+      "op": "OR",
+      "out": {
+        "width": 128,
+        "signed": false,
+        "bits_msb": "1XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "known_mask_hex": "0x80000000000000000000000000000000",
+        "known_value_hex": "0x80000000000000000000000000000000",
+        "unknown_count": 127,
+        "range_unsigned": [
+          170141183460469231731687303715884105728,
+          340282366920938463463374607431768211455
+        ],
+        "range_signed": [
+          -170141183460469231731687303715884105728,
+          -1
+        ]
+      }
+    },
+    "n16": {
+      "op": "MUX",
+      "out": {
+        "width": 128,
+        "signed": false,
+        "bits_msb": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "known_mask_hex": "0x0",
+        "known_value_hex": "0x0",
+        "unknown_count": 128,
+        "range_unsigned": [
+          0,
+          340282366920938463463374607431768211455
+        ],
+        "range_signed": [
+          -170141183460469231731687303715884105728,
+          170141183460469231731687303715884105727
+        ]
+      }
+    },
+    "n4": {
+      "op": "AND",
+      "out": {
+        "width": 128,
+        "signed": false,
+        "bits_msb": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "known_mask_hex": "0x0",
+        "known_value_hex": "0x0",
+        "unknown_count": 128,
+        "range_unsigned": [
+          0,
+          340282366920938463463374607431768211455
+        ],
+        "range_signed": [
+          -170141183460469231731687303715884105728,
+          170141183460469231731687303715884105727
+        ]
+      }
+    },
+    "n5": {
+      "op": "EQ",
+      "out": {
+        "width": 1,
+        "signed": false,
+        "bits_msb": "X",
+        "known_mask_hex": "0x0",
+        "known_value_hex": "0x0",
+        "unknown_count": 1,
+        "range_unsigned": [
+          0,
+          1
+        ],
+        "range_signed": [
+          -1,
+          0
+        ]
+      }
+    },
+    "n22": {
+      "op": "XOR",
+      "out": {
+        "width": 1,
+        "signed": false,
+        "bits_msb": "X",
+        "known_mask_hex": "0x0",
+        "known_value_hex": "0x0",
+        "unknown_count": 1,
+        "range_unsigned": [
+          0,
+          1
+        ],
+        "range_signed": [
+          -1,
+          0
+        ]
+      }
+    },
+    "n17": {
+      "op": "MUX",
+      "out": {
+        "width": 128,
+        "signed": false,
+        "bits_msb": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "known_mask_hex": "0x0",
+        "known_value_hex": "0x0",
+        "unknown_count": 128,
+        "range_unsigned": [
+          0,
+          340282366920938463463374607431768211455
+        ],
+        "range_signed": [
+          -170141183460469231731687303715884105728,
+          170141183460469231731687303715884105727
+        ]
+      }
+    }
+  }
+}

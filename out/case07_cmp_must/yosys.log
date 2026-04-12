@@ -68,7 +68,7 @@ Optimizing module top.
 
 4.2. Executing OPT_MERGE pass (detect identical cells).
 Finding identical cells in module `\top'.
-Computing hashes of 2 cells of `\top'.
+Computing hashes of 5 cells of `\top'.
 Finding duplicate cells in `\top'.
 Removed a total of 0 cells.
 
@@ -84,7 +84,7 @@ Performed a total of 0 changes.
 
 4.5. Executing OPT_MERGE pass (detect identical cells).
 Finding identical cells in module `\top'.
-Computing hashes of 2 cells of `\top'.
+Computing hashes of 5 cells of `\top'.
 Finding duplicate cells in `\top'.
 Removed a total of 0 cells.
 
@@ -92,7 +92,7 @@ Removed a total of 0 cells.
 
 4.7. Executing OPT_CLEAN pass (remove unused cells and wires).
 Finding unused cells or wires in module \top..
-Removed 0 unused cells and 2 unused wires.
+Removed 0 unused cells and 5 unused wires.
 <suppressed ~1 debug messages>
 
 4.8. Executing OPT_EXPR pass (perform const folding).
@@ -112,7 +112,7 @@ Performed a total of 0 changes.
 
 4.12. Executing OPT_MERGE pass (detect identical cells).
 Finding identical cells in module `\top'.
-Computing hashes of 2 cells of `\top'.
+Computing hashes of 5 cells of `\top'.
 Finding duplicate cells in `\top'.
 Removed a total of 0 cells.
 
@@ -134,18 +134,21 @@ Optimizing module top.
 
         +----------Local Count, excluding submodules.
         | 
-        4 wires
-       18 wire bits
-        4 public wires
-       18 public wire bits
-        4 ports
-       18 port bits
-        2 cells
+        7 wires
+       21 wire bits
+        7 public wires
+       21 public wire bits
+        7 ports
+       21 port bits
+        5 cells
+        1   $eq
         1   $ge
+        1   $gt
+        1   $le
         1   $lt
 
 7. Executing JSON backend.
 
-End of script. Logfile hash: a2a7372739
+End of script. Logfile hash: f340f11bdc
 Yosys 0.61+112 (git sha1 ac427a79b-dirty, x86_64-w64-mingw32-g++ 13.2.1 -O3)
 Time spent: 3% 4x opt_expr (0 sec), 3% 3x opt_merge (0 sec), ...

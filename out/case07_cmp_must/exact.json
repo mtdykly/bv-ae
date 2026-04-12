@@ -4,22 +4,44 @@
   "assume": {
     "signals": {
       "a": {
-        "bits_msb": "0000XXXX"
+        "range_unsigned": [
+          0,
+          15
+        ]
       },
       "b": {
-        "bits_msb": "1111XXXX"
+        "range_unsigned": [
+          240,
+          255
+        ]
       }
     }
   },
-  "enum_var_bits": 8,
-  "enum_mode": "bit_product",
+  "enum_var_bits": 0,
+  "enum_mode": "value_domains",
   "enum_domain_sizes": [
     16,
     16
   ],
   "enum_count": 256,
-  "time_seconds": 0.005930799999987357,
+  "time_seconds": 0.01420570001937449,
   "signals": {
+    "eq": {
+      "width": 1,
+      "signed": false,
+      "bits_msb": "0",
+      "known_mask_hex": "0x1",
+      "known_value_hex": "0x0",
+      "unknown_count": 0,
+      "range_unsigned": [
+        0,
+        0
+      ],
+      "range_signed": [
+        0,
+        0
+      ]
+    },
     "ge": {
       "width": 1,
       "signed": false,
@@ -34,6 +56,38 @@
       "range_signed": [
         0,
         0
+      ]
+    },
+    "gt": {
+      "width": 1,
+      "signed": false,
+      "bits_msb": "0",
+      "known_mask_hex": "0x1",
+      "known_value_hex": "0x0",
+      "unknown_count": 0,
+      "range_unsigned": [
+        0,
+        0
+      ],
+      "range_signed": [
+        0,
+        0
+      ]
+    },
+    "le": {
+      "width": 1,
+      "signed": false,
+      "bits_msb": "1",
+      "known_mask_hex": "0x1",
+      "known_value_hex": "0x1",
+      "unknown_count": 0,
+      "range_unsigned": [
+        1,
+        1
+      ],
+      "range_signed": [
+        -1,
+        -1
       ]
     },
     "lt": {

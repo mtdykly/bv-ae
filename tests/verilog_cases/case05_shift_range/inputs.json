@@ -1,6 +1,6 @@
 {
   "signals": {
-    "x":  { "bits_msb": "1X0010XX" },
-    "sh": { "bits_msb": "0XX" }
+    "x": { "range_unsigned": [136, 203] },
+    "sh": { "range_unsigned": [0, 3] }
   }
 }

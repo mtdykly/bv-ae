@@ -1,0 +1,25 @@
+{
+  "signals": {
+    "a": {
+      "bits_msb": "10X110X110X110X110X110X110X110X1"
+    },
+    "b": {
+      "bits_msb": "01X001X001X001X001X001X001X001X0"
+    },
+    "c": {
+      "bits_msb": "11X011X011X011X011X011X011X011X0"
+    },
+    "d": {
+      "bits_msb": "00X100X100X100X100X100X100X100X1"
+    },
+    "sh": {
+      "range_unsigned": [
+        0,
+        31
+      ]
+    },
+    "sel": {
+      "bits_msb": "X"
+    }
+  }
+}

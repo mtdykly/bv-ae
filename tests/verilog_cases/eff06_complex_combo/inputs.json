@@ -1,0 +1,12 @@
+{
+  "signals": {
+    "a": { "range_unsigned": [0, 9223372036854775807] },
+    "b": { "range_unsigned": [1, 9223372036854775807] },
+    "c": { "range_unsigned": [3074457345618258602, 6148914691236517205] },
+    "d": { "range_unsigned": [1229782938247303441, 3689348814741910323] },
+    "sh0": { "range_unsigned": [0, 31] },
+    "sh1": { "range_unsigned": [0, 31] },
+    "sel0": { "range_unsigned": [0, 1] },
+    "sel1": { "range_unsigned": [0, 1] }
+  }
+}

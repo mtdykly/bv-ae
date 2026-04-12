@@ -4,10 +4,16 @@
   "assume": {
     "signals": {
       "a": {
-        "bits_msb": "0000XXXX"
+        "range_unsigned": [
+          0,
+          15
+        ]
       },
       "b": {
-        "bits_msb": "1111XXXX"
+        "range_unsigned": [
+          240,
+          255
+        ]
       }
     }
   },
@@ -44,6 +50,22 @@
         -1
       ]
     },
+    "eq": {
+      "width": 1,
+      "signed": false,
+      "bits_msb": "0",
+      "known_mask_hex": "0x1",
+      "known_value_hex": "0x0",
+      "unknown_count": 0,
+      "range_unsigned": [
+        0,
+        0
+      ],
+      "range_signed": [
+        0,
+        0
+      ]
+    },
     "ge": {
       "width": 1,
       "signed": false,
@@ -58,6 +80,38 @@
       "range_signed": [
         0,
         0
+      ]
+    },
+    "gt": {
+      "width": 1,
+      "signed": false,
+      "bits_msb": "0",
+      "known_mask_hex": "0x1",
+      "known_value_hex": "0x0",
+      "unknown_count": 0,
+      "range_unsigned": [
+        0,
+        0
+      ],
+      "range_signed": [
+        0,
+        0
+      ]
+    },
+    "le": {
+      "width": 1,
+      "signed": false,
+      "bits_msb": "1",
+      "known_mask_hex": "0x1",
+      "known_value_hex": "0x1",
+      "unknown_count": 0,
+      "range_unsigned": [
+        1,
+        1
+      ],
+      "range_signed": [
+        -1,
+        -1
       ]
     },
     "lt": {
@@ -78,7 +132,7 @@
     }
   },
   "nodes": {
-    "n2": {
+    "n5": {
       "op": "LT",
       "out": {
         "width": 1,
@@ -97,8 +151,65 @@
         ]
       }
     },
-    "n1": {
+    "n4": {
+      "op": "LE",
+      "out": {
+        "width": 1,
+        "signed": false,
+        "bits_msb": "1",
+        "known_mask_hex": "0x1",
+        "known_value_hex": "0x1",
+        "unknown_count": 0,
+        "range_unsigned": [
+          1,
+          1
+        ],
+        "range_signed": [
+          -1,
+          -1
+        ]
+      }
+    },
+    "n3": {
+      "op": "GT",
+      "out": {
+        "width": 1,
+        "signed": false,
+        "bits_msb": "0",
+        "known_mask_hex": "0x1",
+        "known_value_hex": "0x0",
+        "unknown_count": 0,
+        "range_unsigned": [
+          0,
+          0
+        ],
+        "range_signed": [
+          0,
+          0
+        ]
+      }
+    },
+    "n2": {
       "op": "GE",
+      "out": {
+        "width": 1,
+        "signed": false,
+        "bits_msb": "0",
+        "known_mask_hex": "0x1",
+        "known_value_hex": "0x0",
+        "unknown_count": 0,
+        "range_unsigned": [
+          0,
+          0
+        ],
+        "range_signed": [
+          0,
+          0
+        ]
+      }
+    },
+    "n1": {
+      "op": "EQ",
       "out": {
         "width": 1,
         "signed": false,

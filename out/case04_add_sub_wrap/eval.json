@@ -4,10 +4,16 @@
   "assume": {
     "signals": {
       "a": {
-        "bits_msb": "111X"
+        "range_unsigned": [
+          14,
+          15
+        ]
       },
       "b": {
-        "bits_msb": "00X1"
+        "range_unsigned": [
+          1,
+          3
+        ]
       }
     }
   },
@@ -31,16 +37,16 @@
     "b": {
       "width": 4,
       "signed": false,
-      "bits_msb": "00X1",
-      "known_mask_hex": "0xd",
-      "known_value_hex": "0x1",
-      "unknown_count": 1,
+      "bits_msb": "00XX",
+      "known_mask_hex": "0xc",
+      "known_value_hex": "0x0",
+      "unknown_count": 2,
       "range_unsigned": [
-        1,
+        0,
         3
       ],
       "range_signed": [
-        1,
+        0,
         3
       ]
     },
